@@ -443,6 +443,39 @@ class _LearningReportPageState extends ConsumerState<LearningReportPage> {
     );
   }
 
+  /// 画像入口：把「长期画像」和「阶段报告」串起来。
+  Widget _portraitEntry(WrongQuestionAnalytics data) {
+    final top = WrongQuestionAnalytics.ranked(data.modules).take(1);
+    final hint = data.total == 0
+        ? '添加错题后自动生成'
+        : '掌握率 ${data.masteredPercent}%'
+              '${top.isEmpty ? '' : ' · 高频模块 ${top.first.key}'}';
+    return Card(
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      child: ListTile(
+        leading: const Icon(Icons.radar_outlined, color: AppColors.primary),
+        title: const Text(
+          '学生画像',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(
+          hint,
+          style: const TextStyle(
+            fontSize: 12,
+            color: AppColors.mutedForeground,
+          ),
+        ),
+        trailing: const Icon(
+          Icons.chevron_right,
+          size: 20,
+          color: AppColors.border,
+        ),
+        onTap: () => context.go('/profile/portrait'),
+      ),
+    );
+  }
+
   Widget _buildDashboard() {
     final data = WrongQuestionAnalytics(
       ref.watch(analyticsQuestionsProvider),
@@ -458,6 +491,8 @@ class _LearningReportPageState extends ConsumerState<LearningReportPage> {
         ),
         const SizedBox(height: 6),
         const Text('从错题记录看清近期学习情况，再决定下一步复习重点。'),
+        const SizedBox(height: 12),
+        _portraitEntry(data),
         const SizedBox(height: 16),
         Wrap(
           spacing: 8,

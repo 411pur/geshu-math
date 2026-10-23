@@ -96,6 +96,14 @@ class ProfilePage extends ConsumerWidget {
             child: Column(
               children: [
                 _MotionListTile(
+                  leading: const Icon(Icons.radar_outlined),
+                  title: const Text('学生画像'),
+                  subtitle: const Text('看长期薄弱点与学习节奏'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.go('/profile/portrait'),
+                ),
+                const Divider(height: 1, indent: 56),
+                _MotionListTile(
                   leading: const Icon(Icons.assessment_outlined),
                   title: const Text('学习报告'),
                   subtitle: const Text('生成你的学习报告'),

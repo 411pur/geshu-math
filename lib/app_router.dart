@@ -15,6 +15,7 @@ import '../features/exam/pages/exam_detail_page.dart';
 import '../features/qa/pages/smart_qa_page.dart';
 import '../features/scan/pages/scan_preview_page.dart';
 import '../features/report/pages/learning_report_page.dart';
+import '../features/report/pages/student_portrait_page.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -113,6 +114,10 @@ final appRouter = GoRouter(
               path: '/profile',
               builder: (_, _) => const ProfilePage(),
               routes: [
+                GoRoute(
+                  path: 'portrait',
+                  builder: (_, _) => const StudentPortraitPage(),
+                ),
                 GoRoute(
                   path: 'report',
                   builder: (_, _) => const LearningReportPage(),
