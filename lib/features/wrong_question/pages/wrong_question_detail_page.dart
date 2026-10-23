@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/wrong_question_entity.dart';
+import '../../lesson_studio/widgets/lesson_video_cta.dart';
 
 class WrongQuestionDetailPage extends StatefulWidget {
   final WrongQuestion item;
@@ -195,6 +196,12 @@ class _WrongQuestionDetailPageState extends State<WrongQuestionDetailPage> {
       ),
       const SizedBox(height: 4),
       const Center(child: Text('点击切换状态', style: TextStyle(fontSize: 11, color: AppColors.mutedForeground))),
+      const SizedBox(height: 24),
+      LessonVideoCta(
+        imageDataUrl: widget.item.questionImagePath ?? '',
+        questionText: widget.item.questionText,
+        refId: widget.item.id ?? 0,
+      ),
     ])),
   );
 }
