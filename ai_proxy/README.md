@@ -5,7 +5,7 @@
 现在前端（浏览器）**直连**模型商，`web/config.json` 里明文放着真实 API Key：
 
 ```
-前端 ──Bearer sk-98fc...（明文，F12 可见）──▶ DashScope
+前端 ──Bearer sk-xxxx...（明文，F12 可见）──▶ DashScope
 ```
 
 任何人打开你的网站就能抓走 Key 盗刷；系统提示词也全在 `main.dart.js` 里。
@@ -70,15 +70,13 @@ npx wrangler deploy                # 得到 https://geshu-math-ai-proxy.<子域>
 **改提示词改 Dart 源码即可，跑一次 `npm run extract-prompts` 保持服务端同步**，
 不要手改 `prompts.gen.js`。
 
-## ⚠️ 安全待办（重要）
+## ⚠️ 安全提示（重要）
 
-`web/config.json` 里那个 `sk-98fc...` **已经随代码提交过、等于已泄露**，
-上线前务必到阿里云百炼控制台**吊销并重建**该 Key，新 Key 只放到
-`wrangler secret` / `.dev.vars`，永不进仓库。
+只要 Key 以任何形式公开过（截图、日志、聊天记录、提交历史），就应视为已泄露：
+请到阿里云百炼控制台**吊销并重建**，新 Key 只放在 `wrangler secret` / `.dev.vars`，
+永不写入仓库或前端配置。
 
-## 尚未迁移
+## 尚未覆盖
 
-- 拍照识题（`vision_llm_ocr_service.dart`、`ocrQuestionImage`）的内联指令仍是
-  前端直发；后续可加一个 `ocr` 板块提示词到 registry。
-- 互动讲解服务（`lesson_engine/`，Fastify）已在服务端，但它依赖
-  `playwright-core + sharp`，需要独立 VPS/容器，不能跑在 Worker 上。
+- 拍照识题（`vision_llm_ocr_service.dart` 中的 `ocrQuestionImage`）仍由前端直接
+  发送内联指令；后续可新增 `ocr` 板块提示词，交给网关注入。
