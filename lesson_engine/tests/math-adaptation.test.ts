@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import {describe,it,expect} from 'vitest';
 import {DeepSeekTutorAI} from '../src/ai/deepseek.js';
 import {targetLessonPlanExamples,targetExamplesText} from '../src/ai/target-examples.js';
@@ -30,3 +31,5 @@ describe('数学学科适配',()=>{
     for(const call of calls){const system=call.messages.find((m:any)=>m.role==='system').content;expect(system).toContain('定义域');expect(system).toContain('增根漏根');expect(system).toContain('证明题');}
   });
 });
+
+it('播放器使用数学品牌标识',()=>{const html=readFileSync(new URL('../templates/teacher-board.html',import.meta.url),'utf8');expect(html).toContain('brand-badge\">数');expect(html).not.toContain('物理老师');});
