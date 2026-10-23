@@ -9,6 +9,16 @@ function numberFromEnv(name: string, fallback: number): number {
   return Number.isFinite(value) ? value : fallback;
 }
 
+function providerFromEnv(name: string, fallback: string): ModelProvider {
+  const value = process.env[name] || fallback;
+  return value === 'aliyun' ? 'aliyun' : 'deepseek';
+}
+
+function visionProviderFromEnv(name: string, fallback: VisionProvider): VisionProvider {
+  const value = process.env[name] || fallback;
+  return value === 'deepseek' || value === 'aliyun' ? value : 'auto';
+}
+
 const regionHosts: Record<string, string> = { 'cn-beijing': 'cn-beijing', 'ap-southeast-1': 'ap-southeast-1', 'us-east-1': 'us-east-1' };
 
 export function deriveAliyunBaseUrl(workspaceId: string, region: string): string | undefined {
@@ -16,6 +26,9 @@ export function deriveAliyunBaseUrl(workspaceId: string, region: string): string
   if (!workspaceId || !hostRegion) return undefined;
   return `https://${workspaceId}.${hostRegion}.maas.aliyuncs.com/compatible-mode/v1`;
 }
+
+export type ModelProvider = 'deepseek' | 'aliyun';
+export type VisionProvider = ModelProvider | 'auto';
 
 export interface AppConfig {
   host: string;
@@ -25,11 +38,12 @@ export interface AppConfig {
   templatePath: string;
   maxImageBytes: number;
   maxDocumentBytes: number;
-  deepseek: { apiKey: string; baseUrl: string; reasoningModel: string; fastModel: string; visionModel: string; disableThinking: boolean; fastProvider: 'deepseek' | 'aliyun'; };
+  deepseek: { apiKey: string; baseUrl: string; reasoningModel: string; fastModel: string; visionModel: string; disableThinking: boolean; };
+  providers: { fast: ModelProvider; reasoning: ModelProvider; vision: VisionProvider; };
   aliyun: { apiKey: string; apiFlavor: 'openai' | 'anthropic'; baseUrl: string; workspaceId: string; region: string; model: string; visionFastModel: string; visionModel: string; visionModelFallbacks: string[]; };
 }
 
-export type ConfigOverrides = Omit<Partial<AppConfig>, 'deepseek' | 'aliyun'> & { deepseek?: Partial<AppConfig['deepseek']>; aliyun?: Partial<AppConfig['aliyun']>; };
+export type ConfigOverrides = Omit<Partial<AppConfig>, 'deepseek' | 'aliyun' | 'providers'> & { deepseek?: Partial<AppConfig['deepseek']>; aliyun?: Partial<AppConfig['aliyun']>; providers?: Partial<AppConfig['providers']>; };
 
 export function loadConfig(overrides: ConfigOverrides = {}): AppConfig {
   const workspaceId = overrides.aliyun?.workspaceId ?? process.env.ALIYUN_WORKSPACE_ID ?? '';
@@ -43,7 +57,12 @@ export function loadConfig(overrides: ConfigOverrides = {}): AppConfig {
     templatePath: path.join(process.cwd(), 'templates', 'teacher-board.html'),
     maxImageBytes: numberFromEnv('MAX_IMAGE_BYTES', 12 * 1024 * 1024),
     maxDocumentBytes: numberFromEnv('MAX_DOCUMENT_BYTES', 12 * 1024 * 1024),
-    deepseek: { apiKey: process.env.DEEPSEEK_API_KEY || '', baseUrl: process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com', reasoningModel: process.env.DEEPSEEK_REASONING_MODEL || 'deepseek-flash', fastModel: process.env.DEEPSEEK_FAST_MODEL || 'deepseek-flash', visionModel: process.env.DEEPSEEK_VISION_MODEL || 'deepseek-flash', disableThinking: !/^(0|false|no)$/i.test(process.env.DEEPSEEK_DISABLE_THINKING || ''), fastProvider: (process.env.DEEPSEEK_FAST_PROVIDER as 'deepseek' | 'aliyun') || 'deepseek' },
+    deepseek: { apiKey: process.env.DEEPSEEK_API_KEY || '', baseUrl: process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com', reasoningModel: process.env.DEEPSEEK_REASONING_MODEL || 'deepseek-flash', fastModel: process.env.DEEPSEEK_FAST_MODEL || 'deepseek-flash', visionModel: process.env.DEEPSEEK_VISION_MODEL || 'deepseek-flash', disableThinking: !/^(0|false|no)$/i.test(process.env.DEEPSEEK_DISABLE_THINKING || '') },
+    providers: {
+      fast: providerFromEnv('MODEL_PROVIDER_FAST', process.env.DEEPSEEK_FAST_PROVIDER || 'deepseek'),
+      reasoning: providerFromEnv('MODEL_PROVIDER_REASONING', process.env.DEEPSEEK_FAST_PROVIDER || 'deepseek'),
+      vision: visionProviderFromEnv('MODEL_PROVIDER_VISION', 'auto')
+    },
     aliyun: {
       apiKey: process.env.ALIYUN_API_KEY || '',
       apiFlavor: (process.env.ALIYUN_API_FLAVOR as 'openai' | 'anthropic') || 'openai',
@@ -58,5 +77,5 @@ export function loadConfig(overrides: ConfigOverrides = {}): AppConfig {
   };
   const mergedAliyun = { ...base.aliyun, ...overrides.aliyun };
   if (!mergedAliyun.baseUrl) mergedAliyun.baseUrl = deriveAliyunBaseUrl(mergedAliyun.workspaceId, mergedAliyun.region) || base.aliyun.baseUrl;
-  return { ...base, ...overrides, deepseek: { ...base.deepseek, ...overrides.deepseek }, aliyun: mergedAliyun };
+  return { ...base, ...overrides, deepseek: { ...base.deepseek, ...overrides.deepseek }, providers: { ...base.providers, ...overrides.providers }, aliyun: mergedAliyun };
 }

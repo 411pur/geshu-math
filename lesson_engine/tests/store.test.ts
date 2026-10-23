@@ -24,6 +24,30 @@ describe('ProjectStore', () => {
     expect(() => store.artifactPath(project.id, '../escape.txt')).toThrow();
   });
 
+  it('marks persisted queued/running jobs as retryable failures after restart', async () => {
+    const store = await createStore();
+    const queued = await store.create({ text: 'queued' });
+    const running = await store.create({ text: 'running' });
+    await store.update(running.id, { status: 'running', stage: 'planning', progress: 44 });
+    expect(await store.failInterruptedJobs()).toBe(2);
+    expect((await store.get(queued.id)).status).toBe('failed');
+    const recovered = await store.get(running.id);
+    expect(recovered.status).toBe('failed');
+    expect(recovered.stage).toBe('failed');
+    expect(recovered.error).toContain('重新生成');
+  });
+
+  it('serializes concurrent progress writes to the same metadata file', async () => {
+    const store = await createStore();
+    const project = await store.create({ text: 'concurrent' });
+    await Promise.all(Array.from({ length: 24 }, (_, index) =>
+      store.update(project.id, { title: `progress-${index}`, progress: index })
+    ));
+    const record = await store.get(project.id);
+    expect(record.title).toMatch(/^progress-\d+$/);
+    expect(record.progress).toBeGreaterThanOrEqual(0);
+  });
+
   it('creates, updates, lists and resets projects', async () => {
     const store = await createStore();
     const created = await store.create({ text: '1 + 1 = ?' });

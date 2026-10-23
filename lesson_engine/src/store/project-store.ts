@@ -7,6 +7,8 @@ import type { ProjectInput, ProjectRecord } from '../schemas/project.js';
 const UTF8 = 'utf8';
 
 export class ProjectStore {
+  private readonly writeQueues = new Map<string, Promise<void>>();
+
   constructor(private readonly rootDir: string) {}
   async init(): Promise<void> { await mkdir(this.rootDir, { recursive: true }); }
 
@@ -39,6 +41,22 @@ export class ProjectStore {
     const next = ProjectRecordSchema.parse({ ...current, ...patch, id: current.id, createdAt: current.createdAt, updatedAt: new Date().toISOString() });
     await this.writeRecord(next);
     return next;
+  }
+
+  /** 进程重启后，内存中的生成任务已经不存在，必须把残留的 queued/running 标记为可重试失败。 */
+  async failInterruptedJobs(): Promise<number> {
+    let changed = 0;
+    for (const record of await this.list()) {
+      if (record.status !== 'queued' && record.status !== 'running') continue;
+      await this.update(record.id, {
+        status: 'failed',
+        stage: 'failed',
+        progress: 100,
+        error: '讲解服务重启，原生成任务已中断；题目素材仍保留，请点击“重新生成”。'
+      });
+      changed += 1;
+    }
+    return changed;
   }
 
   async reset(id: string): Promise<ProjectRecord> {
@@ -86,13 +104,43 @@ export class ProjectStore {
   }
 
   private async writeAtomic(target: string, value: string | Buffer): Promise<void> {
-    await mkdir(path.dirname(target), { recursive: true });
-    const temp = `${target}.${randomUUID()}.tmp`;
-    await writeFile(temp, value);
-    await rename(temp, target);
+    const previous = this.writeQueues.get(target) ?? Promise.resolve();
+    const next = previous.catch(() => undefined).then(async () => {
+      await mkdir(path.dirname(target), { recursive: true });
+      const temp = `${target}.${randomUUID()}.tmp`;
+      await writeFile(temp, value);
+      try {
+        await renameWithRetry(temp, target);
+      } catch (error) {
+        await rm(temp, { force: true }).catch(() => undefined);
+        throw error;
+      }
+    });
+    this.writeQueues.set(target, next);
+    try {
+      await next;
+    } finally {
+      if (this.writeQueues.get(target) === next) this.writeQueues.delete(target);
+    }
   }
   private async writeRecord(record: ProjectRecord): Promise<void> { await this.writeJson(record.id, 'meta.json', record); }
 }
 
 function assertSafeId(id: string): void { if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) throw new Error('非法项目 ID'); }
 function extensionForMime(mimeType: string): string { return ({ 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp' } as Record<string, string>)[mimeType] || ''; }
+
+async function renameWithRetry(from: string, to: string): Promise<void> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    try {
+      await rename(from, to);
+      return;
+    } catch (error) {
+      lastError = error;
+      const code = (error as NodeJS.ErrnoException).code;
+      if (process.platform !== 'win32' || (code !== 'EPERM' && code !== 'EBUSY' && code !== 'EACCES')) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 15 * (attempt + 1)));
+    }
+  }
+  throw lastError;
+}

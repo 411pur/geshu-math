@@ -185,13 +185,13 @@ npm run test:live
 先看引擎自己的状态，这一步能区分 90% 的原因：
 
 ```powershell
-Invoke-RestMethod http://127.0.0.1:3210/api/health
+Invoke-RestMethod http://127.0.0.1:8124/api/health
 ```
 
-正常的返回里 `providers.deepseek` 和 `providers.aliyun` 都应该是 `true`：
+正常的返回里至少当前选用的服务商应为 `true`，并会显示快速、推理、视觉三类模型的实际服务商：
 
 ```json
-{"ok":true,"providers":{"deepseek":true,"aliyun":true},"models":{...},"features":{...}}
+{"ok":true,"providers":{"deepseek":true,"aliyun":false,"fast":"deepseek","reasoning":"deepseek","vision":"deepseek"},"models":{...},"features":{...}}
 ```
 
 | 现象 | 原因 | 处理 |

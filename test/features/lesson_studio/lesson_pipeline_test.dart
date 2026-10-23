@@ -9,6 +9,7 @@ class _FakeBridge extends LegacyLessonBridge {
   var statusCalls = 0;
   var done = true;
   var failed = false;
+  var transientStatusFailures = 0;
 
   _FakeBridge();
 
@@ -18,6 +19,10 @@ class _FakeBridge extends LegacyLessonBridge {
   @override
   Future<LegacyLessonStatus> status(String externalId) async {
     statusCalls++;
+    if (transientStatusFailures > 0) {
+      transientStatusFailures--;
+      throw const LessonBridgeException('本地服务暂时断开', retryable: true);
+    }
     return LegacyLessonStatus(
       externalId: externalId,
       title: '原项目讲解',
@@ -70,9 +75,42 @@ class _FakeBridge extends LegacyLessonBridge {
       '<html><body>legacy lesson</body></html>';
 }
 
+class _PollingBridge extends LegacyLessonBridge {
+  _PollingBridge(this.transientFailures);
+
+  int transientFailures;
+  int statusCalls = 0;
+
+  @override
+  Future<String> create(LessonGenerationInput input) async => 'polling-task';
+
+  @override
+  Future<LegacyLessonStatus> status(String externalId) async {
+    statusCalls++;
+    if (transientFailures > 0) {
+      transientFailures--;
+      throw const LessonBridgeException('本地服务暂时断开', retryable: true);
+    }
+    return const LegacyLessonStatus(
+      externalId: 'polling-task',
+      title: '高中数学讲解',
+      subject: '数学',
+      message: '讲解 HTML 已生成',
+      error: '',
+      stage: LessonProjectStage.done,
+      status: LessonProjectStatus.done,
+      progress: 100,
+      visualWarnings: [],
+    );
+  }
+
+  @override
+  Future<String> html(String externalId) async =>
+      '<html><body>polling lesson</body></html>';
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-
 
   test('仅使用图片创建原服务任务并保存 HTML', () async {
     final store = MemoryLessonStore();
@@ -111,6 +149,18 @@ void main() {
     expect(recovered?.status, LessonProjectStatus.done);
     expect(recovered?.hasHtml, isTrue);
     expect(await store.loadHtml('local-task-1'), contains('legacy lesson'));
+  });
+
+  test('轮询短暂断网会自动重连，不把模型任务误判为失败', () async {
+    final store = MemoryLessonStore();
+    final bridge = _PollingBridge(2);
+    final pipeline = LessonPipeline(store: store, bridge: bridge);
+    final record = await pipeline.create(
+      const LessonGenerationInput(questionText: '求 x²-3x+2>0 的解集。'),
+    );
+    expect(record.status, LessonProjectStatus.done);
+    expect(bridge.statusCalls, 3);
+    expect(await store.loadHtml(record.id), contains('polling lesson'));
   });
 
   test('原服务失败时记录失败状态且不生成 HTML', () async {

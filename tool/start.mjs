@@ -43,7 +43,16 @@ try {
   writeFileSync(path.join(root,'build/web/config.json'),JSON.stringify(publicConfig(config),null,2));
   const env={...process.env,HOST:config.host,PORT:String(config.port),PUBLIC_DIR:path.join(root,'build/web'),DATA_DIR:config.dataDir,
     GESHU_INSTANCE:root,DEEPSEEK_BASE_URL:config.apiBaseUrl,DEEPSEEK_FAST_MODEL:config.model,DEEPSEEK_VISION_MODEL:config.visionModel,
-    DEEPSEEK_REASONING_MODEL:config.reasoningModel,MAX_IMAGE_BYTES:String(config.maxImageBytes),MAX_DOCUMENT_BYTES:String(config.maxDocumentBytes),
+    DEEPSEEK_REASONING_MODEL:config.reasoningModel,MODEL_PROVIDER_FAST:config.fastProvider,
+    MODEL_PROVIDER_REASONING:config.reasoningProvider,MODEL_PROVIDER_VISION:config.visionProvider,
+    ALIYUN_API_KEY:process.env.ALIYUN_API_KEY || '',ALIYUN_API_FLAVOR:process.env.ALIYUN_API_FLAVOR || 'openai',
+    ALIYUN_WORKSPACE_ID:process.env.ALIYUN_WORKSPACE_ID || '',ALIYUN_REGION:process.env.ALIYUN_REGION || 'cn-beijing',
+    ALIYUN_BASE_URL:process.env.ALIYUN_BASE_URL || '',ALIYUN_MODEL:process.env.ALIYUN_MODEL || 'qwen-plus',
+    ALIYUN_VISION_FAST_MODEL:process.env.ALIYUN_VISION_FAST_MODEL || 'qwen3-vl-flash',
+    ALIYUN_VISION_MODEL:process.env.ALIYUN_VISION_MODEL || 'qwen3-vl-plus',
+    ALIYUN_VISION_MODEL_FALLBACKS:process.env.ALIYUN_VISION_MODEL_FALLBACKS || 'qwen-vl-max,qwen3-vl-max',
+    ALIYUN_ENABLE_VISUAL_CRITIC:process.env.ALIYUN_ENABLE_VISUAL_CRITIC || '0',
+    MAX_IMAGE_BYTES:String(config.maxImageBytes),MAX_DOCUMENT_BYTES:String(config.maxDocumentBytes),
     CORS_ALLOWED_ORIGINS:origin};
   const child=spawn(process.execPath,['--import','tsx','src/server.ts'],{cwd:engine,env,stdio:'inherit',windowsHide:true});
   child.on('error',error=>{console.error(error.message);process.exitCode=1;});

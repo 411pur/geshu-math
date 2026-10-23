@@ -1,4 +1,4 @@
-import { registerManagedAi } from './managed-ai.js';
+import { configuredModelRoles, registerManagedAi } from './managed-ai.js';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import Fastify, { type FastifyInstance } from 'fastify';
@@ -22,6 +22,7 @@ export async function buildServer(options: BuildServerOptions = {}): Promise<Fas
   const config = options.config || loadConfig();
   const store = options.store || new ProjectStore(config.dataDir);
   await store.init();
+  await store.failInterruptedJobs();
   const tutor = createDefaultTutor(config);
   const renderer = new LocalHtmlRenderer(config.templatePath);
   const visualAuditor = new PlaywrightVisualAuditor();
@@ -105,12 +106,20 @@ export async function buildServer(options: BuildServerOptions = {}): Promise<Fas
     }
   }
 
-  app.get('/api/health', async () => ({
-    ok: true, service: 'geshu-math', instance: process.env.GESHU_INSTANCE || '',
-    providers: { deepseek: Boolean(config.deepseek.apiKey), aliyun: Boolean(config.aliyun.apiKey) },
-    models: { reasoning: config.deepseek.reasoningModel, fast: config.deepseek.fastModel, vision: config.aliyun.apiKey ? config.aliyun.visionModel : config.deepseek.visionModel },
-    features: { visualAudit: true, visualCritic: Boolean(visualCritic) }
-  }));
+  app.get('/api/health', async () => {
+    const roles = configuredModelRoles(config);
+    return {
+      ok: true, service: 'geshu-math', instance: process.env.GESHU_INSTANCE || '',
+      providers: {
+        deepseek: Boolean(config.deepseek.apiKey), aliyun: Boolean(config.aliyun.apiKey),
+        fast: roles.find((role) => role.role === 'fast')?.provider,
+        reasoning: roles.find((role) => role.role === 'reasoning')?.provider,
+        vision: roles.find((role) => role.role === 'vision')?.provider
+      },
+      models: Object.fromEntries(roles.map((role) => [role.role, role.model])),
+      features: { visualAudit: true, visualCritic: Boolean(visualCritic) }
+    };
+  });
 
   app.get('/api/projects', async () => ({ projects: await store.list() }));
   app.get<{ Params: { id: string } }>('/api/projects/:id', async (request, reply) => {

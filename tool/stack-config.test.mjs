@@ -9,7 +9,13 @@ test('public configuration never includes secrets or upstream credentials',()=>{
  assert.ok(!serialized.includes('private-secret'));assert.ok(!serialized.includes('api.deepseek.com'));assert.equal(publicConfig(config).managedAi,true);
 });
 test('invalid ports, external data directories and public data directories fail early',()=>{
- for(const patch of [{port:0},{port:1.5},{host:'0.0.0.0'},{dataDir:'../outside'},{dataDir:'web/secrets'},{model:''},{requestTimeoutMs:-1}]) {
+ for(const patch of [{port:0},{port:1.5},{host:'0.0.0.0'},{dataDir:'../outside'},{dataDir:'web/secrets'},{model:''},{requestTimeoutMs:-1},{fastProvider:'other'},{visionProvider:'other'}]) {
  assert.throws(()=>validateConfig({...sample,...patch},process.cwd()));
  }
+});
+test('role providers are validated and exposed without credentials',()=>{
+ const config=validateConfig({...sample,fastProvider:'deepseek',reasoningProvider:'deepseek',visionProvider:'aliyun'},process.cwd());
+ const pub=publicConfig(config);
+ assert.deepEqual(pub.modelProviders,{fast:'deepseek',reasoning:'deepseek',vision:'aliyun'});
+ assert.equal(pub.managedAi,true);
 });

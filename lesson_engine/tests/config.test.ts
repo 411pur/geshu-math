@@ -17,6 +17,13 @@ describe('secret redaction', () => {
   });
 });
 
+describe('model role configuration', () => {
+  it('keeps fast, reasoning and vision providers independent', () => {
+    const config = loadConfig({ providers: { fast: 'deepseek', reasoning: 'deepseek', vision: 'aliyun' } });
+    expect(config.providers).toEqual({ fast: 'deepseek', reasoning: 'deepseek', vision: 'aliyun' });
+  });
+});
+
 describe('Alibaba workspace endpoints', () => {
   it('derives the workspace-specific base URL for supported regions', () => {
     expect(deriveAliyunBaseUrl('ws-demo', 'cn-beijing')).toBe('https://ws-demo.cn-beijing.maas.aliyuncs.com/compatible-mode/v1');
