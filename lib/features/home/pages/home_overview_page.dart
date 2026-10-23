@@ -20,6 +20,8 @@ import '../providers/student_profile_provider.dart';
 /// 8 张卡片正好每隔 45° 排一圈，正面的那张最大最亮，两侧依次变小变暗，
 /// 形成参考视频里那种持续循环转动的效果。
 const List<OrbitCardData> kOrbitTools = [
+  OrbitCardData(title: '数学讲解', subtitle: '语音板书，逐步推导与检验', icon: Icons.ondemand_video, color: Color(0xFF0A63F5), path: '/lesson/new'),
+  OrbitCardData(title: '讲解历史', subtitle: '重播与下载互动讲解', icon: Icons.video_library_outlined, color: Color(0xFF7C3AED), path: '/lesson/library'),
   OrbitCardData(
     title: '错题指导',
     subtitle: '拍照提问，AI 诊断错因',

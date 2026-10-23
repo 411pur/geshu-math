@@ -4,6 +4,7 @@
 /// 只要目标服务兼容 OpenAI 的 `chat/completions` 协议，改 `baseUrl` /
 /// `apiKey` / `model` 就能切换服务商与模型，无需改代码。
 class ApiEndpoints {
+  static bool managedAi = false;
   ApiEndpoints._();
 
   /// OpenAI 兼容接口 base URL（例如 `https://your-host/v1`）。

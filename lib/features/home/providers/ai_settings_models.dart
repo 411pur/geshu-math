@@ -48,6 +48,26 @@ class AiSettings {
     this.lesson = const BoardAiConfig(),
   });
 
+  AiSettings resolve(AiSettings defaults, {bool managed = false}) {
+    String pick(String v, String fallback) => v.trim().isEmpty ? fallback : v.trim();
+    BoardAiConfig board(BoardAiConfig b) => managed ? BoardAiConfig(model:b.model, prompt:b.prompt) : b;
+    return AiSettings(baseUrl:managed ? defaults.baseUrl : pick(baseUrl,defaults.baseUrl),
+      apiKey:managed ? defaults.apiKey : pick(apiKey,defaults.apiKey),
+      model:managed ? defaults.model : pick(model,defaults.model),
+      visionModel:managed ? defaults.visionModel : pick(visionModel,defaults.visionModel),
+      wrongQuestion:board(wrongQuestion),exam:board(exam),qa:board(qa),report:board(report),
+      lesson:managed ? const BoardAiConfig() : lesson);
+  }
+
+  Map<String,dynamic> overrides(AiSettings defaults) {
+    final result=toJson();
+    final base=defaults.toJson();
+    for(final key in ['baseUrl','apiKey','model','visionModel']) {
+      if(result[key]==base[key]) result[key]='';
+    }
+    return result;
+  }
+
   /// 默认值：来自 web/config.json（已加载进 ApiEndpoints）+ 内置提示词占位。
   factory AiSettings.defaults() => AiSettings(
     baseUrl: ApiEndpoints.baseUrl,

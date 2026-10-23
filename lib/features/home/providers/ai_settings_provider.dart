@@ -1,3 +1,4 @@
+import '../../../core/constants/api_endpoints.dart';
 import 'dart:convert';
 import 'package:web/web.dart' as web;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +9,7 @@ export 'ai_settings_models.dart'; // BoardAiConfig / AiSettings（纯模型，�
 /// 当前生效的 AI 配置（localStorage 覆盖 + config.json 默认合并）。
 class AiSettingsNotifier extends Notifier<AiSettings> {
   static const _key = 'geshu_math_ai_settings';
-  static const _version = 1;
+  static const _version = 2;
 
   @override
   AiSettings build() {
@@ -16,16 +17,21 @@ class AiSettingsNotifier extends Notifier<AiSettings> {
       final raw = web.window.localStorage.getItem(_key);
       if (raw != null && raw.isNotEmpty) {
         final j = json.decode(raw) as Map<String, dynamic>;
-        if (j['v'] == _version) return AiSettings.fromJson(j['s'] as Map<String, dynamic>);
+        if (j['v'] == 1 || j['v'] == _version) {
+          final saved=AiSettings.fromJson(j['s'] as Map<String,dynamic>);
+          final resolved=saved.resolve(AiSettings.defaults(),managed:ApiEndpoints.managedAi);
+          if(ApiEndpoints.managedAi) web.window.localStorage.removeItem(_key);
+          return resolved;
+        }
       }
     } catch (_) {}
     return AiSettings.defaults();
   }
 
   void save(AiSettings settings) {
-    state = settings;
+    state = settings.resolve(AiSettings.defaults(),managed:ApiEndpoints.managedAi);
     try {
-      web.window.localStorage.setItem(_key, json.encode({'v': _version, 's': settings.toJson()}));
+      web.window.localStorage.setItem(_key, json.encode({'v': _version, 's': state.overrides(AiSettings.defaults())}));
     } catch (_) {}
   }
 

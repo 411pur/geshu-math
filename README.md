@@ -28,7 +28,36 @@ Flutter 单页应用，同时支持 Web 与 Windows 桌面；模型侧只要求�
 - 模型：任意 OpenAI 兼容服务；`baseUrl` / `apiKey` / `model` / `visionModel` 均可替换，默认留空由配置注入
 - 可选网关：Cloudflare Workers（`ai_proxy/`）
 
-## 快速开始
+## 数学互动讲解与统一启动
+
+推荐从仓库根目录双击 `启动项目.bat`，或运行 `node tool/start.mjs`。需要 Node.js ≥20、Flutter / Dart 和 Chrome 或 Edge。首次启动自动准备依赖、构建 Web 并生成本地配置；同一服务提供前端、讲解引擎和 AI 转发。默认打开地址为 http://127.0.0.1:8124，脚本会在终端输出实际地址。
+
+1. 首次运行后，在根目录 `.env.local` 填写 `DEEPSEEK_API_KEY`（也可先复制 `.env.example`）。
+2. 修改 `local.config.json` 选择接口、文本/视觉/推理模型、端口、数据路径、超时及上传限制。模板是 `local.config.example.json`。默认均使用 `deepseek-flash`。
+3. 重启统一启动脚本。已有实例运行时不会重复启动或杀掉其他进程；修改配置后请先在原窗口 Ctrl+C，再启动。
+4. 首页进入「数学讲解」，粘贴文字、上传题图或文档；生成后可播放、暂停、逐步回看和下载互动 HTML。「讲解历史」可找回生成结果。
+5. 「错题指导」顶部的讲解按钮可带入已识别题干。模型设置页显示文件默认值及服务来源，并提供「测试模型连接」。测试会发出一次很短的真实 API 请求。
+
+讲解检查定义域、增根漏根、分类讨论与证明依据，几何辅助线按步骤出现。输出是带浏览器语音和板书的互动 HTML，**不是 MP4**。数学答案仍应由教师抽查，模型复核不能保证绝对正确。
+
+密钥只由服务端读取。统一启动会覆盖 `build/web/config.json` 为无真实密钥的公开配置；请不要手工把密钥复制到构建目录。旧的 `web/config.json` 仅用于下面的独立 Flutter 开发方式，统一启动以根目录配置为准。浏览器个性化设置按字段覆盖默认值，留空跟随默认；托管模式不接受浏览器的旧地址与密钥覆盖。
+
+启动器使用同源服务，模型请求经 `/v1/chat/completions` 转发，讲解 API 使用 `/api/projects`。原有可选 Cloudflare Worker 保持独立，不是本地启动必需项。数据默认在 `data/lessons`，浏览器讲解索引和 HTML 缓存在 IndexedDB，均不入库。
+
+```powershell
+node --test tool/*.test.mjs
+flutter test
+flutter analyze
+cd lesson_engine
+npm ci
+npm test
+npm run build
+```
+
+引擎离线测试包含真实 Edge 的 HTML 播放回归；`tests/live` 默认跳过，真实模型验收需要有效 Key。完整迁移说明见 [docs/math-lesson-migration.md](docs/math-lesson-migration.md)。
+
+## 独立 Flutter 开发（兼容旧配置）
+
 
 环境要求：Flutter ≥ 3.29、Dart ≥ 3.8。
 

@@ -1,3 +1,4 @@
+import '../../lesson_studio/pages/lesson_new_page.dart';
 import 'dart:convert';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
@@ -955,6 +956,7 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
       appBar: AppBar(
         title: const Text('错题指导'),
         actions: [
+          IconButton(icon: const Icon(Icons.ondemand_video), tooltip: '生成数学讲解', onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => LessonNewPage(initialText: _originalQuestion.isNotEmpty ? _originalQuestion : (_expertQuestionText ?? ''))))),
           IconButton(
             icon: const Icon(Icons.book),
             tooltip: '错题本',

@@ -1,3 +1,6 @@
+import 'package:dio/dio.dart';
+import '../../../core/constants/api_endpoints.dart';
+import '../../lesson_studio/data/lesson_ai_config.dart';
 import '../../report/models/wrong_question_analytics.dart';
 import '../../report/providers/analytics_provider.dart';
 import '../../report/widgets/analytics_dashboard.dart';
@@ -70,7 +73,27 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     _boards['lesson']!.load(s.lesson);
   }
 
+  bool _testing = false;
+  String _connection = '';
+  Future<void> _testConnection() async {
+    setState(() { _testing=true; _connection='正在测试模型连接…'; });
+    try {
+      final response=await Dio(BaseOptions(receiveTimeout:const Duration(seconds:35))).post('${LessonAiConfig.externalLessonBridgeUrl}/api/ai/test');
+      if(mounted) setState(() => _connection=response.data['message'].toString());
+    } on DioException catch(error) {
+      final payload=error.response?.data;
+      if(mounted) setState(() => _connection=payload is Map ? (payload['message'] ?? '连接失败').toString() : '服务不可用，请检查统一启动窗口');
+    } finally { if(mounted) setState(() => _testing=false); }
+  }
+
   void _save() {
+    for(final value in [_baseUrl.text,..._boards.values.map((b)=>b.url.text)]) {
+      if(value.trim().isEmpty) continue;
+      final uri=Uri.tryParse(value.trim());
+      if(uri==null || !['http','https'].contains(uri.scheme) || uri.host.isEmpty || uri.userInfo.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('请填写有效的 HTTP(S) 地址'))); return;
+      }
+    }
     final notifier = ref.read(aiSettingsProvider.notifier);
     notifier.saveGlobal(
       baseUrl: _baseUrl.text.trim(),
@@ -101,7 +124,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _sectionTitle('全局配置', '所有板块的默认值，各板块可单独覆盖'),
+          _sectionTitle('全局配置', ApiEndpoints.managedAi ? '当前来源：根目录 local.config.json；密钥由服务端 .env.local 管理。修改后重启生效。' : '配置文件提供默认值；浏览器仅保存个人覆盖，留空跟随默认'),
+          if(ApiEndpoints.managedAi) ...[
+            Text('当前文本模型：${ApiEndpoints.model}；图片模型：${ApiEndpoints.visionModel}'),
+            OutlinedButton.icon(onPressed:_testing ? null : _testConnection, icon:const Icon(Icons.network_check),label:const Text('测试模型连接')),
+            if(_connection.isNotEmpty) Text(_connection),
+          ],
           _field(
             _baseUrl,
             'AI Base URL',
@@ -115,7 +143,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           _insightCard(),
           const SizedBox(height: 16),
 
-          for (final b in _boards.values) _boardCard(b),
+          for (final b in _boards.values.where((b) => b.name != '互动讲解')) _boardCard(b),
+          Card(child:ListTile(title:const Text('数学互动讲解'),subtitle:Text('服务地址：${LessonAiConfig.externalLessonBridgeUrl}\n模型：${LessonAiConfig.model}（由配置文件管理）'))),
 
           const SizedBox(height: 16),
           Row(
@@ -361,6 +390,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     padding: const EdgeInsets.only(bottom: 10),
     child: TextField(
       controller: c,
+      obscureText: label.contains('Key'),
+      readOnly: ApiEndpoints.managedAi && (label.contains('URL') || label.contains('Key') || c == _model || c == _visionModel),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,

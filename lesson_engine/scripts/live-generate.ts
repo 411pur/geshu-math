@@ -1,0 +1,21 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { loadConfig } from '../src/config.js';
+import { createDefaultTutor } from '../src/ai/deepseek.js';
+import { LessonPipeline } from '../src/pipeline/lesson-pipeline.js';
+import { LocalHtmlRenderer } from '../src/render/render-lesson.js';
+import { PlaywrightVisualAuditor } from '../src/visual/playwright-auditor.js';
+import { ProjectStore } from '../src/store/project-store.js';
+
+const question = process.argv.slice(2).join(' ') || '题目：计算 12 + 8 = ? 选项：A. 18 B. 20 C. 22 D. 24';
+const outputDir = path.join(process.cwd(), 'generated');
+await mkdir(outputDir, { recursive: true });
+const config = loadConfig();
+const store = new ProjectStore(path.join(outputDir, 'live-projects'));
+await store.init();
+const project = await store.create({ text: question });
+const pipeline = new LessonPipeline(createDefaultTutor(config), store, new LocalHtmlRenderer(config.templatePath), new PlaywrightVisualAuditor());
+const result = await pipeline.run(project.id, (event) => console.log(`[${event.progress}%] ${event.stage}: ${event.message}`));
+const outputPath = path.join(outputDir, 'live-lesson.html');
+await writeFile(outputPath, result.html, 'utf8');
+console.log(JSON.stringify({ projectId: project.id, title: result.plan.title, scenes: result.plan.scenes.length, visualStatus: result.visualStatus, visualWarnings: result.visualWarnings, renderAttempts: result.renderAttempts, outputPath }, null, 2));
