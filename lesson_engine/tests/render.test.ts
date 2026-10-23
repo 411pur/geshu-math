@@ -13,6 +13,11 @@ describe('LocalHtmlRenderer', () => {
     expect(html).not.toContain('__LESSON_JSON__');
     expect(html).not.toContain('__CLIENT_RENDERER__');
     expect(html).not.toMatch(/<(?:script|link)[^>]+(?:src|href)=["']https?:/i);
+    expect(html).toContain('data:font/woff2;base64,');
+    expect(html).toContain('class="derivation-column"');
+    expect(html).toContain('id="formulaStage"');
+    expect(html.indexOf('id="formulaStage"')).toBeLessThan(html.indexOf('id="teacherConsole"'));
+    expect(html).not.toContain('__KATEX_');
     expect(html.trim().endsWith('</html>')).toBe(true);
   });
 

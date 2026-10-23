@@ -23,6 +23,8 @@
     stepTitle: document.getElementById('stepTitle'),
     stepText: document.getElementById('stepText'),
     formulaBoard: document.getElementById('formulaBoard'),
+    formulaStage: document.getElementById('formulaStage'),
+    derivationColumn: document.getElementById('derivationColumn'),
     tipBoard: document.getElementById('tipBoard'),
     metricBoard: document.getElementById('metricBoard'),
     inspectLayer: document.getElementById('inspectLayer'),
@@ -80,6 +82,111 @@
     return element;
   }
 
+
+  function findClosingMath(text, delimiter, start) {
+    let braceLevel = 0;
+    for (let index = start; index < text.length; index += 1) {
+      if (text[index] === '\\') {
+        index += 1;
+        continue;
+      }
+      if (braceLevel <= 0 && text.startsWith(delimiter, index)) return index;
+      if (text[index] === '{') braceLevel += 1;
+      else if (text[index] === '}') braceLevel -= 1;
+    }
+    return -1;
+  }
+
+  function splitMathText(text) {
+    const source = String(text ?? '');
+    const parts = [];
+    let cursor = 0;
+    while (cursor < source.length) {
+      let start = -1;
+      let delimiter = '';
+      let display = false;
+      for (let index = cursor; index < source.length; index += 1) {
+        if (source[index] === '\\') {
+          index += 1;
+          continue;
+        }
+        if (source.startsWith('$$', index)) {
+          start = index;
+          delimiter = '$$';
+          display = true;
+          break;
+        }
+        if (source[index] === '$') {
+          start = index;
+          delimiter = '$';
+          break;
+        }
+      }
+      if (start < 0) {
+        if (cursor < source.length) parts.push({ type: 'text', value: source.slice(cursor) });
+        break;
+      }
+      if (start > cursor) parts.push({ type: 'text', value: source.slice(cursor, start) });
+      const close = findClosingMath(source, delimiter, start + delimiter.length);
+      if (close < 0) {
+        parts.push({ type: 'text', value: source.slice(start) });
+        break;
+      }
+      parts.push({
+        type: 'math',
+        value: source.slice(start + delimiter.length, close),
+        display
+      });
+      cursor = close + delimiter.length;
+    }
+    return parts;
+  }
+
+  function renderMathNode(container, tex, displayMode) {
+    const host = document.createElement(displayMode ? 'div' : 'span');
+    host.className = displayMode ? 'math-display' : 'math-inline';
+    const prepared = String(tex ?? '').trim();
+    if (!prepared) return;
+    try {
+      if (!window.katex || typeof window.katex.render !== 'function') throw new Error('KaTeX unavailable');
+      window.katex.render(prepared, host, {
+        displayMode,
+        throwOnError: false,
+        strict: 'ignore',
+        trust: false,
+        output: 'htmlAndMathml'
+      });
+      host.setAttribute('data-tex', prepared);
+      container.appendChild(host);
+    } catch (_) {
+      host.classList.add('math-fallback');
+      host.textContent = displayMode ? prepared : `$${prepared}$`;
+      container.appendChild(host);
+    }
+  }
+
+  function renderRichText(container, text, options = {}) {
+    const source = String(text ?? '');
+    const parts = splitMathText(source);
+    const hasMath = parts.some((part) => part.type === 'math');
+    if (options.displayFallback && parts.length === 1 && parts[0].type === 'math') {
+      renderMathNode(container, parts[0].value, true);
+      return;
+    }
+    if (!hasMath && options.displayFallback) {
+      const prepared = source
+        .replace(/\\([()\[\]])/g, '')
+        .replace(/([\u4e00-\u9fff]+)/g, '\\text{$1}')
+        .trim();
+      renderMathNode(container, prepared, true);
+      return;
+    }
+    parts.forEach((part) => {
+      if (part.type === 'math') renderMathNode(container, part.value, part.display);
+      else if (part.value) container.appendChild(document.createTextNode(part.value));
+    });
+  }
+
   function svgElement(tag, attributes = {}) {
     const element = document.createElementNS('http://www.w3.org/2000/svg', tag);
     Object.entries(attributes).forEach(([key, value]) => {
@@ -102,7 +209,8 @@
       button.type = 'button';
       button.dataset.option = option.key;
       const key = make('span', 'option-key', option.key);
-      const text = make('span', '', option.text);
+      const text = make('span', '');
+      renderRichText(text, option.text);
       button.append(key, text);
       elements.optionsGrid.appendChild(button);
     });
@@ -170,8 +278,24 @@
     if (scene.formulaLines?.length) {
       scene.formulaLines.forEach((line) => {
         const lineElement = make('div', 'math-line');
-        line.segments.forEach((segment) => lineElement.appendChild(renderSegment(segment)));
-        if (line.note) lineElement.appendChild(make('span', 'math-note', line.note));
+        const textSegments = line.segments.filter((segment) => segment.type === 'text');
+        if (textSegments.length === line.segments.length) {
+          renderRichText(
+            lineElement,
+            textSegments.map((segment) => segment.value || '').join(''),
+            { displayFallback: true }
+          );
+        } else {
+          line.segments.forEach((segment) => {
+            if (segment.type === 'text') renderRichText(lineElement, segment.value || '');
+            else lineElement.appendChild(renderSegment(segment));
+          });
+        }
+        if (line.note) {
+          const note = make('span', 'math-note');
+          renderRichText(note, line.note);
+          lineElement.appendChild(note);
+        }
         elements.formulaBoard.appendChild(lineElement);
       });
       return;
@@ -180,8 +304,14 @@
     if (scene.comparisonRows?.length) {
       scene.comparisonRows.forEach((row) => {
         const rowElement = make('div', 'comparison-row');
-        rowElement.append(make('span', 'comparison-label', row.label), make('span', 'comparison-value', row.value));
-        if (row.reason) rowElement.appendChild(make('span', 'comparison-reason', row.reason));
+        const value = make('span', 'comparison-value');
+        renderRichText(value, row.value);
+        rowElement.append(make('span', 'comparison-label', row.label), value);
+        if (row.reason) {
+          const reason = make('span', 'comparison-reason');
+          renderRichText(reason, row.reason);
+          rowElement.appendChild(reason);
+        }
         if (row.correct === true) rowElement.classList.add('is-correct');
         if (row.correct === false) rowElement.classList.add('is-wrong');
         elements.formulaBoard.appendChild(rowElement);
@@ -259,6 +389,13 @@
 
   function closeInspectPanel() {
     elements.inspectLayer.replaceChildren();
+  }
+
+  function clearDiagramArea() {
+    cancelPointerTour();
+    state.pointedIds = new Set();
+    closeInspectPanel();
+    elements.diagramArea.replaceChildren();
   }
 
   function createArrowMarker(defs, colorName) {
@@ -630,14 +767,31 @@
     elements.lessonTitle.textContent = lesson.title;
     elements.lessonSubject.textContent = lesson.subject || '题目讲解';
     elements.lessonTopic.textContent = lesson.difficulty ? `${lesson.grade || ''} · ${lesson.difficulty}`.replace(/^ · /, '') : (lesson.grade || '互动讲题');
-    elements.questionText.textContent = lesson.problem.stem;
-    elements.answerLine.textContent = scene.type === 'question'
-      ? '先自己想一想：这道题应该从哪里开始分析？'
-      : '跟着老师的指点和板书，一步一步看清楚。';
+    elements.questionText.replaceChildren();
+    renderRichText(elements.questionText, lesson.problem.stem);
+    elements.answerLine.replaceChildren();
+    renderRichText(
+      elements.answerLine,
+      scene.type === 'question'
+        ? '先自己想一想：这道题应该从哪里开始分析？'
+        : '跟着老师的指点和板书，一步一步看清楚。'
+    );
     elements.stepCounter.textContent = `第 ${state.index + 1} / ${sceneCount} 步`;
     elements.stepTitle.textContent = scene.title;
-    elements.stepText.textContent = scene.narration;
-    elements.tipBoard.textContent = scene.tip ? `老师提示：${scene.tip}` : '老师提示：关键步骤要同时检查方向、单位和条件。';
+    elements.stepText.replaceChildren();
+    renderRichText(elements.stepText, scene.narration);
+    elements.tipBoard.replaceChildren();
+    const tipStrong = make('strong', '', '老师提示：');
+    elements.tipBoard.appendChild(tipStrong);
+    renderRichText(
+      elements.tipBoard,
+      scene.tip || '关键步骤要同时检查定义域、等价变形和取等条件。'
+    );
+    const hasDiagram =
+      Boolean(lesson.diagram.imageDataUrl) ||
+      (lesson.diagram.baseElements || []).length > 0 ||
+      (scene.diagramElements || []).length > 0;
+    elements.derivationColumn.classList.toggle('formula-only', !hasDiagram);
     elements.progressText.textContent = `${state.index + 1} / ${sceneCount}`;
     elements.progressBar.style.width = `${progress}%`;
     elements.topStepCounter.textContent = `${state.index + 1} / ${sceneCount}`;
@@ -652,7 +806,8 @@
 
     renderFormulaBoard(scene);
     renderMetricBars(scene);
-    renderDiagram(state.index);
+    if (hasDiagram) renderDiagram(state.index);
+    else clearDiagramArea();
     updateStepList();
     updateOptions(scene.revealAnswer || state.index === sceneCount - 1);
     updatePlayButton();

@@ -38,6 +38,49 @@ describe('generated lesson in Edge', () => {
     expect(await page.locator('#topNextButton').textContent()).toContain('下一步');
   });
 
+  it('renders inline and display LaTeX in the left derivation stage', async () => {
+    const plan = createPlan();
+    plan.problem.stem = '已知 $a>0$，求 $$x=\\frac{1}{2}$$ 的值。';
+    plan.scenes[1].formulaLines = [
+      { segments: [{ type: 'text', value: '$$\\frac{1}{a^3}e^{a^2-b}+2a^2=6\\ln a+2b+1$$' }] }
+    ];
+    const html = await new LocalHtmlRenderer().render(plan);
+    const file = path.join(tempDir, 'latex-layout.html');
+    await writeFile(file, html, 'utf8');
+    const target = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    try {
+      await target.goto(pathToFileURL(file).href);
+      await target.waitForFunction(() => Boolean((window as any).__LESSON_READY__));
+      expect(await target.locator('#questionText .math-inline .katex').count()).toBe(1);
+      expect(await target.locator('#questionText .math-display .katex').count()).toBe(1);
+      expect(await target.locator('#questionText').textContent()).not.toContain('$');
+      await target.evaluate(() => (window as any).__LESSON_RENDER_STEP__(1));
+      await target.waitForTimeout(150);
+      expect(await target.locator('#formulaBoard .katex').count()).toBeGreaterThan(0);
+      expect(await target.locator('#formulaBoard .math-fallback').count()).toBe(0);
+      expect(await target.locator('#formulaBoard').textContent()).toContain('1');
+      const layout = await target.evaluate(() => {
+        const formula = document.getElementById('formulaBoard')!.getBoundingClientRect();
+        const teacher = document.getElementById('teacherConsole')!.getBoundingClientRect();
+        const diagramArea = document.getElementById('diagramArea')!;
+        const diagram = getComputedStyle(diagramArea);
+        return {
+          formulaRight: formula.right,
+          teacherLeft: teacher.left,
+          diagramDisplay: diagram.display,
+          diagramSvgCount: diagramArea.querySelectorAll('svg').length,
+          diagramAreaChildren: diagramArea.children.length
+        };
+      });
+      expect(layout.formulaRight).toBeLessThan(layout.teacherLeft);
+      expect(layout.diagramDisplay).toBe('none');
+      expect(layout.diagramSvgCount).toBe(0);
+      expect(layout.diagramAreaChildren).toBe(0);
+    } finally {
+      await target.close();
+    }
+  });
+
   it('advances scenes and reveals the final answer', async () => {
     await page.locator('#nextButton').click();
     expect(await page.evaluate(() => (window as any).__LESSON_CURRENT_STEP__)).toBe(1);
