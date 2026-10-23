@@ -1,4 +1,4 @@
-import { mathPolicy } from './math-policy.js';
+import { mathPolicy, mathTeachingPolicy } from './math-policy.js';
 import { z } from 'zod';
 import { DiagramBlueprintSchema, LessonPlanSchema, ProblemExtractSchema, SolutionResultSchema, VerificationResultSchema } from '../schemas/lesson.js';
 import { LessonPlanRepairSchema } from '../schemas/visual.js';
@@ -216,7 +216,7 @@ export class DeepSeekTutorAI implements TutorAI {
       maxTokens: 8000,
       timeoutMs: 180_000,
       messages: [
-        { role: 'system', content: mathPolicy + "\n" + '你是一名严谨的理科老师，必须独立求解题目。先独立推导，再与原答案和原解析核对；不要因为原答案存在就直接采用。所有推导必须检查定义域、等价变形、增根漏根和分类讨论。只输出 SolutionResult JSON。' },
+        { role: 'system', content: mathPolicy + "\n" + mathTeachingPolicy + "\n" + '你是一名严谨的高中数学老师，必须独立求解题目。先独立推导，再与原答案和原解析核对；不要因为原答案存在就直接采用。每个 step.reasoning 都要先说明这一步为什么这样做，再写出计算或证明；遇到计算难点要指出具体操作和易错原因。checks 中写入定义域、等价变形、增根漏根、取等条件和代回检验。只输出 SolutionResult JSON。' },
         { role: 'user', content: prompt }
       ]
     });
@@ -305,11 +305,17 @@ export class DeepSeekTutorAI implements TutorAI {
           role: 'system',
           content: [
             mathPolicy,
+            mathTeachingPolicy,
             '你是一名擅长录制高中数学讲题视频的老师，也是课程排演助手。',
             '请把题目和已经校验过的解答改写成固定的互动黑板讲稿。',
             '必须口语化、有引导感，像真实老师边讲边画，不要写成教材答案。',
-            '高中数学讲解要说明为什么选择这个方法、关键变形为何成立，并在结论场景写清取值范围、分类结果和取等条件。',
-            '不要只报公式或答案；至少用一个步骤完成关键条件的检验或验算。',
+            '每个场景只承担一个明确的数学动作：读题、思路来源、关键变形、计算、条件检查或结论。',
+            '至少用两个场景解释思路来源和关键变形：先说看到什么结构，再说联想到什么知识，最后说变形要达到什么目的。',
+            '至少用一个场景指出具体计算难点，说明难在哪一步、应该怎样处理。',
+            '至少用一个场景给出具体易错提醒，写清错误做法、错误原因和正确检查方法，并把 tip 写成该提醒，不要使用空泛提示。',
+            '讲解中的公式必须复用、拆分或改写自已验证解答中的公式；不得自行增加未经确认的关键等式、条件或结论。',
+            '结论场景必须写清答案、取值范围、分类结果以及等号或取等条件，并完成必要的代回或端点检验。',
+            '如果题目没有图形，不要为了引导注意力编造 focusPath 或图形对象。',
             '第一个场景必须是 question，最后一个场景必须是 answer。',
             '不要输出任意 HTML、CSS 或 JavaScript，只输出 LessonPlan JSON。',
             '公式只能使用 schema 允许的 text/sub/sup/fraction/sqrt/accent 片段。',
@@ -324,9 +330,9 @@ export class DeepSeekTutorAI implements TutorAI {
             'activeElementIds 填本步骤要让老师指向或高亮变化的图元 id。',
             'focusPath 是老师鼠标在本步骤的移动轨迹，按讲解顺序给出 1-4 个画布坐标点，依次落到本步要点上；不写则按 activeElementIds 自动推导。',
             '场景数量控制在 4 到 5 个，每个场景公式不超过 3 行，图元总数尽量不超过 30 个。',
-            '每个场景的 narration 不超过 2 句（80 字以内），不用重复题干；tip 是给学生的一句话提示。',
+            '每个场景的 narration 控制在 1 到 2 句（100 字以内），不重复题干；tip 必须写具体难点或易错提醒。',
             '输出必须是紧凑的单行 JSON：不要缩进、不要换行、不要 Markdown 代码围栏——写长了会被截断成非法 JSON，整次生成都会失败。',
-            '下面给出图形书写约定和两份目标示例（一份有原图、一份纯公式）。无论用哪个模型，都必须产出与示例同一种结构、同一套命名与坐标量级的讲稿：图元 id、坐标量级、配色、图层归属、每步图元数量都照示例来。'
+            '下面给出图形书写约定和三份目标示例（一份有原图、一份纯公式、一份高中数学方法选择）。无论用哪个模型，都必须产出与示例同一种结构、同一套命名与坐标量级的讲稿：图元 id、坐标量级、配色、图层归属、每步图元数量都照示例来。'
           ].join('\n')
         },
         {
@@ -397,7 +403,7 @@ export class DeepSeekTutorAI implements TutorAI {
       maxTokens: 8000,
       timeoutMs: 90_000,
       messages: [
-        { role: 'system', content: mathPolicy + "\n" + '你是严格的高中数学题目与讲稿审核员。检查题干是否完整、公式是否正确、定义域与参数范围是否遗漏、分类讨论和取等条件是否完整、单位是否一致、答案和选项是否匹配，并检查图形是否忠实反映题干中的对象、位置关系和 diagramBlueprint。原图层必须完整复现题目原图的标注点、连线与器件，分析层的辅助线与向量起点要落在真实对象上、方向要符合数学定义；缺原图对象、矢量方向错误或图形只是关键词模板、通用方框，都要把 ok 设为 false 并列入 issues。若只是题目的 sourceAnswer/sourceExplanation 与独立解答不同，把差异写入 issues，但不要因此把 ok 设为 false。issues 只填写确实存在的问题；核对无误时 issues 必须是空数组，不要把“已核对一致”“符合已知条件”这类正面确认写进 issues。issues 每条不超过 60 字、最多 5 条，只写“哪里不对 + 应该怎样”，不要复述题干与公式全文，也不要写分析过程。只输出紧凑的单行 VerificationResult JSON（不要缩进、不要换行、不要 Markdown 代码围栏）。' },
+        { role: 'system', content: mathPolicy + "\n" + mathTeachingPolicy + "\n" + '你是严格的高中数学题目与讲稿审核员。检查题干是否完整、公式是否正确、定义域与参数范围是否遗漏、分类讨论和取等条件是否完整、单位是否一致、答案和选项是否匹配，并检查图形是否忠实反映题干中的对象、位置关系和 diagramBlueprint。还要检查讲解是否真正说明了思路来源、具体计算难点和至少一个易错点；若只是重复结论、没有解释为什么这样变形，或出现空泛的“注意计算”“认真检查”，把问题写入 issues。讲稿中的关键等式必须能追溯到已验证解答，擅自新增未经确认的公式也要报错。原图层必须完整复现题目原图的标注点、连线与器件，分析层的辅助线与向量起点要落在真实对象上、方向要符合数学定义；缺原图对象、矢量方向错误或图形只是关键词模板、通用方框，都要把 ok 设为 false 并列入 issues。若只是题目的 sourceAnswer/sourceExplanation 与独立解答不同，把差异写入 issues，但不要因此把 ok 设为 false。issues 只填写确实存在的问题；核对无误时 issues 必须是空数组，不要把“已核对一致”“符合已知条件”这类正面确认写进 issues。issues 每条不超过 60 字、最多 5 条，只写“哪里不对 + 应该怎样”，不要复述题干与公式全文，也不要写分析过程。只输出紧凑的单行 VerificationResult JSON（不要缩进、不要换行、不要 Markdown 代码围栏）。' },
         {
           role: 'user',
           content: [`题目：${JSON.stringify(problem)}`, `解答：${JSON.stringify(solution)}`, `讲稿：${JSON.stringify(plan)}`,

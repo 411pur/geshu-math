@@ -7,8 +7,9 @@ import { diagramConventionsText, targetExamplesText, targetLessonPlanExamples } 
  * 所以这里用 schema 把示例"钉死"：示例必须永远是一份能通过校验的合法讲稿。
  */
 describe('目标示例（few-shot）', () => {
-  it('至少提供两个示例，且都包含有原图与无图两种形态', () => {
-    expect(targetLessonPlanExamples.length).toBeGreaterThanOrEqual(2);
+  it('至少提供三个示例，且都包含有原图、无图与高中数学方法示例', () => {
+    expect(targetLessonPlanExamples.length).toBeGreaterThanOrEqual(3);
+    expect(targetLessonPlanExamples.some((example) => example.grade === '高中')).toBe(true);
     const modes = targetLessonPlanExamples.map((example) => example.diagram.mode);
     expect(modes).toContain('svg');
     expect(modes).toContain('none');
@@ -86,5 +87,14 @@ describe('目标示例（few-shot）', () => {
     expect(diagramConventionsText).toContain('960×580');
     expect(targetExamplesText).toContain('目标示例 1');
     expect(targetExamplesText).toContain('目标示例 2');
+    expect(targetExamplesText).toContain('目标示例 3');
+  });
+
+  it('目标示例示范具体难点、易错提醒和条件检查，而不是空泛提示', () => {
+    for (const example of targetLessonPlanExamples) {
+      expect(example.scenes.some((scene) => /难点|易错|检查/.test(scene.tip))).toBe(true);
+    }
+    expect(targetExamplesText).toContain('为什么想到作高');
+    expect(targetExamplesText).toContain('只比较极值点而漏掉端点');
   });
 });

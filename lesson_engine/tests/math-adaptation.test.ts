@@ -23,12 +23,26 @@ describe('数学学科适配',()=>{
     expect(demoteMisplacedBaseLayer(plan,problem).diagram.baseElements).toHaveLength(1);
     expect(auditDiagramFidelity(plan,problem)).toEqual([]);
   });
-  it('求解与排课都携带数学边界条件和证明规范',async()=>{
+  it('求解、排课与复核都携带数学边界条件和教学表达规范',async()=>{
     const calls:any[]=[];
-    const client:any={completeStructured:async (_schema:any,options:any)=>{calls.push(options);return options.schemaName==='SolutionResult'?createSolution():createPlan();}};
+    const client:any={completeStructured:async (_schema:any,options:any)=>{calls.push(options);
+      if(options.schemaName==='SolutionResult') return createSolution();
+      if(options.schemaName==='VerificationResult') return {ok:true,issues:[]};
+      return createPlan();
+    }};
     const tutor=new DeepSeekTutorAI(client,{reasoningModel:'test',fastModel:'test'});
-    await tutor.solveProblem(createProblem()); await tutor.createLessonPlan(createProblem(),createSolution());
-    for(const call of calls){const system=call.messages.find((m:any)=>m.role==='system').content;expect(system).toContain('定义域');expect(system).toContain('增根漏根');expect(system).toContain('证明题');}
+    const problem=createProblem();const solution=createSolution();const plan=createPlan();
+    await tutor.solveProblem(problem); await tutor.createLessonPlan(problem,solution); await tutor.verifyLessonPlan(problem,solution,plan);
+    expect(calls).toHaveLength(3);
+    for(const call of calls){
+      const system=call.messages.find((m:any)=>m.role==='system').content;
+      expect(system).toContain('定义域');expect(system).toContain('增根漏根');expect(system).toContain('证明题');
+      expect(system).toContain('具体计算难点');expect(system).toContain('易错');expect(system).toContain('不得为了讲解流畅自行新增');
+    }
+    const planPrompt=calls[1].messages.find((m:any)=>m.role==='system').content;
+    expect(planPrompt).toContain('思路来源');expect(planPrompt).toContain('不得自行增加未经确认');
+    const verifyPrompt=calls[2].messages.find((m:any)=>m.role==='system').content;
+    expect(verifyPrompt).toContain('思路来源');expect(verifyPrompt).toContain('空泛');
   });
 });
 
