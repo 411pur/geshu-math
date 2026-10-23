@@ -1,17 +1,17 @@
 import 'dart:async';
-import '../../../core/network/aliyun_api_client.dart';
+import '../../../core/network/ai_api_client.dart';
 import '../../../core/network/sse_parser.dart';
 import '../../../domain/entities/exam_entity.dart';
 import '../../data/datasources/local/exam_datasource.dart';
 import '../../data/datasources/remote/dify_response_models.dart';
 
 /// Orchestrates exam analysis:
-/// 1. Send OCR text to Aliyun DashScope
+/// 1. Send OCR text to an OpenAI-compatible chat endpoint
 /// 2. Stream back analysis
 /// 3. Auto-save record + question details to local DB
 class ExamRepository {
   final ExamDataSource _ds;
-  final AliyunApiClient _ai;
+  final AiApiClient _ai;
 
   ExamRepository(this._ds, this._ai);
 

@@ -105,11 +105,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           _field(
             _baseUrl,
             'AI Base URL',
-            'https://dashscope.aliyuncs.com/compatible-mode/v1',
+            'https://your-host/v1',
           ),
           _field(_apiKey, 'API Key', 'sk-...'),
-          _field(_model, '文本模型', 'qwen-plus'),
-          _field(_visionModel, '多模态模型（图片识别）', 'qwen-vl-plus'),
+          _field(_model, '文本模型', 'your-text-model'),
+          _field(_visionModel, '多模态模型（图片识别）', 'your-vision-model'),
           const SizedBox(height: 16),
 
           _insightCard(),

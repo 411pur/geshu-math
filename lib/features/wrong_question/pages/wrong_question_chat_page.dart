@@ -135,7 +135,7 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
   Future<String?> _safeOcr(String imageBase64) async {
     try {
       return await ref
-          .read(aliyunApiClientProvider)
+          .read(aiApiClientProvider)
           .ocrQuestionImage(imageBase64)
           .timeout(const Duration(seconds: 8));
     } catch (_) {
@@ -188,7 +188,7 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
     });
 
     try {
-      // 压缩图片为 base64，同时用于错题本存储和阿里云多模态识别
+      // 压缩图片为 base64，同时用于错题本存储和多模态识别
       String? imageBase64;
       if (_pickedImage != null) {
         if (mounted) setState(() => _waitPhase = '压缩图片中…');
@@ -302,7 +302,7 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
       final buffer = StringBuffer();
       await for (final event
           in ref
-              .read(aliyunApiClientProvider)
+              .read(aiApiClientProvider)
               .followUpWrongQuestion(
                 messages: [
                   {'role': 'user', 'content': contextText},
@@ -550,7 +550,7 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
     }
   }
 
-  /// 把完整对话历史折叠成一条脚本文本（qwen-plus 兼容模式不读取 assistant 角色历史）。
+  /// 把完整对话历史折叠成一条脚本文本（部分兼容模型不读取 assistant 角色历史）。
   String _buildExpertScript() {
     final b = StringBuffer('【题目】${_expertQuestionText ?? ''}');
     for (final t in _expertTurns) {
@@ -570,7 +570,7 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
   Future<void> _runExpertTurn({bool isRetry = false}) async {
     setState(() => _expertLoading = true);
     try {
-      final client = ref.read(aliyunApiClientProvider);
+      final client = ref.read(aiApiClientProvider);
       // 本轮消息：完整对话脚本（含图时附带图片，保证每轮都能看到题图）
       final script = _buildExpertScript();
       final List<Map<String, dynamic>> messages;
@@ -826,7 +826,7 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
       final buffer = StringBuffer();
       await for (final event
           in ref
-              .read(aliyunApiClientProvider)
+              .read(aiApiClientProvider)
               .followUpWrongQuestion(
                 messages: [
                   {'role': 'user', 'content': script},

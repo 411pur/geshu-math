@@ -3,7 +3,7 @@
  *
  * 目的：把 API Key 与系统提示词从浏览器端挪到服务端，前端只与本网关通信。
  *
- *   前端 ──POST /v1/chat/completions──▶ 本网关 ──Bearer <真Key>──▶ DashScope/DeepSeek
+ *   前端 ──POST /v1/chat/completions──▶ 本网关 ──Bearer <真Key>──▶ 任意 OpenAI 兼容服务
  *
  * 关键行为：
  *  1. 永不转发客户端带来的 Authorization —— 一律用服务端环境变量里的真 Key。
@@ -14,8 +14,8 @@
  *  4. SSE 原样透传（流式）与 JSON 透传（非流式）都支持。
  *  5. CORS 预检在网关处理，前端可跨域直连。
  *
- * 上游协议：OpenAI 兼容（DashScope compatible-mode / DeepSeek），
- * 与本仓库 lib/core/network/aliyun_api_client.dart 完全一致。
+ * 上游协议：标准 OpenAI 兼容（/chat/completions），
+ * 与本仓库 lib/core/network/ai_api_client.dart 完全一致。
  */
 
 /** X-Board 取值 → prompts registry 键。 */

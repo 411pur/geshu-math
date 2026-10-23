@@ -16,8 +16,8 @@ class DifyApiException extends AppException {
   const DifyApiException(super.message, {this.workflow});
 }
 
-class AliyunApiException extends AppException {
-  const AliyunApiException(super.message);
+class AiApiException extends AppException {
+  const AiApiException(super.message);
 }
 
 class DatabaseException extends AppException {

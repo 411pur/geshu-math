@@ -1,8 +1,8 @@
 {
-  "_readme": "上线/生产用的配置样例：把本文件另存为 config.json（覆盖）并填入真实 Key。当前部署无独立 AI 网关，前端直连阿里云百炼，系统提示词由前端内置提供。",
-  "aliyunBaseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-  "aliyunApiKey": "YOUR_ALIYUN_API_KEY",
-  "aliyunModel": "qwen-plus",
-  "aliyunVisionModel": "qwen3-vl-plus",
-  "useServerPrompts": false
+  "_readme": "上线用的配置样例：把本文件另存为 config.json（覆盖）并填入网关地址。前端不再持有真实 Key 与提示词，由网关注入。",
+  "apiBaseUrl": "https://your-ai-proxy.example.workers.dev/v1",
+  "apiKey": "proxy-managed",
+  "model": "your-text-model",
+  "visionModel": "your-vision-model",
+  "useServerPrompts": true
 }

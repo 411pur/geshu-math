@@ -12,7 +12,7 @@ import '../domain/ocr_service.dart';
 /// 相比离线 ML Kit：
 /// - 不依赖任何移动端原生插件，在 Web 目标下也能跑；
 /// - 直接读取图片中的**公式 / 希腊字母 / 手绘图像**（ML Kit 对这类很弱）；
-/// - 复用 web/config.json 里已配置的多模态模型（ApiEndpoints.aliyunVisionModel）。
+/// - 复用 web/config.json 里已配置的多模态模型（ApiEndpoints.visionModel）。
 class VisionLlmOcrService implements OcrService {
   final Dio dio;
 
@@ -20,11 +20,13 @@ class VisionLlmOcrService implements OcrService {
 
   @override
   Future<OcrOutcome> recognize(Uint8List imageBytes) async {
-    final baseUrl = ApiEndpoints.aliyunBaseUrl;
-    final apiKey = ApiEndpoints.aliyunApiKey;
-    final visionModel = ApiEndpoints.aliyunVisionModel;
+    final baseUrl = ApiEndpoints.baseUrl;
+    final apiKey = ApiEndpoints.apiKey;
+    final visionModel = ApiEndpoints.visionModel;
 
-    if (apiKey.isEmpty || apiKey.startsWith('YOUR_')) {
+    if (ApiEndpoints.isPlaceholder(apiKey) ||
+        ApiEndpoints.isPlaceholder(visionModel) ||
+        ApiEndpoints.isPlaceholder(baseUrl)) {
       throw const OcrException(
         '尚未配置多模态模型：请先在「我的 → 设置」里填写视觉模型与 API Key，'
         '或由管理员在 web/config.json 的 ai 段配置后再使用。',

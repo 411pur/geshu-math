@@ -5,10 +5,10 @@ import '../error/app_exception.dart';
 import '../../features/home/providers/ai_settings_provider.dart';
 import 'sse_parser.dart';
 
-/// 直接调用阿里云百炼（DashScope）OpenAI 兼容接口的客户端。
+/// 调用任意 OpenAI 兼容接口（`/chat/completions`）的客户端。
 ///
-/// 取代原 Dify 工作流：不再经过 Dify 的多节点编排（多节点串行导致模型降智、
-/// 响应变慢），改为单次 LLM 调用 + 结构化的系统提示词直接产出所需 JSON。
+/// 单次 LLM 调用 + 结构化系统提示词直接产出所需 JSON；服务商与模型由配置决定，
+/// 换 `baseUrl` / `apiKey` / `model` 即可切换，无需改代码。
 ///
 /// 配置来源（按优先级）：
 /// 1. [settings]（来自「我的 → 设置」的个人配置，存 localStorage）
@@ -16,10 +16,10 @@ import 'sse_parser.dart';
 /// 3. 内置默认提示词（当板块未自定义 prompt 时）
 ///
 /// 保持输出事件与 [DifyStreamEvent] 兼容，repositories/页面无需改动。
-class AliyunApiClient {
+class AiApiClient {
   final Dio _dio;
   final AiSettings settings;
-  AliyunApiClient({required Dio dio, AiSettings? settings})
+  AiApiClient({required Dio dio, AiSettings? settings})
       : _dio = dio,
         settings = settings ?? AiSettings.defaults();
 
@@ -33,43 +33,28 @@ class AliyunApiClient {
     return fallback;
   }
 
-  String _url(BoardAiConfig board) {
-    // 切到 DeepSeek 后，设置页 / localStorage 里残留的 DashScope 地址会让
-    // 带 DeepSeek Key 的请求打到阿里云（必然 401）。DeepSeek 模式下默认以
-    // config.json 解析结果为准，只有板块显式填了地址才允许覆盖。
-    if (ApiEndpoints.usingDeepSeek) {
-      return _pick([board.baseUrl], ApiEndpoints.aliyunBaseUrl);
-    }
-    return _pick([board.baseUrl, settings.baseUrl], ApiEndpoints.aliyunBaseUrl);
-  }
+  String _url(BoardAiConfig board) =>
+      _pick([board.baseUrl, settings.baseUrl], ApiEndpoints.baseUrl);
 
   String _key(BoardAiConfig board) =>
-      _pick([board.apiKey, settings.apiKey], ApiEndpoints.aliyunApiKey);
+      _pick([board.apiKey, settings.apiKey], ApiEndpoints.apiKey);
 
-  String _model(BoardAiConfig board) {
-    final candidates = ApiEndpoints.usingDeepSeek
-        ? [board.model]
-        : [board.model, settings.model];
-    for (final candidate in candidates) {
-      final v = candidate.trim();
-      if (ApiEndpoints.isModelCompatible(v)) return v;
-    }
-    return ApiEndpoints.aliyunModel;
-  }
+  String _model(BoardAiConfig board) => _pick(
+        [board.model, settings.model],
+        ApiEndpoints.model,
+      );
 
-  /// 多模态模型：DeepSeek 模式下以 config.json 解析结果为准
-  /// （残留的 qwen-vl-plus 发给 DeepSeek 会直接 400）。
+  /// 多模态模型：板块未单独配置时回落到全局 visionModel。
   String _visionModel() {
-    if (ApiEndpoints.usingDeepSeek) return ApiEndpoints.aliyunVisionModel;
     final v = settings.visionModel.trim();
-    return v.isNotEmpty ? v : ApiEndpoints.aliyunVisionModel;
+    return v.isNotEmpty ? v : ApiEndpoints.visionModel;
   }
 
   /// 板块提示词：自定义优先，空则用内置默认。
   String _prompt(BoardAiConfig board, String builtin) =>
       board.prompt.trim().isNotEmpty ? board.prompt.trim() : builtin;
 
-  /// 流式调用 DashScope chat/completions。
+  /// 流式调用 OpenAI 兼容接口的 chat/completions。
   ///
   /// [boardKey] 为板块标识（wrongQuestion/expert/followUp/exam/qa/report）。
   /// 当 [ApiEndpoints.useServerPrompts] 开启且该板块未自定义 prompt 时，不再
@@ -97,14 +82,28 @@ class AliyunApiClient {
       if (jsonMode) 'response_format': {'type': 'json_object'},
     };
     final key = _key(board);
+    final url = _url(board);
     // 服务端托管提示词时，Key 由网关持有，前端空 Key 也允许发出。
-    if (ApiEndpoints.isPlaceholder(key) && !ApiEndpoints.useServerPrompts) {
-      throw const AliyunApiException(
-        '尚未配置 AI 模型：请先配置模型后再使用。'
-        '可在「我的 → 设置」里填写模型名与 API Key；'
-        '或由管理员在 web/config.json 的 ai 段填写 '
-        'deepseekApiKey / aliyunApiKey，配置后刷新页面即可。',
-      );
+    if (!ApiEndpoints.useServerPrompts) {
+      if (ApiEndpoints.isPlaceholder(key)) {
+        throw const AiApiException(
+          '尚未配置 AI 服务：请在「我的 → 设置」里填写 Base URL、模型名与 '
+          'API Key，或在 web/config.json 的 ai 段配置 '
+          'apiBaseUrl / apiKey / model，配置后刷新页面即可。',
+        );
+      }
+      if (url.isEmpty) {
+        throw const AiApiException(
+          '尚未配置 AI 接口地址：请在「我的 → 设置」或 web/config.json 中填写 '
+          'apiBaseUrl。',
+        );
+      }
+      if ((model ?? _model(board)).trim().isEmpty) {
+        throw const AiApiException(
+          '尚未配置模型名称：请在「我的 → 设置」或 web/config.json 中填写 '
+          'model（图片识别另需 visionModel）。',
+        );
+      }
     }
     final headerMap = <String, dynamic>{
       // 占位/空 Key 时发一个哨兵值，网关一律忽略客户端 Key。
@@ -116,17 +115,17 @@ class AliyunApiClient {
     final q = messages.isNotEmpty
         ? (messages.last['content'].toString().length > 40 ? messages.last['content'].toString().substring(0, 40) : messages.last['content'].toString())
         : '';
-    debugPrint('[Aliyun] POST $q');
+    debugPrint('[AI] POST $q');
     try {
       final r = await _dio.post(
-        '${_url(board)}/chat/completions',
+        '$url/chat/completions',
         data: body,
         options: Options(
           responseType: ResponseType.stream,
           headers: headerMap,
         ),
       );
-      debugPrint('[Aliyun] response ${r.statusCode}');
+      debugPrint('[AI] response ${r.statusCode}');
       yield* SseParser.parseOpenAiStream(r.data as ResponseBody);
     } on DioException catch (e) {
       String? msg;
@@ -137,8 +136,8 @@ class AliyunApiClient {
           if (err is Map) msg = err['message']?.toString();
         }
       } catch (_) {}
-      debugPrint('[Aliyun] ERROR: ${e.type} ${e.message} ${msg ?? ""}');
-      throw AliyunApiException(msg ?? '${e.type}: ${e.message ?? "连接失败"}');
+      debugPrint('[AI] ERROR: ${e.type} ${e.message} ${msg ?? ""}');
+      throw AiApiException(msg ?? '${e.type}: ${e.message ?? "连接失败"}');
     }
   }
 
@@ -254,7 +253,7 @@ class AliyunApiClient {
         if (content is String && content.trim().isNotEmpty) return content.trim();
       }
     } catch (e) {
-      debugPrint('[Aliyun] OCR 失败: $e');
+      debugPrint('[AI] OCR 失败: $e');
     }
     return null;
   }

@@ -67,7 +67,7 @@ class ReportGenerator {
         'note': '掌握情况为当前手动标记；错题收录增多不代表成绩退步；未记录错因不能推断。',
       },
     });
-    final client = ref.read(aliyunApiClientProvider);
+    final client = ref.read(aiApiClientProvider);
 
     String full = '';
     await for (final event in client.sendReportMessage(

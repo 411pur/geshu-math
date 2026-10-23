@@ -42,15 +42,13 @@ Future<void> _loadConfig() async {
     return;
   }
   _applyConfig(data);
-  final provider = ApiEndpoints.usingDeepSeek ? 'deepseek' : 'aliyun';
   debugPrint(
     '[config] 已加载 config.json：'
-    'provider=$provider '
-    'baseUrl=${ApiEndpoints.aliyunBaseUrl} '
-    'model=${ApiEndpoints.aliyunModel} '
-    'vision=${ApiEndpoints.aliyunVisionModel} '
+    'baseUrl=${ApiEndpoints.baseUrl} '
+    'model=${ApiEndpoints.model} '
+    'vision=${ApiEndpoints.visionModel} '
     'serverPrompts=${ApiEndpoints.useServerPrompts} '
-    'keyReady=${!ApiEndpoints.isPlaceholder(ApiEndpoints.aliyunApiKey)}',
+    'keyReady=${!ApiEndpoints.isPlaceholder(ApiEndpoints.apiKey)}',
   );
 }
 
@@ -74,45 +72,20 @@ void _applyConfig(Map<String, dynamic> data) {
     return '';
   }
 
-  final aliyunKey = pick(['aliyunApiKey']);
-  final deepseekKey = pick(['deepseekApiKey']);
+  final baseUrl = pick(['apiBaseUrl', 'baseUrl']);
+  if (baseUrl.isNotEmpty) ApiEndpoints.baseUrl = baseUrl;
 
-  // 只配了 DeepSeek Key 时整体走 DeepSeek：两家都是 OpenAI 兼容协议，
-  // 客户端无需改动，换地址与模型名即可。
-  final useDeepSeek = aliyunKey.isEmpty && deepseekKey.isNotEmpty;
-  ApiEndpoints.usingDeepSeek = useDeepSeek;
+  final apiKey = pick(['apiKey']);
+  if (apiKey.isNotEmpty) ApiEndpoints.apiKey = apiKey;
 
-  if (useDeepSeek) {
-    final baseUrl = pick(['deepseekBaseUrl']);
-    if (baseUrl.isNotEmpty) ApiEndpoints.aliyunBaseUrl = baseUrl;
-    ApiEndpoints.aliyunApiKey = deepseekKey;
+  final model = pick(['model']);
+  if (model.isNotEmpty) ApiEndpoints.model = model;
 
-    final fastModel = pick(['deepseekFastModel', 'deepseekModel', 'model']);
-    if (fastModel.isNotEmpty) ApiEndpoints.aliyunModel = fastModel;
+  final visionModel = pick(['visionModel']);
+  if (visionModel.isNotEmpty) ApiEndpoints.visionModel = visionModel;
 
-    final visionModel = pick(['deepseekVisionModel']);
-    if (visionModel.isNotEmpty) ApiEndpoints.aliyunVisionModel = visionModel;
-
-    final reasoningModel = pick(['deepseekReasoningModel']);
-    if (reasoningModel.isNotEmpty) {
-      ApiEndpoints.aliyunReasoningModel = reasoningModel;
-    }
-  } else {
-    final baseUrl = pick(['aliyunBaseUrl']);
-    if (baseUrl.isNotEmpty) ApiEndpoints.aliyunBaseUrl = baseUrl;
-    if (aliyunKey.isNotEmpty) ApiEndpoints.aliyunApiKey = aliyunKey;
-
-    final model = pick(['aliyunModel']);
-    if (model.isNotEmpty) ApiEndpoints.aliyunModel = model;
-
-    final visionModel = pick(['aliyunVisionModel']);
-    if (visionModel.isNotEmpty) ApiEndpoints.aliyunVisionModel = visionModel;
-
-    final reasoningModel = pick(['aliyunReasoningModel']);
-    if (reasoningModel.isNotEmpty) {
-      ApiEndpoints.aliyunReasoningModel = reasoningModel;
-    }
-  }
+  final reasoningModel = pick(['reasoningModel']);
+  if (reasoningModel.isNotEmpty) ApiEndpoints.reasoningModel = reasoningModel;
 
   // 提示词/Key 是否托管到 AI 网关（ai_proxy/）。默认 false（前端内置提示词）；
   // 部署网关后把 config.json 的 useServerPrompts 置 true 即可切换。

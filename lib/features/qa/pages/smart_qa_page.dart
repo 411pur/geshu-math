@@ -48,7 +48,7 @@ class _SmartQAPageState extends ConsumerState<SmartQAPage> {
     _scrollToBottom();
 
     try {
-      final client = ref.read(aliyunApiClientProvider);
+      final client = ref.read(aiApiClientProvider);
       String fullAnswer = '';
       await for (final event in client.sendQaMessage(query: text)) {
         if (event is MessageChunk) {

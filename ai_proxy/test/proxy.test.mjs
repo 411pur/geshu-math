@@ -5,7 +5,7 @@ import { handleRequest, buildUpstreamUrl } from '../src/index.js';
 const ENV = {
   UPSTREAM_BASE_URL: 'https://upstream.test/compatible-mode/v1',
   UPSTREAM_API_KEY: 'sk-server-secret',
-  ALLOWED_MODELS: 'qwen-plus,qwen3-vl-plus',
+  ALLOWED_MODELS: 'test-model,test-vision-model',
   ALLOW_ORIGIN: 'https://app.test',
 };
 
@@ -65,7 +65,7 @@ test('剥离客户端 Authorization，改用服务端 Key', async () => {
   const calls = stubUpstream();
   await handleRequest(
     post(
-      { model: 'qwen-plus', messages: [{ role: 'user', content: 'hi' }] },
+      { model: 'test-model', messages: [{ role: 'user', content: 'hi' }] },
       { Authorization: 'Bearer sk-client-LEAK' },
     ),
     ENV,
@@ -78,7 +78,7 @@ test('剥离客户端 Authorization，改用服务端 Key', async () => {
 
 test('上游 URL 去掉 /v1 前缀并拼接', async () => {
   const calls = stubUpstream();
-  await handleRequest(post({ model: 'qwen-plus', messages: [] }), ENV, {});
+  await handleRequest(post({ model: 'test-model', messages: [] }), ENV, {});
   assert.equal(
     calls[0].url,
     'https://upstream.test/compatible-mode/v1/chat/completions',
@@ -94,7 +94,7 @@ test('SSE 流透传 + CORS', async () => {
       }),
   );
   const res = await handleRequest(
-    post({ model: 'qwen-plus', stream: true, messages: [] }),
+    post({ model: 'test-model', stream: true, messages: [] }),
     ENV,
     {},
   );
@@ -110,7 +110,7 @@ test('X-Board 注入服务端提示词并移除客户端 system', async () => {
   await handleRequest(
     post(
       {
-        model: 'qwen-plus',
+        model: 'test-model',
         messages: [
           { role: 'system', content: 'CLIENT-BUILTIN' },
           { role: 'user', content: 'hello' },
@@ -133,7 +133,7 @@ test('X-Custom-Prompt 放行客户端自带提示词', async () => {
   await handleRequest(
     post(
       {
-        model: 'qwen-plus',
+        model: 'test-model',
         messages: [
           { role: 'system', content: 'MY-CUSTOM' },
           { role: 'user', content: 'hi' },
@@ -152,7 +152,7 @@ test('模型白名单外强制回落到第一个允许模型', async () => {
   const calls = stubUpstream();
   await handleRequest(post({ model: 'gpt-4-expensive', messages: [] }), ENV, {});
   const sent = JSON.parse(calls[0].init.body);
-  assert.equal(sent.model, 'qwen-plus');
+  assert.equal(sent.model, 'test-model');
 });
 
 test('buildUpstreamUrl 处理各种前缀', () => {

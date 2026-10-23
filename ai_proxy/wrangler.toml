@@ -4,13 +4,10 @@ compatibility_date = "2025-01-01"
 
 # 公开变量（非机密）。机密请用：wrangler secret put UPSTREAM_API_KEY
 [vars]
-# 上游 OpenAI 兼容地址。必须与「该 Key 实际可用的端点」一致。
-# 默认使用阿里云百炼通用域名；若你的 Key 绑定专属工作区
-# （ws-<id>.<region>.maas.aliyuncs.com），请在部署环境中用 secret/环境变量覆盖，
-# 不要把工作区地址提交到公共仓库。
-UPSTREAM_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-# 允许客户端请求的模型白名单（逗号分隔）；留空 = 不限制（不推荐）
-# 覆盖前端会用到的主模型、视觉模型与视觉回退模型（aliyunVisionModelFallbacks）。
-ALLOWED_MODELS = "qwen-plus,qwen3-vl-plus,qwen3-vl-flash,qwen-vl-max,qwen3-vl-max,qwen-max"
-# 允许跨域的前端来源；部署 Pages 后请把 "*" 收紧成站点域名，如 https://geshu-math.pages.dev
+# 上游 OpenAI 兼容服务地址，必须填成 `<host>/v1` 形式（网关会拼 /chat/completions）。
+# 例：https://your-host/v1 —— 不要提交带私有域名的真实地址。
+UPSTREAM_BASE_URL = ""
+# 允许客户端请求的模型白名单（逗号分隔）；留空 = 不限制（不推荐公网使用）
+ALLOWED_MODELS = ""
+# 允许跨域的前端来源；部署后请把 "*" 收紧成站点域名
 ALLOW_ORIGIN = "*"

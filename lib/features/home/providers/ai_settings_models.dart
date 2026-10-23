@@ -3,9 +3,9 @@ import '../../../core/constants/api_endpoints.dart';
 /// 单个板块的 AI 配置（纯模型，无 dart:html，可在 VM 单测）。
 /// 为空字段表示「跟随全局默认」（baseUrl/model 用全局，prompt 用内置默认提示词）。
 class BoardAiConfig {
-  final String baseUrl; // 空 = 用全局 aliyunBaseUrl
-  final String apiKey; // 空 = 用全局 aliyunApiKey
-  final String model; // 空 = 用全局 aliyunModel
+  final String baseUrl; // 空 = 用全局 baseUrl
+  final String apiKey; // 空 = 用全局 apiKey
+  final String model; // 空 = 用全局 model
   final String prompt; // 空 = 用内置默认提示词
 
   const BoardAiConfig({this.baseUrl = '', this.apiKey = '', this.model = '', this.prompt = ''});
@@ -50,10 +50,10 @@ class AiSettings {
 
   /// 默认值：来自 web/config.json（已加载进 ApiEndpoints）+ 内置提示词占位。
   factory AiSettings.defaults() => AiSettings(
-    baseUrl: ApiEndpoints.aliyunBaseUrl,
-    apiKey: ApiEndpoints.aliyunApiKey,
-    model: ApiEndpoints.aliyunModel,
-    visionModel: ApiEndpoints.aliyunVisionModel,
+    baseUrl: ApiEndpoints.baseUrl,
+    apiKey: ApiEndpoints.apiKey,
+    model: ApiEndpoints.model,
+    visionModel: ApiEndpoints.visionModel,
   );
 
   factory AiSettings.fromJson(Map<String, dynamic> j) => AiSettings(

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import '../../../core/network/ai_json.dart';
-import '../../../core/network/aliyun_api_client.dart';
+import '../../../core/network/ai_api_client.dart';
 import '../../../core/network/sse_parser.dart';
 import '../../../domain/entities/wrong_question_entity.dart';
 import '../../features/wrong_question/services/question_text_composer.dart';
@@ -9,13 +9,13 @@ import '../../data/datasources/local/wrong_question_datasource.dart';
 import '../../data/datasources/remote/dify_response_models.dart';
 
 /// Orchestrates the wrong-question guidance flow:
-/// 1. Send question to Aliyun DashScope
+/// 1. Send question to an OpenAI-compatible chat endpoint
 /// 2. Stream back guidance content
 /// 3. Auto-save processed question to local DB
 /// 4. Link to knowledge nodes
 class WrongQuestionRepository {
   final WrongQuestionDataSource _ds;
-  final AliyunApiClient _ai;
+  final AiApiClient _ai;
 
   WrongQuestionRepository(this._ds, this._ai);
 

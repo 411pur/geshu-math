@@ -83,7 +83,7 @@ try {
     return events;
   }
 
-  /// Parse OpenAI-compatible SSE (Aliyun DashScope compatible-mode).
+  /// Parse OpenAI-compatible SSE streams.
   ///
   /// 契约要点（与 Dify 不同）：
   /// - 每行 `data: {json}`，无 `[DONE]` 结束符

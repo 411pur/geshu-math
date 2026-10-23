@@ -1,4 +1,4 @@
-/// A single node in the physics knowledge structure.
+/// A single node in the math knowledge structure.
 class KnowledgeNode {
   final String id;
   final String? parentId;

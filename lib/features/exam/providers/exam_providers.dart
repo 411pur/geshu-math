@@ -13,7 +13,7 @@ final examDataSourceProvider = Provider<ExamDataSource>((ref) {
 
 final examRepositoryProvider = Provider<ExamRepository>((ref) {
   final ds = ref.watch(examDataSourceProvider);
-  final ai = ref.watch(aliyunApiClientProvider);
+  final ai = ref.watch(aiApiClientProvider);
   return ExamRepository(ds, ai);
 });
 

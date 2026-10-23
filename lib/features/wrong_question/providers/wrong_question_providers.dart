@@ -13,7 +13,7 @@ final wrongQuestionDataSourceProvider = Provider<WrongQuestionDataSource>((ref) 
 
 final wrongQuestionRepositoryProvider = Provider<WrongQuestionRepository>((ref) {
   final ds = ref.watch(wrongQuestionDataSourceProvider);
-  final ai = ref.watch(aliyunApiClientProvider);
+  final ai = ref.watch(aiApiClientProvider);
   return WrongQuestionRepository(ds, ai);
 });
 

@@ -26,13 +26,13 @@
 - **学习报告**：近 7 / 30 / 90 天错题统计、AI 生成分析与复习建议。
 - **知识图谱**：333 节点三层结构（10 模块 / 55 章 / 268 知识点）、可旋转 3D 图谱、层级缩放、知识树浏览；修改 JSON 即可调整图谱。
 - **AI 网关 `ai_proxy`**：Cloudflare Worker 实现，隐藏真实 Key、按 `X-Board` 注入服务端提示词、模型白名单、SSE 透传、CORS 预检；服务端提示词由脚本从 Dart 源码生成，含 10 例单测。
-- **配置**：运行时读取 `/config.json` 并带时间戳防缓存；支持顶层字段与 `ai` 段两种写法；仅配置 DeepSeek Key 时自动切换供应商。
+- **配置**：运行时读取 `/config.json` 并带时间戳防缓存；支持顶层字段与 `ai` 段两种写法；`apiBaseUrl` / `apiKey` / `model` / `visionModel` 全部可替换，不绑定任何模型厂商。
 
 ### 修复与加固
 
 - 新增 `lib/core/network/ai_json.dart`：在 `jsonDecode` 之前修复 LaTeX 反斜杠（`\frac`、`\sqrt`、`\theta` 等），避免公式被 JSON 转义吞掉；SSE 流式片段与最终结果统一走这一层。
 - SSE 解析区分传输信封与模型内容：`data:` 行的外层 JSON 与 `answer` 内的模型 JSON 分开处理，任一格式异常都不会中断整段讲解。
-- 配置读取同时兼容顶层与 `ai` 段，避免 Key 误落到占位符导致全部请求 401。
+- 配置读取同时兼容顶层与 `ai` 段；默认值为空并在页面给出「尚未配置 AI 服务」提示，避免把占位符当成真 Key 发出去。
 - 构建使用 `--no-web-resources-cdn`，CanvasKit 随包输出，规避国内网络拉取 CDN 失败导致的白屏。
 - Markdown 渲染去掉无效的空值判断；补齐 `markdown` 显式依赖；清理未使用的状态字段。
 - 仓库安全：忽略 `web/config.json`、`.dev.vars`、`node_modules/`、`build/`、`.dart_tool/` 等；`wrangler.toml` 只保留通用上游端点，专属工作区地址改为部署时注入。
