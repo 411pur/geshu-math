@@ -1,0 +1,39 @@
+name: geshu_math
+description: 格数至理 — 面向初高中的 AI 数学答疑与学习分析系统
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.0
+  flutter: '>=3.29.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: 
+  go_router: 
+  dio: 
+  image_picker: 
+  pdf: 
+  printing: 
+  uuid: 
+  intl: 
+  path: 
+  web: ^1.1.1
+  shared_preferences: ^2.3.0
+  shared_preferences_web: ^2.3.0
+  flutter_markdown: ^0.7.6
+  markdown: ^7.3.1
+  file_picker: ^13.1.0
+  fl_chart: 1.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: 
+  mocktail: 
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/knowledge/initial_knowledge_structure.json

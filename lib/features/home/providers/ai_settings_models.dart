@@ -1,0 +1,79 @@
+import '../../../core/constants/api_endpoints.dart';
+
+/// 单个板块的 AI 配置（纯模型，无 dart:html，可在 VM 单测）。
+/// 为空字段表示「跟随全局默认」（baseUrl/model 用全局，prompt 用内置默认提示词）。
+class BoardAiConfig {
+  final String baseUrl; // 空 = 用全局 aliyunBaseUrl
+  final String apiKey; // 空 = 用全局 aliyunApiKey
+  final String model; // 空 = 用全局 aliyunModel
+  final String prompt; // 空 = 用内置默认提示词
+
+  const BoardAiConfig({this.baseUrl = '', this.apiKey = '', this.model = '', this.prompt = ''});
+
+  factory BoardAiConfig.fromJson(Map<String, dynamic> j) => BoardAiConfig(
+    baseUrl: (j['baseUrl'] as String?) ?? '',
+    apiKey: (j['apiKey'] as String?) ?? '',
+    model: (j['model'] as String?) ?? '',
+    prompt: (j['prompt'] as String?) ?? '',
+  );
+
+  Map<String, dynamic> toJson() => {
+    'baseUrl': baseUrl, 'apiKey': apiKey, 'model': model, 'prompt': prompt,
+  };
+
+  bool get isEmpty => baseUrl.isEmpty && apiKey.isEmpty && model.isEmpty && prompt.isEmpty;
+}
+
+/// 全局 AI 设置（纯模型；可被各板块覆盖）。
+class AiSettings {
+  final String baseUrl; // 全局 URL
+  final String apiKey; // 全局 API Key
+  final String model; // 全局文本模型
+  final String visionModel; // 全局多模态模型
+  final BoardAiConfig wrongQuestion; // 错题指导
+  final BoardAiConfig exam; // 考试分析
+  final BoardAiConfig qa; // 智能问答
+  final BoardAiConfig report; // 学习报告
+  final BoardAiConfig lesson; // 互动讲解/讲解视频生成（baseUrl=原讲解服务地址）
+
+  const AiSettings({
+    this.baseUrl = '',
+    this.apiKey = '',
+    this.model = '',
+    this.visionModel = '',
+    this.wrongQuestion = const BoardAiConfig(),
+    this.exam = const BoardAiConfig(),
+    this.qa = const BoardAiConfig(),
+    this.report = const BoardAiConfig(),
+    this.lesson = const BoardAiConfig(),
+  });
+
+  /// 默认值：来自 web/config.json（已加载进 ApiEndpoints）+ 内置提示词占位。
+  factory AiSettings.defaults() => AiSettings(
+    baseUrl: ApiEndpoints.aliyunBaseUrl,
+    apiKey: ApiEndpoints.aliyunApiKey,
+    model: ApiEndpoints.aliyunModel,
+    visionModel: ApiEndpoints.aliyunVisionModel,
+  );
+
+  factory AiSettings.fromJson(Map<String, dynamic> j) => AiSettings(
+    baseUrl: (j['baseUrl'] as String?) ?? '',
+    apiKey: (j['apiKey'] as String?) ?? '',
+    model: (j['model'] as String?) ?? '',
+    visionModel: (j['visionModel'] as String?) ?? '',
+    wrongQuestion: j['wrongQuestion'] is Map ? BoardAiConfig.fromJson(j['wrongQuestion'] as Map<String, dynamic>) : const BoardAiConfig(),
+    exam: j['exam'] is Map ? BoardAiConfig.fromJson(j['exam'] as Map<String, dynamic>) : const BoardAiConfig(),
+    qa: j['qa'] is Map ? BoardAiConfig.fromJson(j['qa'] as Map<String, dynamic>) : const BoardAiConfig(),
+    report: j['report'] is Map ? BoardAiConfig.fromJson(j['report'] as Map<String, dynamic>) : const BoardAiConfig(),
+    lesson: j['lesson'] is Map ? BoardAiConfig.fromJson(j['lesson'] as Map<String, dynamic>) : const BoardAiConfig(),
+  );
+
+  Map<String, dynamic> toJson() => {
+    'baseUrl': baseUrl, 'apiKey': apiKey, 'model': model, 'visionModel': visionModel,
+    'wrongQuestion': wrongQuestion.toJson(),
+    'exam': exam.toJson(),
+    'qa': qa.toJson(),
+    'report': report.toJson(),
+    'lesson': lesson.toJson(),
+  };
+}

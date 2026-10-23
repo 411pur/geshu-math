@@ -1,0 +1,2999 @@
+[
+  {
+    "id": "number-and-algebra",
+    "parentId": null,
+    "title": "数与代数运算",
+    "description": "初中数与代数的基础模块，系统学习有理数、实数、整式、因式分解、分式与二次根式的概念和运算。",
+    "level": 1,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch01",
+    "parentId": "number-and-algebra",
+    "title": "有理数",
+    "description": "掌握有理数的概念、数轴、相反数与绝对值，熟练进行有理数四则运算。",
+    "level": 2,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch01-sec01-kp001",
+    "parentId": "number-and-algebra-ch01",
+    "title": "负数的意义",
+    "description": "理解负数的意义，认识有理数按符号与按形式的两种分类。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch01-sec02-kp002",
+    "parentId": "number-and-algebra-ch01",
+    "title": "数轴",
+    "description": "理解数轴的三要素，能由数轴读出点所表示的有理数。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch01-sec03-kp003",
+    "parentId": "number-and-algebra-ch01",
+    "title": "相反数与绝对值",
+    "description": "理解相反数与绝对值的意义，会求具体数的相反数与绝对值。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch01-sec04-kp004",
+    "parentId": "number-and-algebra-ch01",
+    "title": "有理数的大小比较",
+    "description": "能借助数轴与有理数大小比较法则确定两个数的大小关系。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch01-sec05-kp005",
+    "parentId": "number-and-algebra-ch01",
+    "title": "有理数的加减运算",
+    "description": "掌握有理数加减法则，熟练进行含有括号的有理数加减运算。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch01-sec06-kp006",
+    "parentId": "number-and-algebra-ch01",
+    "title": "有理数的乘除运算",
+    "description": "掌握有理数乘除法则，正确确定运算结果的符号。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch01-sec07-kp007",
+    "parentId": "number-and-algebra-ch01",
+    "title": "有理数的乘方与混合运算",
+    "description": "理解乘方的意义，能按正确顺序进行有理数混合运算。",
+    "level": 3,
+    "sortOrder": 7,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch02",
+    "parentId": "number-and-algebra",
+    "title": "实数",
+    "description": "理解无理数概念，掌握平方根、立方根与实数的运算。",
+    "level": 2,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch02-sec01-kp001",
+    "parentId": "number-and-algebra-ch02",
+    "title": "算术平方根",
+    "description": "理解算术平方根的意义，会求非负数的算术平方根。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch02-sec02-kp002",
+    "parentId": "number-and-algebra-ch02",
+    "title": "平方根",
+    "description": "掌握平方根的概念，会求一个数的平方根并理解其双向性质。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch02-sec03-kp003",
+    "parentId": "number-and-algebra-ch02",
+    "title": "立方根",
+    "description": "理解立方根的概念，会求实数的立方根并与平方根对比。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch02-sec04-kp004",
+    "parentId": "number-and-algebra-ch02",
+    "title": "实数及其分类",
+    "description": "了解无理数的概念，能对实数按有理数与无理数进行分类。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch02-sec05-kp005",
+    "parentId": "number-and-algebra-ch02",
+    "title": "实数的运算与近似值",
+    "description": "会进行实数的加减乘除运算，能按要求取近似值。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch02-sec06-kp006",
+    "parentId": "number-and-algebra-ch02",
+    "title": "实数的估算",
+    "description": "会用夹逼等方法估算无理数的大小与范围。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch02-sec07-kp007",
+    "parentId": "number-and-algebra-ch02",
+    "title": "数轴上的实数",
+    "description": "体会每一个实数都可以用数轴上的点表示，反之亦然。",
+    "level": 3,
+    "sortOrder": 7,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch03",
+    "parentId": "number-and-algebra",
+    "title": "整式",
+    "description": "学习代数式与整式的概念，掌握整式的加减乘除运算。",
+    "level": 2,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch03-sec01-kp001",
+    "parentId": "number-and-algebra-ch03",
+    "title": "用字母表示数与代数式",
+    "description": "理解用字母表示数的意义，能列代数式表示数量关系。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch03-sec02-kp002",
+    "parentId": "number-and-algebra-ch03",
+    "title": "代数式的值",
+    "description": "理解代数式的值的概念，能代入求值并体会整体代入的思想。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch03-sec03-kp003",
+    "parentId": "number-and-algebra-ch03",
+    "title": "单项式与多项式",
+    "description": "理解单项式、多项式的概念，会识别其系数、次数与项。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch03-sec04-kp004",
+    "parentId": "number-and-algebra-ch03",
+    "title": "整式的加减",
+    "description": "掌握同类项概念与合并同类项法则，熟练进行整式加减运算。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch03-sec05-kp005",
+    "parentId": "number-and-algebra-ch03",
+    "title": "去括号与添括号",
+    "description": "掌握去括号法则，能正确处理括号前的正负号。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch03-sec06-kp006",
+    "parentId": "number-and-algebra-ch03",
+    "title": "幂的运算",
+    "description": "掌握同底数幂相乘、幂的乘方与积的乘方法则并混合运用。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch03-sec07-kp007",
+    "parentId": "number-and-algebra-ch03",
+    "title": "整式的乘法",
+    "description": "掌握单项式与单项式、多项式相乘及多项式乘多项式的法则。",
+    "level": 3,
+    "sortOrder": 7,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch03-sec08-kp008",
+    "parentId": "number-and-algebra-ch03",
+    "title": "整式的除法",
+    "description": "掌握同底数幂相除与单项式除以单项式的法则。",
+    "level": 3,
+    "sortOrder": 8,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch04",
+    "parentId": "number-and-algebra",
+    "title": "因式分解",
+    "description": "理解因式分解的意义，掌握提公因式、公式法与十字相乘等方法。",
+    "level": 2,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch04-sec01-kp001",
+    "parentId": "number-and-algebra-ch04",
+    "title": "因式分解的概念",
+    "description": "理解因式分解是把整式化为几个整式乘积的变形过程。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch04-sec02-kp002",
+    "parentId": "number-and-algebra-ch04",
+    "title": "提公因式法",
+    "description": "会确定公因式，用提公因式法对多项式进行因式分解。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch04-sec03-kp003",
+    "parentId": "number-and-algebra-ch04",
+    "title": "平方差公式分解因式",
+    "description": "会用平方差公式对符合形式的多项式进行因式分解。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch04-sec04-kp004",
+    "parentId": "number-and-algebra-ch04",
+    "title": "完全平方公式分解因式",
+    "description": "会用完全平方公式分解因式，注意判断是否构成完全平方式。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch04-sec05-kp005",
+    "parentId": "number-and-algebra-ch04",
+    "title": "十字相乘法",
+    "description": "会用十字相乘法对二次三项式进行因式分解。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch04-sec06-kp006",
+    "parentId": "number-and-algebra-ch04",
+    "title": "因式分解的综合运用",
+    "description": "能综合运用提公因式与公式法，将多项式分解到不能再分解。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch05",
+    "parentId": "number-and-algebra",
+    "title": "分式",
+    "description": "理解分式的概念，掌握分式的基本性质与运算，会解分式方程。",
+    "level": 2,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch05-sec01-kp001",
+    "parentId": "number-and-algebra-ch05",
+    "title": "分式的概念与基本性质",
+    "description": "理解分式的概念与有意义的条件，掌握分式的基本性质。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch05-sec02-kp002",
+    "parentId": "number-and-algebra-ch05",
+    "title": "分式的约分与通分",
+    "description": "会进行分式的约分与通分，会判断最简分式。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch05-sec03-kp003",
+    "parentId": "number-and-algebra-ch05",
+    "title": "分式的乘除",
+    "description": "掌握分式乘法与除法法则，正确进行约分与符号处理。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch05-sec04-kp004",
+    "parentId": "number-and-algebra-ch05",
+    "title": "分式的加减运算",
+    "description": "掌握同分母与异分母分式加减法则，能进行分式四则混合运算。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch05-sec05-kp005",
+    "parentId": "number-and-algebra-ch05",
+    "title": "分式方程",
+    "description": "会解分式方程并检验根，理解增根产生的原因。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch05-sec06-kp006",
+    "parentId": "number-and-algebra-ch05",
+    "title": "分式方程的应用",
+    "description": "能列分式方程解决行程、工程等实际问题并检验作答。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch06",
+    "parentId": "number-and-algebra",
+    "title": "二次根式",
+    "description": "理解二次根式的概念与性质，掌握二次根式的运算。",
+    "level": 2,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch06-sec01-kp001",
+    "parentId": "number-and-algebra-ch06",
+    "title": "二次根式的概念与性质",
+    "description": "理解二次根式的定义与有意义条件，掌握其双重非负性。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch06-sec02-kp002",
+    "parentId": "number-and-algebra-ch06",
+    "title": "最简二次根式",
+    "description": "理解最简二次根式的特征，会判断与化简二次根式。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch06-sec03-kp003",
+    "parentId": "number-and-algebra-ch06",
+    "title": "二次根式的乘除",
+    "description": "掌握二次根式的乘法与除法法则，会进行化简。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch06-sec04-kp004",
+    "parentId": "number-and-algebra-ch06",
+    "title": "二次根式的加减",
+    "description": "掌握同类二次根式的合并，熟练进行二次根式加减运算。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "number-and-algebra-ch06-sec05-kp005",
+    "parentId": "number-and-algebra-ch06",
+    "title": "二次根式的混合运算",
+    "description": "会进行二次根式与整式的混合运算，掌握其运算规律。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality",
+    "parentId": null,
+    "title": "方程与不等式",
+    "description": "学习一元一次方程、二元一次方程组、一元二次方程以及初高中不等式的解法，能将实际问题转化为方程与不等式模型。",
+    "level": 1,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch01",
+    "parentId": "equation-inequality",
+    "title": "一元一次方程",
+    "description": "理解方程与等式的性质，掌握一元一次方程的解法与应用。",
+    "level": 2,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch01-sec01-kp001",
+    "parentId": "equation-inequality-ch01",
+    "title": "方程与等式的性质",
+    "description": "理解方程的概念，掌握等式的两条基本性质。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch01-sec02-kp002",
+    "parentId": "equation-inequality-ch01",
+    "title": "解一元一次方程",
+    "description": "掌握移项、合并同类项与系数化一，正确解一元一次方程。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch01-sec03-kp003",
+    "parentId": "equation-inequality-ch01",
+    "title": "一元一次方程的含参问题",
+    "description": "会求解含字母参数的一元一次方程并讨论根的情况。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch01-sec04-kp004",
+    "parentId": "equation-inequality-ch01",
+    "title": "一元一次方程的应用",
+    "description": "能审清题意列出等量关系，解一元一次方程解决实际问题。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch02",
+    "parentId": "equation-inequality",
+    "title": "二元一次方程组",
+    "description": "掌握代入消元法与加减消元法，能列方程组解决实际问题。",
+    "level": 2,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch02-sec01-kp001",
+    "parentId": "equation-inequality-ch02",
+    "title": "二元一次方程组的概念",
+    "description": "理解二元一次方程及方程组的定义，能判断并检验其解。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch02-sec02-kp002",
+    "parentId": "equation-inequality-ch02",
+    "title": "代入消元法",
+    "description": "会用代入消元法解二元一次方程组。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch02-sec03-kp003",
+    "parentId": "equation-inequality-ch02",
+    "title": "加减消元法",
+    "description": "会用加减消元法解二元一次方程组，合理选择消元手段。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch02-sec04-kp004",
+    "parentId": "equation-inequality-ch02",
+    "title": "二元一次方程组的应用",
+    "description": "能根据实际问题列出二元一次方程组，通过解方程组作答。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch02-sec05-kp005",
+    "parentId": "equation-inequality-ch02",
+    "title": "三元一次方程组",
+    "description": "了解三元一次方程组的解法，会用消元法转化为二元求解。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch03",
+    "parentId": "equation-inequality",
+    "title": "一元二次方程",
+    "description": "掌握一元二次方程的四种解法，理解根的判别式与韦达定理。",
+    "level": 2,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch03-sec01-kp001",
+    "parentId": "equation-inequality-ch03",
+    "title": "一元二次方程及其一般形式",
+    "description": "理解一元二次方程的概念，会化成一般形式并确认各项系数。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch03-sec02-kp002",
+    "parentId": "equation-inequality-ch03",
+    "title": "直接开平方法与配方法",
+    "description": "会用直接开平方法与配方法解一元二次方程。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch03-sec03-kp003",
+    "parentId": "equation-inequality-ch03",
+    "title": "公式法",
+    "description": "会用求根公式解一元二次方程，理解判别式对根的决定作用。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch03-sec04-kp004",
+    "parentId": "equation-inequality-ch03",
+    "title": "因式分解法",
+    "description": "会用因式分解法解一元二次方程，能灵活选择简便解法。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch03-sec05-kp005",
+    "parentId": "equation-inequality-ch03",
+    "title": "根的判别式",
+    "description": "会用判别式判断一元二次方程根的情况。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch03-sec06-kp006",
+    "parentId": "equation-inequality-ch03",
+    "title": "根与系数的关系",
+    "description": "掌握一元二次方程根与系数的关系，会求相关代数式的值。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch03-sec07-kp007",
+    "parentId": "equation-inequality-ch03",
+    "title": "一元二次方程的应用",
+    "description": "能建立一元二次方程模型解决增长、图形与利润等实际问题。",
+    "level": 3,
+    "sortOrder": 7,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch04",
+    "parentId": "equation-inequality",
+    "title": "不等式与不等式组",
+    "description": "理解不等式性质，会解一元一次不等式与不等式组并应用于实际问题。",
+    "level": 2,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch04-sec01-kp001",
+    "parentId": "equation-inequality-ch04",
+    "title": "不等式的概念与性质",
+    "description": "理解不等式的概念，掌握不等式的基本性质并正确运用。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch04-sec02-kp002",
+    "parentId": "equation-inequality-ch04",
+    "title": "一元一次不等式的解法",
+    "description": "会解一元一次不等式，能在数轴上正确表示其解集。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch04-sec03-kp003",
+    "parentId": "equation-inequality-ch04",
+    "title": "一元一次不等式组的解法",
+    "description": "会解一元一次不等式组，能求其整数解并归纳解集规律。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch04-sec04-kp004",
+    "parentId": "equation-inequality-ch04",
+    "title": "一元一次不等式的应用",
+    "description": "能列一元一次不等式解决实际问题，正确确定答案范围。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch05",
+    "parentId": "equation-inequality",
+    "title": "不等式",
+    "description": "掌握一元二次不等式、基本不等式与常见不等式类型及其应用。",
+    "level": 2,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch05-sec01-kp001",
+    "parentId": "equation-inequality-ch05",
+    "title": "不等关系与不等式的基本性质",
+    "description": "会用不等关系描述数量大小，应用不等式基本性质进行证明。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch05-sec02-kp002",
+    "parentId": "equation-inequality-ch05",
+    "title": "一元二次不等式",
+    "description": "会解一元二次不等式，能结合二次函数图象理解解集。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch05-sec03-kp003",
+    "parentId": "equation-inequality-ch05",
+    "title": "分式不等式与绝对值不等式",
+    "description": "会解简单的分式不等式与含绝对值的不等式。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch05-sec04-kp004",
+    "parentId": "equation-inequality-ch05",
+    "title": "基本不等式",
+    "description": "掌握基本不等式及其成立条件，会用其求最值。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "equation-inequality-ch05-sec05-kp005",
+    "parentId": "equation-inequality-ch05",
+    "title": "不等式的综合应用",
+    "description": "综合运用基本不等式与不等性质进行证明与最值求解。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative",
+    "parentId": null,
+    "title": "集合、函数与导数",
+    "description": "从集合与常用逻辑用语出发，掌握函数概念与性质、基本初等函数、函数与方程以及导数在研究函数中的应用。",
+    "level": 1,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch01",
+    "parentId": "set-function-derivative",
+    "title": "集合",
+    "description": "理解集合的概念、表示与基本关系，掌握交并补运算。",
+    "level": 2,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch01-sec01-kp001",
+    "parentId": "set-function-derivative-ch01",
+    "title": "集合的概念与表示",
+    "description": "理解集合的含义与元素三特性，掌握列举法与描述法表示集合。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch01-sec02-kp002",
+    "parentId": "set-function-derivative-ch01",
+    "title": "集合间的基本关系",
+    "description": "理解子集、真子集与集合相等的概念，会判断两个集合的关系。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch01-sec03-kp003",
+    "parentId": "set-function-derivative-ch01",
+    "title": "交集与并集",
+    "description": "掌握交集、并集的定义与运算，理解它们与韦恩图的关系。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch01-sec04-kp004",
+    "parentId": "set-function-derivative-ch01",
+    "title": "补集与全集",
+    "description": "理解全集与补集的概念，会求给定全集下集合的补集。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch01-sec05-kp005",
+    "parentId": "set-function-derivative-ch01",
+    "title": "含参数的集合运算问题",
+    "description": "能结合交并补运算解决含参数的集合问题，注意空集的讨论。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch02",
+    "parentId": "set-function-derivative",
+    "title": "常用逻辑用语",
+    "description": "理解命题及其关系，掌握充分必要条件与量词命题的否定。",
+    "level": 2,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch02-sec01-kp001",
+    "parentId": "set-function-derivative-ch02",
+    "title": "命题及其关系",
+    "description": "理解命题的概念，掌握四种命题及其相互关系。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch02-sec02-kp002",
+    "parentId": "set-function-derivative-ch02",
+    "title": "充分条件与必要条件",
+    "description": "理解充分条件、必要条件与充要条件，能正确判断推出关系。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch02-sec03-kp003",
+    "parentId": "set-function-derivative-ch02",
+    "title": "全称量词与存在量词",
+    "description": "理解全称量词与存在量词的含义，能写出量词命题的否定。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch02-sec04-kp004",
+    "parentId": "set-function-derivative-ch02",
+    "title": "逻辑用语在推理中的应用",
+    "description": "会用充分必要条件与量词命题进行数学推理与反证。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch03",
+    "parentId": "set-function-derivative",
+    "title": "一次函数",
+    "description": "掌握一次函数的图象与性质，理解一次函数与方程、不等式的关系。",
+    "level": 2,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch03-sec01-kp001",
+    "parentId": "set-function-derivative-ch03",
+    "title": "一次函数与正比例函数的概念",
+    "description": "理解一次函数与正比例函数的概念，能由解析式判断函数类型。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch03-sec02-kp002",
+    "parentId": "set-function-derivative-ch03",
+    "title": "一次函数的图象与性质",
+    "description": "掌握一次函数图象是直线及其增减性，会求与坐标轴的交点。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch03-sec03-kp003",
+    "parentId": "set-function-derivative-ch03",
+    "title": "一次函数解析式的确定",
+    "description": "会用待定系数法由已知条件求一次函数的解析式。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch03-sec04-kp004",
+    "parentId": "set-function-derivative-ch03",
+    "title": "一次函数与方程、不等式",
+    "description": "理解一次函数图象与一元一次方程、不等式解之间的联系。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch03-sec05-kp005",
+    "parentId": "set-function-derivative-ch03",
+    "title": "一次函数的应用",
+    "description": "能建立一次函数模型解决行程、方案选择等实际问题。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch04",
+    "parentId": "set-function-derivative",
+    "title": "反比例函数",
+    "description": "掌握反比例函数的图象与性质，能解决其综合应用问题。",
+    "level": 2,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch04-sec01-kp001",
+    "parentId": "set-function-derivative-ch04",
+    "title": "反比例函数的概念",
+    "description": "理解反比例函数的概念及其两种表达形式。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch04-sec02-kp002",
+    "parentId": "set-function-derivative-ch04",
+    "title": "反比例函数的图象与性质",
+    "description": "掌握反比例函数图象是双曲线，理解比例系数的几何意义与增减性。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch04-sec03-kp003",
+    "parentId": "set-function-derivative-ch04",
+    "title": "反比例函数解析式的确定",
+    "description": "会用待定系数法求反比例函数的解析式。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch04-sec04-kp004",
+    "parentId": "set-function-derivative-ch04",
+    "title": "反比例函数的应用",
+    "description": "用反比例函数模型解决面积、速度等实际问题。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch04-sec05-kp005",
+    "parentId": "set-function-derivative-ch04",
+    "title": "反比例函数与一次函数的综合",
+    "description": "会求反比例函数与一次函数图象的交点，解决面积类综合问题。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch05",
+    "parentId": "set-function-derivative",
+    "title": "二次函数",
+    "description": "掌握二次函数的图象与性质，理解其与一元二次方程的联系。",
+    "level": 2,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch05-sec01-kp001",
+    "parentId": "set-function-derivative-ch05",
+    "title": "二次函数的概念",
+    "description": "理解二次函数的概念，能识别二次项、一次项与常数项。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch05-sec02-kp002",
+    "parentId": "set-function-derivative-ch05",
+    "title": "二次函数的图象与性质",
+    "description": "掌握二次函数图象开口、对称轴与顶点，理解系数的几何意义。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch05-sec03-kp003",
+    "parentId": "set-function-derivative-ch05",
+    "title": "二次函数图象的平移",
+    "description": "理解二次函数图象的平移规律，能由顶点式确定图象位置。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch05-sec04-kp004",
+    "parentId": "set-function-derivative-ch05",
+    "title": "二次函数的最值",
+    "description": "会求二次函数在给定区间内的最大值与最小值。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch05-sec05-kp005",
+    "parentId": "set-function-derivative-ch05",
+    "title": "二次函数与一元二次方程",
+    "description": "理解二次函数图象与x轴交点同方程根之间的联系。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch05-sec06-kp006",
+    "parentId": "set-function-derivative-ch05",
+    "title": "二次函数的应用",
+    "description": "建立二次函数模型解决利润、面积等实际最值问题。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch06",
+    "parentId": "set-function-derivative",
+    "title": "函数的概念与性质",
+    "description": "理解函数概念与三要素，掌握单调性、奇偶性等基本性质。",
+    "level": 2,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch06-sec01-kp001",
+    "parentId": "set-function-derivative-ch06",
+    "title": "函数的概念",
+    "description": "理解函数的概念与构成要素，会用集合语言描述函数。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch06-sec02-kp002",
+    "parentId": "set-function-derivative-ch06",
+    "title": "函数的表示方法",
+    "description": "掌握解析法、图象法与列表法三种表示方法并相互转化。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch06-sec03-kp003",
+    "parentId": "set-function-derivative-ch06",
+    "title": "函数的定义域与值域",
+    "description": "会求具体函数的定义域与值域，掌握常见类型题的求解途径。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch06-sec04-kp004",
+    "parentId": "set-function-derivative-ch06",
+    "title": "函数的单调性",
+    "description": "理解增函数减函数的概念，会用定义法判断函数的单调性。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch06-sec05-kp005",
+    "parentId": "set-function-derivative-ch06",
+    "title": "函数的奇偶性",
+    "description": "理解奇函数与偶函数的定义及图象对称特征，能判断函数的奇偶性。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch06-sec06-kp006",
+    "parentId": "set-function-derivative-ch06",
+    "title": "函数的周期性",
+    "description": "理解周期函数的概念，会求简单三角函数的周期。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch06-sec07-kp007",
+    "parentId": "set-function-derivative-ch06",
+    "title": "抽象函数与复合函数初步",
+    "description": "初步理解抽象函数与复合函数的研究方法，会求简单复合函数的定义域。",
+    "level": 3,
+    "sortOrder": 7,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch07",
+    "parentId": "set-function-derivative",
+    "title": "指数函数与对数函数",
+    "description": "掌握指数与对数的运算，理解指数函数与对数函数的图象与性质。",
+    "level": 2,
+    "sortOrder": 7,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch07-sec01-kp001",
+    "parentId": "set-function-derivative-ch07",
+    "title": "指数与指数幂的运算",
+    "description": "理解n次方根与分数指数幂，掌握指数幂的运算性质。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch07-sec02-kp002",
+    "parentId": "set-function-derivative-ch07",
+    "title": "指数函数及其性质",
+    "description": "掌握指数函数的图象与单调性，能比较指数式的大小。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch07-sec03-kp003",
+    "parentId": "set-function-derivative-ch07",
+    "title": "对数与对数的运算",
+    "description": "理解对数的概念，掌握对数的运算性质与换底公式。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch07-sec04-kp004",
+    "parentId": "set-function-derivative-ch07",
+    "title": "对数函数及其性质",
+    "description": "掌握对数函数的图象与性质，会解简单的对数方程与不等式。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch07-sec05-kp005",
+    "parentId": "set-function-derivative-ch07",
+    "title": "幂函数",
+    "description": "了解幂函数的概念，掌握常见幂函数的图象与性质。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch07-sec06-kp006",
+    "parentId": "set-function-derivative-ch07",
+    "title": "指数函数与对数函数的关系",
+    "description": "理解指数函数与对数函数互为反函数的关系及其图象对称性。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch08",
+    "parentId": "set-function-derivative",
+    "title": "函数与方程",
+    "description": "理解函数零点的概念，掌握二分法与函数模型的运用。",
+    "level": 2,
+    "sortOrder": 8,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch08-sec01-kp001",
+    "parentId": "set-function-derivative-ch08",
+    "title": "函数的零点",
+    "description": "理解函数零点的概念，掌握零点存在性定理的条件与结论。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch08-sec02-kp002",
+    "parentId": "set-function-derivative-ch08",
+    "title": "二分法求方程的近似解",
+    "description": "掌握二分法求函数零点近似值的步骤与精确度要求。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch08-sec03-kp003",
+    "parentId": "set-function-derivative-ch08",
+    "title": "函数模型的建立与应用",
+    "description": "能建立常见函数模型解决增长、衰减等实际问题。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch08-sec04-kp004",
+    "parentId": "set-function-derivative-ch08",
+    "title": "函数图象与零点的综合",
+    "description": "能利用函数图象分析零点个数、交点个数等综合问题。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch09",
+    "parentId": "set-function-derivative",
+    "title": "导数及其应用",
+    "description": "理解导数概念与几何意义，掌握导数在研究函数单调性、极值与最值中的应用。",
+    "level": 2,
+    "sortOrder": 9,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch09-sec01-kp001",
+    "parentId": "set-function-derivative-ch09",
+    "title": "导数的概念与几何意义",
+    "description": "理解导数的概念，会求函数在一点处切线的方程。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch09-sec02-kp002",
+    "parentId": "set-function-derivative-ch09",
+    "title": "基本初等函数的求导",
+    "description": "熟记基本初等函数的导数公式与四则运算法则。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch09-sec03-kp003",
+    "parentId": "set-function-derivative-ch09",
+    "title": "导数与函数的单调性",
+    "description": "会用导数判断函数的单调性并求单调区间。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch09-sec04-kp004",
+    "parentId": "set-function-derivative-ch09",
+    "title": "导数与函数的极值、最值",
+    "description": "会利用导数求函数的极值与闭区间上的最值。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "set-function-derivative-ch09-sec05-kp005",
+    "parentId": "set-function-derivative-ch09",
+    "title": "导数在实际问题中的应用",
+    "description": "用导数解决利润最大、用料最省等实际优化问题。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry",
+    "parentId": null,
+    "title": "三角函数与解三角形",
+    "description": "从锐角三角函数到任意角三角函数，掌握图象性质、恒等变换以及用正弦余弦定理解三角形。",
+    "level": 1,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch01",
+    "parentId": "trigonometry",
+    "title": "锐角三角函数",
+    "description": "掌握锐角三角函数概念与特殊角的函数值，会解直角三角形。",
+    "level": 2,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch01-sec01-kp001",
+    "parentId": "trigonometry-ch01",
+    "title": "锐角三角函数的概念",
+    "description": "理解正弦、余弦、正切的定义并会求锐角的三角函数值。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch01-sec02-kp002",
+    "parentId": "trigonometry-ch01",
+    "title": "特殊角的三角函数值",
+    "description": "熟记特殊角的正弦、余弦与正切值并灵活运用。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch01-sec03-kp003",
+    "parentId": "trigonometry-ch01",
+    "title": "解直角三角形",
+    "description": "掌握直角三角形中的边角关系，会解直角三角形。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch01-sec04-kp004",
+    "parentId": "trigonometry-ch01",
+    "title": "锐角三角函数的应用",
+    "description": "会用锐角三角函数解决测高、坡度等实际测量问题。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch02",
+    "parentId": "trigonometry",
+    "title": "任意角与弧度制",
+    "description": "理解任意角与弧度制概念，掌握任意角的三角函数定义与关系公式。",
+    "level": 2,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch02-sec01-kp001",
+    "parentId": "trigonometry-ch02",
+    "title": "任意角的概念",
+    "description": "理解任意角、象限角与终边相同的角的概念。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch02-sec02-kp002",
+    "parentId": "trigonometry-ch02",
+    "title": "弧度制",
+    "description": "掌握弧度制的概念及与角度制的换算关系。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch02-sec03-kp003",
+    "parentId": "trigonometry-ch02",
+    "title": "任意角的三角函数定义",
+    "description": "掌握任意角三角函数的定义并会求特殊角的三角函数值。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch02-sec04-kp004",
+    "parentId": "trigonometry-ch02",
+    "title": "三角函数在各象限的符号与诱导公式",
+    "description": "掌握各象限三角函数值的符号与常用的诱导公式。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch02-sec05-kp005",
+    "parentId": "trigonometry-ch02",
+    "title": "同角三角函数的基本关系",
+    "description": "掌握同角三角函数平方关系与商数关系并会进行化简求值。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch03",
+    "parentId": "trigonometry",
+    "title": "三角函数的图象与性质",
+    "description": "掌握正弦、余弦、正切函数的图象与性质，理解图象变换。",
+    "level": 2,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch03-sec01-kp001",
+    "parentId": "trigonometry-ch03",
+    "title": "正弦函数与余弦函数的图象",
+    "description": "掌握五点法画正弦、余弦函数的图象。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch03-sec02-kp002",
+    "parentId": "trigonometry-ch03",
+    "title": "正弦函数与余弦函数的性质",
+    "description": "掌握三角函数的周期性、奇偶性、单调性与最值。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch03-sec03-kp003",
+    "parentId": "trigonometry-ch03",
+    "title": "正切函数的图象与性质",
+    "description": "掌握正切函数的图象特征与定义域、周期性、单调性。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch03-sec04-kp004",
+    "parentId": "trigonometry-ch03",
+    "title": "函数y=Asin(ωx+φ)的图象与性质",
+    "description": "理解参数A、ω、φ对函数图象的影响，掌握图象变换规律。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch03-sec05-kp005",
+    "parentId": "trigonometry-ch03",
+    "title": "三角函数的综合应用",
+    "description": "会综合运用三角函数性质求函数的周期、单调区间与值域。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch04",
+    "parentId": "trigonometry",
+    "title": "三角恒等变换",
+    "description": "掌握两角和差与二倍角的三角函数公式，会进行恒等变换。",
+    "level": 2,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch04-sec01-kp001",
+    "parentId": "trigonometry-ch04",
+    "title": "两角和与差的三角函数",
+    "description": "掌握两角和与差的正弦、余弦与正切公式。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch04-sec02-kp002",
+    "parentId": "trigonometry-ch04",
+    "title": "二倍角公式",
+    "description": "掌握正弦、余弦、正切的二倍角公式及其变形。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch04-sec03-kp003",
+    "parentId": "trigonometry-ch04",
+    "title": "简单的三角恒等变换",
+    "description": "会运用公式进行三角恒等式的化简、求值与证明。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch04-sec04-kp004",
+    "parentId": "trigonometry-ch04",
+    "title": "辅助角公式",
+    "description": "会用辅助角公式将形如asinx+bcosx的式子化为一角一函数。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch05",
+    "parentId": "trigonometry",
+    "title": "解三角形",
+    "description": "掌握正弦定理与余弦定理，能解三角形并应用于实际问题。",
+    "level": 2,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch05-sec01-kp001",
+    "parentId": "trigonometry-ch05",
+    "title": "正弦定理",
+    "description": "掌握正弦定理及其变形，会判断三角形解的个数。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch05-sec02-kp002",
+    "parentId": "trigonometry-ch05",
+    "title": "余弦定理",
+    "description": "掌握余弦定理及其推论，会用余弦定理解三角形。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch05-sec03-kp003",
+    "parentId": "trigonometry-ch05",
+    "title": "三角形面积公式",
+    "description": "掌握利用两边及其夹角求三角形面积的公式。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "trigonometry-ch05-sec04-kp004",
+    "parentId": "trigonometry-ch05",
+    "title": "解三角形的实际应用",
+    "description": "应用正弦余弦定理解决测量距离、高度与角度等实际问题。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "sequence",
+    "parentId": null,
+    "title": "数列",
+    "description": "理解数列的概念，掌握等差、等比数列的通项公式与前n项和，学会常用求和与综合应用方法。",
+    "level": 1,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch01",
+    "parentId": "sequence",
+    "title": "数列的概念",
+    "description": "理解数列的概念与表示，会求简单数列的通项公式。",
+    "level": 2,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch01-sec01-kp001",
+    "parentId": "sequence-ch01",
+    "title": "数列的概念与表示",
+    "description": "理解数列的概念，掌握数列的表示方法与分类。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch01-sec02-kp002",
+    "parentId": "sequence-ch01",
+    "title": "数列的通项公式",
+    "description": "会根据数列的前几项归纳猜想出通项公式。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch01-sec03-kp003",
+    "parentId": "sequence-ch01",
+    "title": "数列的递推公式",
+    "description": "理解递推公式的含义，会根据递推关系求数列的项。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch01-sec04-kp004",
+    "parentId": "sequence-ch01",
+    "title": "数列与函数的关系",
+    "description": "体会数列是一种特殊的函数，理解其定义域与图象表示。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch02",
+    "parentId": "sequence",
+    "title": "等差数列",
+    "description": "掌握等差数列的概念、通项公式、前n项和及性质。",
+    "level": 2,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch02-sec01-kp001",
+    "parentId": "sequence-ch02",
+    "title": "等差数列的概念",
+    "description": "理解等差数列的概念，会判断一个数列是否为等差数列。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch02-sec02-kp002",
+    "parentId": "sequence-ch02",
+    "title": "等差数列的通项公式",
+    "description": "掌握等差数列通项公式，并能求项、公差与项数。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch02-sec03-kp003",
+    "parentId": "sequence-ch02",
+    "title": "等差数列的前n项和",
+    "description": "掌握等差数列前n项和公式，理解公式的推导。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch02-sec04-kp004",
+    "parentId": "sequence-ch02",
+    "title": "等差数列的性质及应用",
+    "description": "掌握等差数列常用的下标性质与等差中项并灵活运用。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch03",
+    "parentId": "sequence",
+    "title": "等比数列",
+    "description": "掌握等比数列的概念、通项公式、前n项和及性质。",
+    "level": 2,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch03-sec01-kp001",
+    "parentId": "sequence-ch03",
+    "title": "等比数列的概念",
+    "description": "理解等比数列的概念，会判断数列并计算公比。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch03-sec02-kp002",
+    "parentId": "sequence-ch03",
+    "title": "等比数列的通项公式",
+    "description": "掌握等比数列通项公式，能进行相关量的互求。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch03-sec03-kp003",
+    "parentId": "sequence-ch03",
+    "title": "等比数列的前n项和",
+    "description": "掌握等比数列前n项和公式并注意公比等于1的情形。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch03-sec04-kp004",
+    "parentId": "sequence-ch03",
+    "title": "等比数列的性质及应用",
+    "description": "掌握等比数列的下标性质与等比中项并灵活运用。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch04",
+    "parentId": "sequence",
+    "title": "数列求和",
+    "description": "掌握等差等比求和之外的裂项、错位相减等常用求和方法。",
+    "level": 2,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch04-sec01-kp001",
+    "parentId": "sequence-ch04",
+    "title": "公式法求和",
+    "description": "能识别并直接用等差、等比数列的求和公式求和。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch04-sec02-kp002",
+    "parentId": "sequence-ch04",
+    "title": "裂项相消法",
+    "description": "会识别可裂项的数列形式，用裂项相消法求和。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch04-sec03-kp003",
+    "parentId": "sequence-ch04",
+    "title": "错位相减法",
+    "description": "会用错位相减法求等差乘等比型数列的前n项和。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch04-sec04-kp004",
+    "parentId": "sequence-ch04",
+    "title": "分组转化法",
+    "description": "会将数列分组转化为若干个熟知的数列分别求和。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch05",
+    "parentId": "sequence",
+    "title": "数列的综合应用",
+    "description": "掌握求通项的常用方法，能解决数列与不等式及实际应用问题。",
+    "level": 2,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch05-sec01-kp001",
+    "parentId": "sequence-ch05",
+    "title": "求数列通项公式的常用方法",
+    "description": "掌握累加法、累乘法与构造法求数列的通项公式。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch05-sec02-kp002",
+    "parentId": "sequence-ch05",
+    "title": "数列与不等式综合",
+    "description": "会运用放缩等方法证明与数列有关的不等式。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "sequence-ch05-sec03-kp003",
+    "parentId": "sequence-ch05",
+    "title": "数列在实际问题中的应用",
+    "description": "用等差等比数列模型解决增长、分期等实际问题。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry",
+    "parentId": null,
+    "title": "平面几何",
+    "description": "系统梳理初中平面几何核心内容，涵盖相交线与平行线、三角形、全等与相似、四边形和圆。",
+    "level": 1,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch01",
+    "parentId": "plane-geometry",
+    "title": "相交线与平行线",
+    "description": "掌握对顶角、三线八角与平行线的判定和性质。",
+    "level": 2,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch01-sec01-kp001",
+    "parentId": "plane-geometry-ch01",
+    "title": "相交线、垂线与对顶角",
+    "description": "理解对顶角相等与垂线的性质，会作已知直线的垂线。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch01-sec02-kp002",
+    "parentId": "plane-geometry-ch01",
+    "title": "三线八角",
+    "description": "能识别同位角、内错角与同旁内角。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch01-sec03-kp003",
+    "parentId": "plane-geometry-ch01",
+    "title": "平行线的判定",
+    "description": "掌握平行线的三种判定方法并会书写推理过程。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch01-sec04-kp004",
+    "parentId": "plane-geometry-ch01",
+    "title": "平行线的性质",
+    "description": "掌握平行线的性质定理，会利用性质进行角的计算。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch01-sec05-kp005",
+    "parentId": "plane-geometry-ch01",
+    "title": "平移",
+    "description": "理解平移的概念与性质，会作出平移后的图形。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch02",
+    "parentId": "plane-geometry",
+    "title": "三角形",
+    "description": "掌握三角形边角关系、重要线段与特殊三角形。",
+    "level": 2,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch02-sec01-kp001",
+    "parentId": "plane-geometry-ch02",
+    "title": "三角形的边与角",
+    "description": "掌握三角形三边关系与内角和定理，会判断能否构成三角形。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch02-sec02-kp002",
+    "parentId": "plane-geometry-ch02",
+    "title": "三角形的高、中线与角平分线",
+    "description": "理解三角形的高、中线与角平分线的概念及性质。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch02-sec03-kp003",
+    "parentId": "plane-geometry-ch02",
+    "title": "三角形的外角定理",
+    "description": "掌握三角形外角等于不相邻两内角之和的性质。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch02-sec04-kp004",
+    "parentId": "plane-geometry-ch02",
+    "title": "等腰三角形",
+    "description": "掌握等腰三角形的性质与判定，理解三线合一。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch02-sec05-kp005",
+    "parentId": "plane-geometry-ch02",
+    "title": "等边三角形",
+    "description": "掌握等边三角形的性质与判定，熟悉其内角度数特征。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch02-sec06-kp006",
+    "parentId": "plane-geometry-ch02",
+    "title": "直角三角形与勾股定理",
+    "description": "掌握直角三角形性质与勾股定理，体会数形结合。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch03",
+    "parentId": "plane-geometry",
+    "title": "全等三角形",
+    "description": "掌握三角形全等的判定与性质，学会几何证明。",
+    "level": 2,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch03-sec01-kp001",
+    "parentId": "plane-geometry-ch03",
+    "title": "全等三角形的性质",
+    "description": "理解全等三角形的概念，掌握对应边角相等的性质。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch03-sec02-kp002",
+    "parentId": "plane-geometry-ch03",
+    "title": "全等三角形的判定（SSS、SAS）",
+    "description": "掌握边边边与边角边判定三角形全等的方法及注意事项。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch03-sec03-kp003",
+    "parentId": "plane-geometry-ch03",
+    "title": "全等三角形的判定（ASA、AAS）",
+    "description": "掌握角边角与角角边判定三角形全等的方法并区分差异。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch03-sec04-kp004",
+    "parentId": "plane-geometry-ch03",
+    "title": "直角三角形全等的判定（HL）",
+    "description": "掌握直角三角形全等的斜边直角边判定定理。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch03-sec05-kp005",
+    "parentId": "plane-geometry-ch03",
+    "title": "角平分线的性质",
+    "description": "掌握角平分线的性质定理与判定定理。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch03-sec06-kp006",
+    "parentId": "plane-geometry-ch03",
+    "title": "全等三角形的综合应用",
+    "description": "会构造全等三角形证明线段与角相等，解决几何问题。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch04",
+    "parentId": "plane-geometry",
+    "title": "相似三角形",
+    "description": "掌握相似三角形的判定与性质，发展推理与建模能力。",
+    "level": 2,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch04-sec01-kp001",
+    "parentId": "plane-geometry-ch04",
+    "title": "比例线段与成比例性质",
+    "description": "理解比例线段的概念，掌握比例的基本性质。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch04-sec02-kp002",
+    "parentId": "plane-geometry-ch04",
+    "title": "平行线分线段成比例",
+    "description": "掌握平行线分线段成比例定理及其推论。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch04-sec03-kp003",
+    "parentId": "plane-geometry-ch04",
+    "title": "相似三角形的判定",
+    "description": "掌握相似三角形的三种判定定理并能选择合适方法。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch04-sec04-kp004",
+    "parentId": "plane-geometry-ch04",
+    "title": "相似三角形的性质",
+    "description": "掌握相似三角形对应线段成比例、面积比等于相似比平方等性质。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch04-sec05-kp005",
+    "parentId": "plane-geometry-ch04",
+    "title": "相似三角形的应用",
+    "description": "利用相似三角形解决测高、测距等实际问题。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch04-sec06-kp006",
+    "parentId": "plane-geometry-ch04",
+    "title": "位似图形",
+    "description": "理解位似图形的概念与性质，会作位似图形。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch05",
+    "parentId": "plane-geometry",
+    "title": "四边形",
+    "description": "掌握平行四边形与特殊平行四边形的性质判定，理解中位线定理。",
+    "level": 2,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch05-sec01-kp001",
+    "parentId": "plane-geometry-ch05",
+    "title": "多边形与内角和",
+    "description": "掌握多边形内角和与外角和公式，理解其对角线规律。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch05-sec02-kp002",
+    "parentId": "plane-geometry-ch05",
+    "title": "平行四边形",
+    "description": "掌握平行四边形的性质与判定方法。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch05-sec03-kp003",
+    "parentId": "plane-geometry-ch05",
+    "title": "矩形",
+    "description": "掌握矩形的性质与判定，理解其对角线的关系。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch05-sec04-kp004",
+    "parentId": "plane-geometry-ch05",
+    "title": "菱形",
+    "description": "掌握菱形的性质与判定，理解其面积计算公式。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch05-sec05-kp005",
+    "parentId": "plane-geometry-ch05",
+    "title": "正方形",
+    "description": "掌握正方形的性质与判定，理解矩形菱形的从属关系。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch05-sec06-kp006",
+    "parentId": "plane-geometry-ch05",
+    "title": "三角形的中位线",
+    "description": "掌握三角形中位线定理，会用其证明线段平行与倍分关系。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch06",
+    "parentId": "plane-geometry",
+    "title": "圆",
+    "description": "掌握圆的基本概念、垂径定理、圆周角定理与位置关系。",
+    "level": 2,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch06-sec01-kp001",
+    "parentId": "plane-geometry-ch06",
+    "title": "圆的基本概念",
+    "description": "理解圆心、半径、直径、弦、弧与圆心角等概念。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch06-sec02-kp002",
+    "parentId": "plane-geometry-ch06",
+    "title": "垂径定理",
+    "description": "掌握垂径定理及其推论，会运用它求弦长与半径。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch06-sec03-kp003",
+    "parentId": "plane-geometry-ch06",
+    "title": "圆心角与圆周角",
+    "description": "掌握圆心角、圆周角定理及直径所对圆周角为直角的推论。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch06-sec04-kp004",
+    "parentId": "plane-geometry-ch06",
+    "title": "直线与圆的位置关系",
+    "description": "能判断点与圆、直线与圆的三种位置关系。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch06-sec05-kp005",
+    "parentId": "plane-geometry-ch06",
+    "title": "切线的判定与性质",
+    "description": "掌握切线的判定与性质定理，理解切线长定理。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch06-sec06-kp006",
+    "parentId": "plane-geometry-ch06",
+    "title": "正多边形和圆",
+    "description": "理解正多边形与圆的关系，会计算中心角与边心距。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "plane-geometry-ch06-sec07-kp007",
+    "parentId": "plane-geometry-ch06",
+    "title": "弧长与扇形面积",
+    "description": "掌握弧长公式与扇形面积公式，能计算阴影部分面积。",
+    "level": 3,
+    "sortOrder": 7,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry",
+    "parentId": null,
+    "title": "立体几何",
+    "description": "认识空间几何体的结构与度量，掌握空间点线面的位置关系以及平行、垂直的判定与性质。",
+    "level": 1,
+    "sortOrder": 7,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch01",
+    "parentId": "solid-geometry",
+    "title": "空间几何体",
+    "description": "认识常见多面体与旋转体，掌握表面积与体积公式。",
+    "level": 2,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch01-sec01-kp001",
+    "parentId": "solid-geometry-ch01",
+    "title": "棱柱、棱锥与棱台",
+    "description": "掌握棱柱、棱锥与棱台的结构特征及其区别。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch01-sec02-kp002",
+    "parentId": "solid-geometry-ch01",
+    "title": "圆柱、圆锥、圆台与球",
+    "description": "掌握圆柱、圆锥、圆台与球的结构特征。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch01-sec03-kp003",
+    "parentId": "solid-geometry-ch01",
+    "title": "空间几何体的直观图",
+    "description": "会画水平放置的平面图形与空间几何体的直观图。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch01-sec04-kp004",
+    "parentId": "solid-geometry-ch01",
+    "title": "柱体、锥体、台体的体积",
+    "description": "掌握柱体、锥体、台体的体积公式，理解它们之间的联系。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch01-sec05-kp005",
+    "parentId": "solid-geometry-ch01",
+    "title": "球的表面积与体积",
+    "description": "掌握球的表面积与体积公式，会解决与球有关的综合问题。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch02",
+    "parentId": "solid-geometry",
+    "title": "空间中的点线面位置关系",
+    "description": "掌握平面的基本性质，理解空间中直线与平面的位置关系。",
+    "level": 2,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch02-sec01-kp001",
+    "parentId": "solid-geometry-ch02",
+    "title": "平面的基本性质",
+    "description": "掌握确定平面的三个公理及其推论。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch02-sec02-kp002",
+    "parentId": "solid-geometry-ch02",
+    "title": "空间中直线与直线的位置关系",
+    "description": "理解共面直线与异面直线，会判断两直线的位置关系。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch02-sec03-kp003",
+    "parentId": "solid-geometry-ch02",
+    "title": "空间中直线与平面的位置关系",
+    "description": "理解直线在平面内、与平面平行、与平面相交的位置关系。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch02-sec04-kp004",
+    "parentId": "solid-geometry-ch02",
+    "title": "空间中平面与平面的位置关系",
+    "description": "理解平面与平面平行与相交两种位置关系。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch03",
+    "parentId": "solid-geometry",
+    "title": "空间中的平行与垂直",
+    "description": "掌握线面、面面平行与垂直的判定和性质定理。",
+    "level": 2,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch03-sec01-kp001",
+    "parentId": "solid-geometry-ch03",
+    "title": "直线与平面平行的判定与性质",
+    "description": "掌握直线与平面平行的判定定理与性质定理。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch03-sec02-kp002",
+    "parentId": "solid-geometry-ch03",
+    "title": "平面与平面平行的判定与性质",
+    "description": "掌握平面与平面平行的判定定理与性质定理。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch03-sec03-kp003",
+    "parentId": "solid-geometry-ch03",
+    "title": "直线与平面垂直的判定与性质",
+    "description": "掌握直线与平面垂直的判定定理与性质定理。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch03-sec04-kp004",
+    "parentId": "solid-geometry-ch03",
+    "title": "平面与平面垂直的判定与性质",
+    "description": "掌握平面与平面垂直的判定定理与性质定理。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch04",
+    "parentId": "solid-geometry",
+    "title": "空间角与距离",
+    "description": "会求异面直线所成角、线面角、二面角与常见距离。",
+    "level": 2,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch04-sec01-kp001",
+    "parentId": "solid-geometry-ch04",
+    "title": "异面直线所成的角",
+    "description": "会用平移法求异面直线所成的角。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch04-sec02-kp002",
+    "parentId": "solid-geometry-ch04",
+    "title": "直线与平面所成的角",
+    "description": "理解线面角的定义，会作出平面角并求解。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch04-sec03-kp003",
+    "parentId": "solid-geometry-ch04",
+    "title": "二面角",
+    "description": "理解二面角与二面角的平面角，会求常见二面角的大小。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch04-sec04-kp004",
+    "parentId": "solid-geometry-ch04",
+    "title": "点、线、面的距离",
+    "description": "会求点到平面的距离、直线与平面间的距离等问题。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch05",
+    "parentId": "solid-geometry",
+    "title": "空间向量与立体几何",
+    "description": "建立空间直角坐标系，用向量法研究平行、垂直与角、距离。",
+    "level": 2,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch05-sec01-kp001",
+    "parentId": "solid-geometry-ch05",
+    "title": "空间向量及其运算",
+    "description": "理解空间向量的概念、线性运算与数量积运算。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch05-sec02-kp002",
+    "parentId": "solid-geometry-ch05",
+    "title": "空间直角坐标系与向量的坐标运算",
+    "description": "掌握空间直角坐标系中向量的坐标表示与运算。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch05-sec03-kp003",
+    "parentId": "solid-geometry-ch05",
+    "title": "用空间向量研究平行与垂直",
+    "description": "会用空间向量证明直线与平面、平面与平面间的平行垂直关系。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch05-sec04-kp004",
+    "parentId": "solid-geometry-ch05",
+    "title": "用空间向量求空间角",
+    "description": "会用向量法求空间中的线线角、线面角与二面角。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "solid-geometry-ch05-sec05-kp005",
+    "parentId": "solid-geometry-ch05",
+    "title": "用空间向量求距离",
+    "description": "会用向量法求点到直线的距离与点到平面的距离。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex",
+    "parentId": null,
+    "title": "向量与复数",
+    "description": "掌握平面向量的概念、运算与应用，理解复数的概念、运算与几何意义。",
+    "level": 1,
+    "sortOrder": 8,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch01",
+    "parentId": "vector-complex",
+    "title": "平面向量",
+    "description": "掌握平面向量的概念、线性运算、坐标表示与数量积。",
+    "level": 2,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch01-sec01-kp001",
+    "parentId": "vector-complex-ch01",
+    "title": "平面向量的概念",
+    "description": "理解向量的概念、表示方法以及相等向量与共线向量。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch01-sec02-kp002",
+    "parentId": "vector-complex-ch01",
+    "title": "向量的线性运算",
+    "description": "掌握向量加法、减法与数乘运算及其几何意义。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch01-sec03-kp003",
+    "parentId": "vector-complex-ch01",
+    "title": "向量共线定理与平面向量基本定理",
+    "description": "掌握向量共线定理与平面向量基本定理。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch01-sec04-kp004",
+    "parentId": "vector-complex-ch01",
+    "title": "平面向量的坐标表示",
+    "description": "掌握平面向量的坐标表示与坐标形式的加减数乘运算。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch01-sec05-kp005",
+    "parentId": "vector-complex-ch01",
+    "title": "平面向量的数量积",
+    "description": "掌握向量数量积的定义、几何意义与坐标计算。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch01-sec06-kp006",
+    "parentId": "vector-complex-ch01",
+    "title": "平面向量的应用",
+    "description": "会用向量运算解决求模长、夹角与证明平行垂直等几何问题。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch02",
+    "parentId": "vector-complex",
+    "title": "复数",
+    "description": "理解复数的概念，掌握复数的四则运算与几何意义。",
+    "level": 2,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch02-sec01-kp001",
+    "parentId": "vector-complex-ch02",
+    "title": "复数的概念",
+    "description": "理解复数的概念、复数相等与复数的分类。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch02-sec02-kp002",
+    "parentId": "vector-complex-ch02",
+    "title": "复数的四则运算",
+    "description": "掌握复数加法、减法、乘法与除法的运算法则。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch02-sec03-kp003",
+    "parentId": "vector-complex-ch02",
+    "title": "复数的模与共轭复数",
+    "description": "理解复数模与共轭复数的概念，掌握其运算性质。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "vector-complex-ch02-sec04-kp004",
+    "parentId": "vector-complex-ch02",
+    "title": "复数的几何意义",
+    "description": "理解复数与复平面内点、向量一一对应的关系。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry",
+    "parentId": null,
+    "title": "解析几何",
+    "description": "用数与坐标研究直线、圆与圆锥曲线，掌握圆锥曲线的定义、方程、几何性质及综合问题。",
+    "level": 1,
+    "sortOrder": 9,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch01",
+    "parentId": "analytic-geometry",
+    "title": "直线与方程",
+    "description": "掌握直线方程的四种形式与两条直线的位置关系。",
+    "level": 2,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch01-sec01-kp001",
+    "parentId": "analytic-geometry-ch01",
+    "title": "直线的倾斜角与斜率",
+    "description": "理解倾斜角与斜率的概念，掌握其计算公式。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch01-sec02-kp002",
+    "parentId": "analytic-geometry-ch01",
+    "title": "直线的方程",
+    "description": "掌握直线的点斜式、斜截式、两点式与一般式方程。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch01-sec03-kp003",
+    "parentId": "analytic-geometry-ch01",
+    "title": "两条直线的位置关系",
+    "description": "会判断两条直线的平行与垂直，会求两直线的交点坐标。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch01-sec04-kp004",
+    "parentId": "analytic-geometry-ch01",
+    "title": "点到直线的距离",
+    "description": "掌握点到直线与两条平行线间距离公式并会应用。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch01-sec05-kp005",
+    "parentId": "analytic-geometry-ch01",
+    "title": "直线的对称问题",
+    "description": "会求点关于直线对称、直线关于直线对称的问题。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch02",
+    "parentId": "analytic-geometry",
+    "title": "圆与方程",
+    "description": "掌握圆的标准方程与一般方程，理解直线与圆的位置关系。",
+    "level": 2,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch02-sec01-kp001",
+    "parentId": "analytic-geometry-ch02",
+    "title": "圆的标准方程与一般方程",
+    "description": "掌握圆的标准方程与一般方程及其相互转化。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch02-sec02-kp002",
+    "parentId": "analytic-geometry-ch02",
+    "title": "点与圆、直线与圆的位置关系",
+    "description": "会用几何法或代数法判断点、直线与圆的位置关系。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch02-sec03-kp003",
+    "parentId": "analytic-geometry-ch02",
+    "title": "圆的切线方程",
+    "description": "会求过圆上一点与过圆外一点的圆的切线方程。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch02-sec04-kp004",
+    "parentId": "analytic-geometry-ch02",
+    "title": "圆与圆的位置关系",
+    "description": "会判断两圆的位置关系，会求公共弦所在直线方程。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch03",
+    "parentId": "analytic-geometry",
+    "title": "椭圆",
+    "description": "掌握椭圆的定义、标准方程与几何性质。",
+    "level": 2,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch03-sec01-kp001",
+    "parentId": "analytic-geometry-ch03",
+    "title": "椭圆及其标准方程",
+    "description": "掌握椭圆的定义、焦点与标准方程。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch03-sec02-kp002",
+    "parentId": "analytic-geometry-ch03",
+    "title": "椭圆的几何性质",
+    "description": "掌握椭圆的范围、对称性、顶点与离心率等几何性质。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch03-sec03-kp003",
+    "parentId": "analytic-geometry-ch03",
+    "title": "椭圆中的常见结论",
+    "description": "理解椭圆焦半径、焦点三角形等常见结论及其应用。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch04",
+    "parentId": "analytic-geometry",
+    "title": "双曲线",
+    "description": "掌握双曲线的定义、标准方程与几何性质。",
+    "level": 2,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch04-sec01-kp001",
+    "parentId": "analytic-geometry-ch04",
+    "title": "双曲线及其标准方程",
+    "description": "掌握双曲线的定义、焦点与标准方程。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch04-sec02-kp002",
+    "parentId": "analytic-geometry-ch04",
+    "title": "双曲线的几何性质",
+    "description": "掌握双曲线的范围、顶点、渐近线与离心率等性质。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch05",
+    "parentId": "analytic-geometry",
+    "title": "抛物线",
+    "description": "掌握抛物线的定义、标准方程与焦点弦等问题。",
+    "level": 2,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch05-sec01-kp001",
+    "parentId": "analytic-geometry-ch05",
+    "title": "抛物线及其标准方程",
+    "description": "掌握抛物线的定义与四种标准方程。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch05-sec02-kp002",
+    "parentId": "analytic-geometry-ch05",
+    "title": "抛物线的几何性质",
+    "description": "掌握抛物线的范围、对称性以及焦点与准线的关系。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch05-sec03-kp003",
+    "parentId": "analytic-geometry-ch05",
+    "title": "抛物线的焦点弦问题",
+    "description": "掌握过焦点的弦长公式及相关结论。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch06",
+    "parentId": "analytic-geometry",
+    "title": "直线与圆锥曲线的位置关系",
+    "description": "掌握直线与圆锥曲线联立求解的方法，解决弦长、中点弦等问题。",
+    "level": 2,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch06-sec01-kp001",
+    "parentId": "analytic-geometry-ch06",
+    "title": "直线与圆锥曲线的位置关系",
+    "description": "会用判别式判断直线与圆锥曲线的位置关系。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch06-sec02-kp002",
+    "parentId": "analytic-geometry-ch06",
+    "title": "弦长问题",
+    "description": "会求直线与圆锥曲线相交的弦长。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch06-sec03-kp003",
+    "parentId": "analytic-geometry-ch06",
+    "title": "中点弦问题",
+    "description": "会用点差法解决中点弦及相关的斜率问题。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "analytic-geometry-ch06-sec04-kp004",
+    "parentId": "analytic-geometry-ch06",
+    "title": "圆锥曲线中的综合问题",
+    "description": "会解决圆锥曲线中的定值、定点与最值等综合问题。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats",
+    "parentId": null,
+    "title": "计数原理与概率统计",
+    "description": "掌握计数原理与排列组合，理解抽样、统计图表与随机变量，能用概率统计方法分析数据。",
+    "level": 1,
+    "sortOrder": 10,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch01",
+    "parentId": "counting-probability-stats",
+    "title": "计数原理",
+    "description": "理解分类加法与分步乘法计数原理并能综合运用。",
+    "level": 2,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch01-sec01-kp001",
+    "parentId": "counting-probability-stats-ch01",
+    "title": "分类加法计数原理",
+    "description": "理解分类加法计数原理，会按标准分类完成计数。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch01-sec02-kp002",
+    "parentId": "counting-probability-stats-ch01",
+    "title": "分步乘法计数原理",
+    "description": "理解分步乘法计数原理，会分步骤完成计数。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch01-sec03-kp003",
+    "parentId": "counting-probability-stats-ch01",
+    "title": "两个计数原理的综合应用",
+    "description": "能正确区分并综合运用两个计数原理解决复杂计数问题。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch02",
+    "parentId": "counting-probability-stats",
+    "title": "排列与组合",
+    "description": "掌握排列数、组合数公式与常用解题模型。",
+    "level": 2,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch02-sec01-kp001",
+    "parentId": "counting-probability-stats-ch02",
+    "title": "排列与排列数公式",
+    "description": "理解排列的概念，掌握排列数公式。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch02-sec02-kp002",
+    "parentId": "counting-probability-stats-ch02",
+    "title": "组合与组合数公式",
+    "description": "理解组合的概念，掌握组合数公式及性质。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch02-sec03-kp003",
+    "parentId": "counting-probability-stats-ch02",
+    "title": "排列与组合的综合应用",
+    "description": "会处理相邻、不相邻、定序等排列组合中的常见问题模型。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch03",
+    "parentId": "counting-probability-stats",
+    "title": "二项式定理",
+    "description": "掌握二项式定理及其通项公式与系数性质。",
+    "level": 2,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch03-sec01-kp001",
+    "parentId": "counting-probability-stats-ch03",
+    "title": "二项式定理",
+    "description": "掌握二项式定理及其展开式的通项公式。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch03-sec02-kp002",
+    "parentId": "counting-probability-stats-ch03",
+    "title": "二项式系数的性质",
+    "description": "掌握二项式系数的对称性、增减性与最大值等性质。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch03-sec03-kp003",
+    "parentId": "counting-probability-stats-ch03",
+    "title": "二项式定理的应用",
+    "description": "会求展开式的特定项、系数和等应用问题。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch04",
+    "parentId": "counting-probability-stats",
+    "title": "统计",
+    "description": "理解抽样方法，掌握用样本数字特征估计总体的思想方法。",
+    "level": 2,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch04-sec01-kp001",
+    "parentId": "counting-probability-stats-ch04",
+    "title": "抽样方法",
+    "description": "掌握简单随机抽样与分层随机抽样的方法与特点。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch04-sec02-kp002",
+    "parentId": "counting-probability-stats-ch04",
+    "title": "统计图表",
+    "description": "会绘制频率分布直方图、扇形图等统计图并读取信息。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch04-sec03-kp003",
+    "parentId": "counting-probability-stats-ch04",
+    "title": "平均数、中位数与众数",
+    "description": "会计算平均数、中位数与众数并理解其适用场合。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch04-sec04-kp004",
+    "parentId": "counting-probability-stats-ch04",
+    "title": "方差与标准差",
+    "description": "会计算方差与标准差，理解其刻画数据波动程度的作用。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch04-sec05-kp005",
+    "parentId": "counting-probability-stats-ch04",
+    "title": "百分位数",
+    "description": "理解百分位数含义，会求一组数据的百分位数。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch04-sec06-kp006",
+    "parentId": "counting-probability-stats-ch04",
+    "title": "相关关系与线性回归",
+    "description": "了解变量间的相关关系，会求一元线性回归方程并作出预测。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch05",
+    "parentId": "counting-probability-stats",
+    "title": "概率",
+    "description": "理解随机事件与古典概型，掌握列举法与频率估计概率。",
+    "level": 2,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch05-sec01-kp001",
+    "parentId": "counting-probability-stats-ch05",
+    "title": "随机事件与概率",
+    "description": "理解随机事件、必然事件与不可能事件及概率的意义。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch05-sec02-kp002",
+    "parentId": "counting-probability-stats-ch05",
+    "title": "古典概型",
+    "description": "掌握古典概型的特征与概率计算公式。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch05-sec03-kp003",
+    "parentId": "counting-probability-stats-ch05",
+    "title": "用列举法求概率",
+    "description": "会用列表法与树状图法求简单事件的概率。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch05-sec04-kp004",
+    "parentId": "counting-probability-stats-ch05",
+    "title": "事件的关系与运算",
+    "description": "掌握事件的关系及概率的加法公式与对立事件性质。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch05-sec05-kp005",
+    "parentId": "counting-probability-stats-ch05",
+    "title": "用频率估计概率",
+    "description": "理解大量重复试验中频率稳定于概率的事实并会应用。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch06",
+    "parentId": "counting-probability-stats",
+    "title": "随机变量及其分布",
+    "description": "掌握离散型随机变量的分布列、期望与方差，了解常见分布。",
+    "level": 2,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch06-sec01-kp001",
+    "parentId": "counting-probability-stats-ch06",
+    "title": "条件概率与全概率公式",
+    "description": "掌握条件概率公式与全概率公式，解决相关概率问题。",
+    "level": 3,
+    "sortOrder": 1,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch06-sec02-kp002",
+    "parentId": "counting-probability-stats-ch06",
+    "title": "事件的相互独立性",
+    "description": "理解事件相互独立的概念，掌握其乘法公式。",
+    "level": 3,
+    "sortOrder": 2,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch06-sec03-kp003",
+    "parentId": "counting-probability-stats-ch06",
+    "title": "离散型随机变量及其分布列",
+    "description": "理解离散型随机变量的概念，会写出分布列并校验其性质。",
+    "level": 3,
+    "sortOrder": 3,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch06-sec04-kp004",
+    "parentId": "counting-probability-stats-ch06",
+    "title": "离散型随机变量的均值与方差",
+    "description": "会计算离散型随机变量的均值与方差。",
+    "level": 3,
+    "sortOrder": 4,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch06-sec05-kp005",
+    "parentId": "counting-probability-stats-ch06",
+    "title": "二项分布",
+    "description": "理解n重伯努利试验，掌握二项分布模型及其均值与方差。",
+    "level": 3,
+    "sortOrder": 5,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch06-sec06-kp006",
+    "parentId": "counting-probability-stats-ch06",
+    "title": "超几何分布",
+    "description": "掌握超几何分布的基本模型与特征。",
+    "level": 3,
+    "sortOrder": 6,
+    "source": "static"
+  },
+  {
+    "id": "counting-probability-stats-ch06-sec07-kp007",
+    "parentId": "counting-probability-stats-ch06",
+    "title": "正态分布",
+    "description": "了解正态分布曲线特征与标准正态分布的性质。",
+    "level": 3,
+    "sortOrder": 7,
+    "source": "static"
+  }
+]

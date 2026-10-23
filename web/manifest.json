@@ -1,0 +1,39 @@
+{
+    "name": "格数至理",
+    "short_name": "格数至理",
+    "description": "格数至理：面向初高中的 AI 数学答疑与学习分析系统，拍照或上传题目即可获得逐步讲解与错题分析。",
+    "lang": "zh-CN",
+    "start_url": ".",
+    "scope": ".",
+    "display": "standalone",
+    "display_override": ["standalone", "minimal-ui"],
+    "background_color": "#F7EFDA",
+    "theme_color": "#3B3628",
+    "orientation": "portrait-primary",
+    "categories": ["education"],
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "geshu-math-ai-proxy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Serverless AI gateway: hides API key + system prompts, streams SSE",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "extract-prompts": "node scripts/extract-prompts.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
