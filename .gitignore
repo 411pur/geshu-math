@@ -52,7 +52,7 @@ tool/shots/
 
 # Local stack settings and generated lessons
 local.config.json
-data/
+/data/
 lesson_engine/data/
 lesson_engine/generated/
 lesson_engine/.env.local
