@@ -8,11 +8,14 @@ import 'package:go_router/go_router.dart';
 
 import '../widgets/graph_painter.dart';
 import '../providers/knowledge_providers.dart';
+import '../providers/knowledge_weakness_provider.dart';
 import '../../../core/motion/app_motion.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/knowledge_entity.dart';
+import '../../../domain/entities/wrong_question_entity.dart';
 import '../../../shared/widgets/loading_indicator.dart';
 import '../../../shared/widgets/error_display_widget.dart';
+import '../../wrong_question/pages/wrong_question_detail_page.dart';
 
 class KnowledgeGraphPage extends ConsumerStatefulWidget {
   const KnowledgeGraphPage({super.key});
@@ -31,6 +34,9 @@ class _KnowledgeGraphPageState extends ConsumerState<KnowledgeGraphPage>
   String? _subjectFilter;
   int _maxLevel = 2; // 默认显示 模块+章（L0+L1）；L2 显示节，L3 末级
   final Set<String> _expandedIds = {};
+
+  /// 弱点热力视图：节点颜色从科目色切换为 白→红→黑。
+  bool _heatView = false;
 
   /// 命中信息（屏幕坐标 + 深度 + 世界坐标），由 painter 每帧回填。
   final Map<String, NodeHit> _hits = {};
@@ -382,7 +388,7 @@ class _KnowledgeGraphPageState extends ConsumerState<KnowledgeGraphPage>
 
   // ── 画布 ────────────────────────────────────────────────
 
-  Widget _buildCanvas(GraphData graph) {
+  Widget _buildCanvas(GraphData graph, KnowledgeWeakness? weakness) {
     return Listener(
       onPointerDown: (event) {
         _activePointers++;
@@ -434,6 +440,11 @@ class _KnowledgeGraphPageState extends ConsumerState<KnowledgeGraphPage>
                   yaw: _yaw,
                   pitch: _pitch,
                   viewScale: _viewScale,
+                  heatMode: _heatView,
+                  weakness: weakness,
+                  // 弱点视图直接看全局网络：绕过折叠门控，所有层级全展开；
+                  // 关掉后恢复原来的层级/手动展开状态。
+                  showAllLevels: _heatView,
                   positionsCallback: (hits) {
                     _hits.clear();
                     _hits.addAll(hits);
@@ -476,6 +487,7 @@ class _KnowledgeGraphPageState extends ConsumerState<KnowledgeGraphPage>
   @override
   Widget build(BuildContext context) {
     final graphAsync = ref.watch(graphDataProvider(_subjectFilter));
+    final weakness = ref.watch(knowledgeWeaknessProvider).asData?.value;
 
     return Scaffold(
       // 整个知识图谱页做成一块连续的深色沉浸面：页面顶栏 / 筛选条 / 层级条 /
@@ -497,6 +509,17 @@ class _KnowledgeGraphPageState extends ConsumerState<KnowledgeGraphPage>
           ),
         ),
         actions: [
+          AppPressScale(
+            pressedScale: 0.86,
+            child: IconButton(
+              icon: Icon(
+                Icons.local_fire_department,
+                color: _heatView ? weaknessHeatColor(0.5) : Colors.white,
+              ),
+              tooltip: _heatView ? '关闭弱点视图' : '弱点视图（白→红→黑，红=最弱）',
+              onPressed: () => setState(() => _heatView = !_heatView),
+            ),
+          ),
           AppPressScale(
             pressedScale: 0.86,
             child: IconButton(
@@ -547,6 +570,7 @@ class _KnowledgeGraphPageState extends ConsumerState<KnowledgeGraphPage>
           children: [
             _buildSubjectTabs(),
             _buildLevelBar(),
+            if (_heatView) _buildHeatLegend(),
             Expanded(
               child: Stack(
                 children: [
@@ -566,7 +590,7 @@ class _KnowledgeGraphPageState extends ConsumerState<KnowledgeGraphPage>
                         if (graph.nodes.isEmpty) {
                           return const Center(child: Text('暂无知识数据'));
                         }
-                        return _buildCanvas(graph);
+                        return _buildCanvas(graph, weakness);
                       },
                     ),
                   ),
@@ -729,9 +753,184 @@ class _KnowledgeGraphPageState extends ConsumerState<KnowledgeGraphPage>
                     ),
                   ],
                 ),
+                const SizedBox(height: 10),
+                _weaknessMistakesSection(node),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  /// 弱点视图图例条：白→红→黑，与节点着色同一套函数。
+  Widget _buildHeatLegend() {
+    final weakness = ref.watch(knowledgeWeaknessProvider).asData?.value;
+    final hasData = weakness != null && !weakness.isEmpty;
+    final muted = Colors.white.withValues(alpha: 0.62);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '弱点',
+            style: TextStyle(
+              color: muted,
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            width: 130,
+            height: 10,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(999),
+              gradient: LinearGradient(
+                colors: [
+                  weaknessHeatColor(0),
+                  weaknessHeatColor(0.5),
+                  weaknessHeatColor(1),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            hasData ? '0 道 → 最弱' : '暂无错题数据',
+            style: TextStyle(color: muted, fontSize: 11.5),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 当前知识点的关联错题列表：点击任意一条直接打开错题详情。
+  Widget _weaknessMistakesSection(KnowledgeNode node) {
+    final weakness = ref.watch(knowledgeWeaknessProvider).asData?.value;
+    final mistakes =
+        weakness?.mistakesByNodeId[node.id] ?? const <WrongQuestion>[];
+
+    if (mistakes.isEmpty) {
+      return Text(
+        '该知识点暂无错题记录（弱点视图下可查看全局漏洞分布）',
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.5),
+          fontSize: 12,
+        ),
+      );
+    }
+
+    final ownCount = weakness?.ownById[node.id]?.length ?? 0;
+    final inheritedCount = mistakes.length - ownCount;
+
+    final shown = mistakes.take(4).toList();
+    final more = mistakes.length - shown.length;
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: 230),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text.rich(
+            TextSpan(
+              text: '关联错题 ${mistakes.length} 道',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+              children: [
+                if (inheritedCount > 0)
+                  TextSpan(
+                    text: '（含继承 $inheritedCount 道）',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.55),
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          Flexible(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: shown.length,
+              separatorBuilder: (_, _) =>
+                  const Divider(height: 1, color: Colors.white12),
+              itemBuilder: (context, i) {
+                final wq = shown[i];
+                return InkWell(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => WrongQuestionDetailPage(item: wq),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            wq.questionText
+                                .replaceAll(RegExp(r'\s+'), ' ')
+                                .trim(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.85),
+                              fontSize: 12.5,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        _masteryChip(wq.mastery),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          if (more > 0)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                '还有 $more 道，去错题本查看全部',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.5),
+                  fontSize: 11.5,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// 掌握度小胶囊：未掌握红 / 复习中橙 / 已掌握绿。
+  Widget _masteryChip(int mastery) {
+    final (label, color) = switch (mastery) {
+      0 => ('未掌握', const Color(0xFFE5484D)),
+      1 => ('复习中', const Color(0xFFF5A623)),
+      _ => ('已掌握', const Color(0xFF34C759)),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 10.5,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
