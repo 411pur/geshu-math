@@ -94,6 +94,25 @@ Windows 桌面：
 flutter run -d windows     # 需要 Visual Studio 的 C++ 桌面开发组件
 ```
 
+Windows 一键脚本（免命令行，双击即可）：
+
+| 脚本 | 作用 |
+| --- | --- |
+| `启动项目.bat` | 检查 Flutter / Python → 依赖变化时自动 `pub get` → 源码有改动时自动重新构建 → 同步 `web/config.json` → 起本地服务并打开 `http://127.0.0.1:8123/#/home` |
+| `清理缓存.bat` | 清理 `build/`、`.dart_tool/`、桌面构建中间产物，以及 Chrome / Edge 的 Service Worker 与 HTTP 缓存；不会动 localStorage 里的错题、成绩和画像数据 |
+
+参数可透传：
+
+```bat
+启动项目.bat -SkipBuild           :: 直接用上次产物，秒开
+启动项目.bat -ForceBuild          :: 强制重新构建
+启动项目.bat -Port 8080 -NoBrowser
+清理缓存.bat -DryRun              :: 只统计占用，不删除
+清理缓存.bat -Yes -NoRestart      :: 不询问，清理后不自动重启
+```
+
+脚本实现位于 `tool/start_local.ps1`、`tool/clear_cache.ps1`，运行日志在 `build/local-logs/`。
+
 ## 配置
 
 运行时读取站点根目录的 `/config.json`（即 `web/config.json`，构建时拷进 `build/web`），并在 URL 上带时间戳参数，避免浏览器或 Service Worker 缓存旧配置。
