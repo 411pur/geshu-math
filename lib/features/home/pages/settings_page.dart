@@ -1,3 +1,6 @@
+import 'package:dio/dio.dart';
+import '../../../core/constants/api_endpoints.dart';
+import '../../lesson_studio/data/lesson_ai_config.dart';
 import '../../report/models/wrong_question_analytics.dart';
 import '../../report/providers/analytics_provider.dart';
 import '../../report/widgets/analytics_dashboard.dart';
@@ -21,6 +24,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _baseUrl = TextEditingController();
   final _apiKey = TextEditingController();
   final _model = TextEditingController();
+  final _reasoningModel = TextEditingController();
   final _visionModel = TextEditingController();
   final _weakPointsController = TextEditingController();
 
@@ -49,6 +53,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     _baseUrl.dispose();
     _apiKey.dispose();
     _model.dispose();
+    _reasoningModel.dispose();
     _visionModel.dispose();
     _weakPointsController.dispose();
     for (final b in _boards.values) {
@@ -62,6 +67,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     _baseUrl.text = s.baseUrl;
     _apiKey.text = s.apiKey;
     _model.text = s.model;
+    _reasoningModel.text = s.reasoningModel;
     _visionModel.text = s.visionModel;
     _boards['wrongQuestion']!.load(s.wrongQuestion);
     _boards['exam']!.load(s.exam);
@@ -70,12 +76,81 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     _boards['lesson']!.load(s.lesson);
   }
 
+  bool _testing = false;
+  String _connection = '';
+  Future<void> _testConnection() async {
+    setState(() {
+      _testing = true;
+      _connection = '正在检测快速、推理与视觉模型…';
+    });
+    try {
+      final response =
+          await Dio(
+            BaseOptions(receiveTimeout: const Duration(seconds: 75)),
+          ).post<Map<String, dynamic>>(
+            '${LessonAiConfig.externalLessonBridgeUrl}/api/ai/test',
+            data: const <String, dynamic>{},
+            options: Options(contentType: Headers.jsonContentType),
+          );
+      final data = response.data ?? const <String, dynamic>{};
+      final roles = (data['roles'] as List?) ?? const [];
+      final details = roles
+          .map((raw) {
+            final item = raw is Map ? raw : const <String, dynamic>{};
+            final ok = item['ok'] == true;
+            final latency = item['latencyMs'];
+            final provider = item['provider']?.toString() ?? '';
+            final model = item['model']?.toString() ?? '';
+            final label =
+                item['label']?.toString() ?? item['role']?.toString() ?? '模型';
+            final suffix = latency is num ? ' · ${latency}ms' : '';
+            final reason = ok ? '' : '\n  ${item['message'] ?? '不可用'}';
+            return '${ok ? '✓' : '×'} $label · $provider / $model$suffix$reason';
+          })
+          .join('\n');
+      final summary = data['message']?.toString() ?? '模型检测完成';
+      if (mounted) {
+        setState(
+          () => _connection = details.isEmpty ? summary : '$summary\n$details',
+        );
+      }
+    } on DioException catch (error) {
+      final payload = error.response?.data;
+      if (mounted) {
+        setState(
+          () => _connection = payload is Map
+              ? (payload['message'] ?? '连接失败').toString()
+              : '服务不可用，请确认「启动项目.bat」窗口仍在运行',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _testing = false);
+    }
+  }
+
   void _save() {
+    for (final value in [
+      _baseUrl.text,
+      ..._boards.values.map((b) => b.url.text),
+    ]) {
+      if (value.trim().isEmpty) continue;
+      final uri = Uri.tryParse(value.trim());
+      if (uri == null ||
+          !['http', 'https'].contains(uri.scheme) ||
+          uri.host.isEmpty ||
+          uri.userInfo.isNotEmpty) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('请填写有效的 HTTP(S) 地址')));
+        return;
+      }
+    }
     final notifier = ref.read(aiSettingsProvider.notifier);
     notifier.saveGlobal(
       baseUrl: _baseUrl.text.trim(),
       apiKey: _apiKey.text.trim(),
       model: _model.text.trim(),
+      reasoningModel: _reasoningModel.text.trim(),
       visionModel: _visionModel.text.trim(),
     );
     for (final entry in _boards.entries) {
@@ -101,21 +176,55 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _sectionTitle('全局配置', '所有板块的默认值，各板块可单独覆盖'),
-          _field(
-            _baseUrl,
-            'AI Base URL',
-            'https://your-host/v1',
+          _sectionTitle(
+            '全局配置',
+            ApiEndpoints.managedAi
+                ? '当前来源：根目录 local.config.json；密钥由服务端 .env.local 管理。修改后重启生效。'
+                : '配置文件提供默认值；浏览器仅保存个人覆盖，留空跟随默认',
           ),
+          if (ApiEndpoints.managedAi) ...[
+            Text(
+              '服务地址：${ApiEndpoints.baseUrl}\n快速/结构化：${ApiEndpoints.model}\n高难推理：${ApiEndpoints.reasoningModel}\n图片理解：${ApiEndpoints.visionModel}',
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '高中数学讲解会把高难题交给推理模型，读图、排课、复核交给快速模型。修改 local.config.json 后需重启服务。',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            OutlinedButton.icon(
+              onPressed: _testing ? null : _testConnection,
+              icon: const Icon(Icons.network_check),
+              label: Text(_testing ? '正在检测全部模型…' : '检测全部模型'),
+            ),
+            if (_connection.isNotEmpty)
+              Card(
+                margin: const EdgeInsets.only(top: 8),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: SelectableText(_connection),
+                ),
+              ),
+          ],
+          _field(_baseUrl, 'AI Base URL', 'https://your-host/v1'),
           _field(_apiKey, 'API Key', 'sk-...'),
-          _field(_model, '文本模型', 'your-text-model'),
+          _field(_model, '快速/结构化模型', 'your-fast-model'),
+          _field(_reasoningModel, '高难推理模型', 'your-reasoning-model'),
           _field(_visionModel, '多模态模型（图片识别）', 'your-vision-model'),
           const SizedBox(height: 16),
 
           _insightCard(),
           const SizedBox(height: 16),
 
-          for (final b in _boards.values) _boardCard(b),
+          for (final b in _boards.values.where((b) => b.name != '互动讲解'))
+            _boardCard(b),
+          Card(
+            child: ListTile(
+              title: const Text('数学互动讲解'),
+              subtitle: Text(
+                '服务地址：${LessonAiConfig.externalLessonBridgeUrl}\n快速模型：${ApiEndpoints.model}\n推理模型：${ApiEndpoints.reasoningModel}\n视觉模型：${ApiEndpoints.visionModel}',
+              ),
+            ),
+          ),
 
           const SizedBox(height: 16),
           Row(
@@ -361,6 +470,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     padding: const EdgeInsets.only(bottom: 10),
     child: TextField(
       controller: c,
+      obscureText: label.contains('Key'),
+      readOnly:
+          ApiEndpoints.managedAi &&
+          (label.contains('URL') ||
+              label.contains('Key') ||
+              c == _model ||
+              c == _reasoningModel ||
+              c == _visionModel),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,

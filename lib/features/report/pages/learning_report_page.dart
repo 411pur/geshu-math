@@ -4,8 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../models/wrong_question_analytics.dart';
 import '../providers/analytics_provider.dart';
+import '../providers/learning_memory_provider.dart';
 import '../widgets/analytics_dashboard.dart';
 import '../widgets/analytics_question_sheet.dart';
+import '../widgets/learning_practice_page.dart';
+import '../widgets/learning_report_summary_card.dart';
 import '../../../domain/entities/wrong_question_entity.dart';
 import '../../../shared/widgets/styled_markdown.dart';
 import '../../../core/theme/app_colors.dart';
@@ -20,6 +23,7 @@ class LearningReportPage extends ConsumerStatefulWidget {
 
 class _LearningReportPageState extends ConsumerState<LearningReportPage> {
   int _days = 7;
+  int _view = 0;
   bool _loading = false;
   String _report = '';
   String? _reportError;
@@ -169,38 +173,53 @@ class _LearningReportPageState extends ConsumerState<LearningReportPage> {
       useSafeArea: true,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setSheetState) => Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom,
+          ),
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(children: [
-                  Icon(Icons.alarm, color: Theme.of(ctx).colorScheme.primary),
-                  const SizedBox(width: 8),
-                  Text('定时报告设置', style: Theme.of(ctx).textTheme.titleLarge),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(ctx),
-                  ),
-                ]),
+                Row(
+                  children: [
+                    Icon(Icons.alarm, color: Theme.of(ctx).colorScheme.primary),
+                    const SizedBox(width: 8),
+                    Text('定时报告设置', style: Theme.of(ctx).textTheme.titleLarge),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(ctx),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 8),
 
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   title: const Text('启用定时报告'),
-                  subtitle: Text(draft.enabled ? '开启中 · ${draft.describe()}' : '当前未开启'),
+                  subtitle: Text(
+                    draft.enabled ? '开启中 · ${draft.describe()}' : '当前未开启',
+                  ),
                   value: draft.enabled,
-                  onChanged: (v) => setSheetState(() => draft = ReportSchedule(
-                    enabled: v, frequency: draft.frequency, weekday: draft.weekday,
-                    intervalDays: draft.intervalDays, hour: draft.hour, minute: draft.minute,
-                  )),
+                  onChanged: (v) => setSheetState(
+                    () => draft = ReportSchedule(
+                      enabled: v,
+                      frequency: draft.frequency,
+                      weekday: draft.weekday,
+                      intervalDays: draft.intervalDays,
+                      hour: draft.hour,
+                      minute: draft.minute,
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 8),
-                const Text('发送频率', style: TextStyle(fontWeight: FontWeight.w600)),
+                const Text(
+                  '发送频率',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
                 const SizedBox(height: 4),
                 SegmentedButton<String>(
                   segments: const [
@@ -209,41 +228,75 @@ class _LearningReportPageState extends ConsumerState<LearningReportPage> {
                     ButtonSegment(value: 'interval', label: Text('每N天')),
                   ],
                   selected: {draft.frequency},
-                  onSelectionChanged: (s) => setSheetState(() => draft = ReportSchedule(
-                    enabled: draft.enabled, frequency: s.first, weekday: draft.weekday,
-                    intervalDays: draft.intervalDays, hour: draft.hour, minute: draft.minute,
-                  )),
+                  onSelectionChanged: (s) => setSheetState(
+                    () => draft = ReportSchedule(
+                      enabled: draft.enabled,
+                      frequency: s.first,
+                      weekday: draft.weekday,
+                      intervalDays: draft.intervalDays,
+                      hour: draft.hour,
+                      minute: draft.minute,
+                    ),
+                  ),
                 ),
 
                 if (draft.frequency == 'weekly') ...[
                   const SizedBox(height: 12),
-                  const Text('选择星期几', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const Text(
+                    '选择星期几',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
                   const SizedBox(height: 4),
-                  Wrap(spacing: 6, children: List.generate(7, (i) {
-                    final wd = i + 1;
-                    return ChoiceChip(
-                      label: Text(ReportSchedule.weekdayCn(wd)),
-                      selected: draft.weekday == wd,
-                      onSelected: (_) => setSheetState(() => draft = ReportSchedule(
-                        enabled: draft.enabled, frequency: draft.frequency, weekday: wd,
-                        intervalDays: draft.intervalDays, hour: draft.hour, minute: draft.minute,
-                      )),
-                    );
-                  })),
+                  Wrap(
+                    spacing: 6,
+                    children: List.generate(7, (i) {
+                      final wd = i + 1;
+                      return ChoiceChip(
+                        label: Text(ReportSchedule.weekdayCn(wd)),
+                        selected: draft.weekday == wd,
+                        onSelected: (_) => setSheetState(
+                          () => draft = ReportSchedule(
+                            enabled: draft.enabled,
+                            frequency: draft.frequency,
+                            weekday: wd,
+                            intervalDays: draft.intervalDays,
+                            hour: draft.hour,
+                            minute: draft.minute,
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
                 ],
 
                 if (draft.frequency == 'interval') ...[
                   const SizedBox(height: 12),
-                  const Text('间隔天数', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const Text(
+                    '间隔天数',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
                   const SizedBox(height: 4),
-                  Wrap(spacing: 8, children: [3, 5, 7, 14].map((n) => ChoiceChip(
-                    label: Text('$n天'),
-                    selected: draft.intervalDays == n,
-                    onSelected: (_) => setSheetState(() => draft = ReportSchedule(
-                      enabled: draft.enabled, frequency: draft.frequency, weekday: draft.weekday,
-                      intervalDays: n, hour: draft.hour, minute: draft.minute,
-                    )),
-                  )).toList()),
+                  Wrap(
+                    spacing: 8,
+                    children: [3, 5, 7, 14]
+                        .map(
+                          (n) => ChoiceChip(
+                            label: Text('$n天'),
+                            selected: draft.intervalDays == n,
+                            onSelected: (_) => setSheetState(
+                              () => draft = ReportSchedule(
+                                enabled: draft.enabled,
+                                frequency: draft.frequency,
+                                weekday: draft.weekday,
+                                intervalDays: n,
+                                hour: draft.hour,
+                                minute: draft.minute,
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ],
 
                 const SizedBox(height: 16),
@@ -253,17 +306,28 @@ class _LearningReportPageState extends ConsumerState<LearningReportPage> {
                   title: const Text('发送时间'),
                   trailing: TextButton.icon(
                     icon: const Icon(Icons.schedule, size: 18),
-                    label: Text('${draft.hour.toString().padLeft(2, '0')}:${draft.minute.toString().padLeft(2, '0')}'),
+                    label: Text(
+                      '${draft.hour.toString().padLeft(2, '0')}:${draft.minute.toString().padLeft(2, '0')}',
+                    ),
                     onPressed: () async {
                       final t = await showTimePicker(
                         context: ctx,
-                        initialTime: TimeOfDay(hour: draft.hour, minute: draft.minute),
+                        initialTime: TimeOfDay(
+                          hour: draft.hour,
+                          minute: draft.minute,
+                        ),
                       );
                       if (t != null) {
-                        setSheetState(() => draft = ReportSchedule(
-                        enabled: draft.enabled, frequency: draft.frequency, weekday: draft.weekday,
-                        intervalDays: draft.intervalDays, hour: t.hour, minute: t.minute,
-                      ));
+                        setSheetState(
+                          () => draft = ReportSchedule(
+                            enabled: draft.enabled,
+                            frequency: draft.frequency,
+                            weekday: draft.weekday,
+                            intervalDays: draft.intervalDays,
+                            hour: t.hour,
+                            minute: t.minute,
+                          ),
+                        );
                       }
                     },
                   ),
@@ -294,69 +358,8 @@ class _LearningReportPageState extends ConsumerState<LearningReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('学习报告'),
-        actions: [
-          IconButton(
-            icon: Stack(
-              children: [
-                Icon(_schedule.enabled ? Icons.alarm_on : Icons.alarm_add),
-                if (_schedule.enabled)
-                  Positioned(
-                    right: 2,
-                    top: 2,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: AppColors.accent,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            tooltip: '定时设置',
-            onPressed: _openScheduleSettings,
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: '重新生成',
-            onPressed: _loading ? null : _generate,
-          ),
-        ],
-        bottom: _schedule.enabled
-            ? PreferredSize(
-                preferredSize: const Size.fromHeight(36),
-                child: Container(
-                  width: double.infinity,
-                  color: AppColors.accent.withValues(alpha: 0.08),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 6,
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.alarm,
-                        size: 14,
-                        color: AppColors.accent,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        '定时报告已开启 · ${_schedule.describe()}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.accent,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : null,
-      ),
-      body: _buildDashboard(),
+      backgroundColor: AppColors.background,
+      body: SafeArea(child: _buildDashboard()),
     );
   }
 
@@ -443,127 +446,312 @@ class _LearningReportPageState extends ConsumerState<LearningReportPage> {
     );
   }
 
-  /// 画像入口：把「长期画像」和「阶段报告」串起来。
-  Widget _portraitEntry(WrongQuestionAnalytics data) {
-    final top = WrongQuestionAnalytics.ranked(data.modules).take(1);
-    final hint = data.total == 0
-        ? '添加错题后自动生成'
-        : '掌握率 ${data.masteredPercent}%'
-              '${top.isEmpty ? '' : ' · 高频模块 ${top.first.key}'}';
-    return Card(
-      margin: EdgeInsets.zero,
-      clipBehavior: Clip.antiAlias,
-      child: ListTile(
-        leading: const Icon(Icons.radar_outlined, color: AppColors.primary),
-        title: const Text(
-          '学生画像',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-        ),
-        subtitle: Text(
-          hint,
-          style: const TextStyle(
-            fontSize: 12,
-            color: AppColors.mutedForeground,
+  Widget _buildDashboard() {
+    final questions = ref.watch(analyticsQuestionsProvider);
+    final now = DateTime.now();
+    final data = WrongQuestionAnalytics(questions, now: now, days: _days);
+    final nextSuggestion = suggestPractice(
+      questions,
+      ref.watch(learningMemoryProvider),
+      now,
+    ).firstOrNull;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final wide = constraints.maxWidth >= 900;
+        final horizontal = wide ? 28.0 : 16.0;
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1120),
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(horizontal, 20, horizontal, 24),
+              children: [
+                _toolbar(data),
+                const SizedBox(height: 16),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeInCubic,
+                  child: KeyedSubtree(
+                    key: ValueKey<int>(_view),
+                    child: switch (_view) {
+                      0 => _overview(data, nextSuggestion, wide),
+                      1 => _dataView(data),
+                      _ => _reportView(data),
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        trailing: const Icon(
-          Icons.chevron_right,
-          size: 20,
-          color: AppColors.border,
-        ),
-        onTap: () => context.go('/profile/portrait'),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildDashboard() {
-    final data = WrongQuestionAnalytics(
-      ref.watch(analyticsQuestionsProvider),
-      now: DateTime.now(),
-      days: _days,
-    );
-    return ListView(
-      padding: const EdgeInsets.all(20),
+  Widget _toolbar(WrongQuestionAnalytics data) {
+    final title = switch (_view) {
+      1 => '数据统计',
+      2 => '学习报告',
+      _ => '学习概览',
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          '错题学习报告',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+        Row(
+          children: [
+            if (_view != 0) ...[
+              IconButton(
+                tooltip: '返回学习概览',
+                onPressed: () => setState(() => _view = 0),
+                icon: const Icon(Icons.arrow_back, size: 20),
+                visualDensity: VisualDensity.compact,
+              ),
+              const SizedBox(width: 2),
+            ] else ...[
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: .1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.insights_outlined,
+                  size: 19,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(width: 10),
+            ],
+            Text(title, style: Theme.of(context).textTheme.titleLarge),
+            const Spacer(),
+            IconButton(
+              tooltip: '定时设置',
+              onPressed: _openScheduleSettings,
+              icon: Stack(
+                children: [
+                  Icon(_schedule.enabled ? Icons.alarm_on : Icons.alarm_add),
+                  if (_schedule.enabled)
+                    const Positioned(
+                      right: 1,
+                      top: 1,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: AppColors.accent,
+                          shape: BoxShape.circle,
+                        ),
+                        child: SizedBox(width: 7, height: 7),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            IconButton(
+              tooltip: '重新生成报告',
+              onPressed: _loading || data.total == 0 ? null : () => _generate(),
+              visualDensity: VisualDensity.compact,
+              icon: const Icon(Icons.refresh),
+            ),
+          ],
         ),
-        const SizedBox(height: 6),
-        const Text('从错题记录看清近期学习情况，再决定下一步复习重点。'),
-        const SizedBox(height: 12),
-        _portraitEntry(data),
-        const SizedBox(height: 16),
+        if (_schedule.enabled) ...[
+          const SizedBox(height: 6),
+          Text(
+            '定时报告已开启 · ${_schedule.describe()}',
+            style: const TextStyle(fontSize: 12, color: AppColors.accent),
+          ),
+        ],
+        const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             for (final days in [7, 30, 90])
               ChoiceChip(
                 label: Text('近 $days 天'),
                 selected: _days == days,
+                visualDensity: VisualDensity.compact,
                 onSelected: _loading
                     ? null
                     : (_) => setState(() => _days = days),
               ),
+            Text(
+              _periodLabel(data),
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _overview(
+    WrongQuestionAnalytics data,
+    LearningSuggestion? nextSuggestion,
+    bool wide,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        LearningReportSummaryCard(
+          data: data,
+          days: _days,
+          nextSuggestion: nextSuggestion,
+          onPractice: nextSuggestion == null
+              ? null
+              : () => openLearningPractice(context, nextSuggestion),
+          onAddQuestion: () => context.go('/wrong-question/chat'),
+        ),
+        const SizedBox(height: 16),
+        _quickActions(wide),
+      ],
+    );
+  }
+
+  Widget _quickActions(bool wide) {
+    final cards = [
+      _QuickActionCard(
+        icon: Icons.query_stats,
+        title: '数据统计',
+        subtitle: '趋势、掌握度与错因结构',
+        onTap: () => setState(() => _view = 1),
+      ),
+      _QuickActionCard(
+        icon: Icons.description_outlined,
+        title: '学习报告',
+        subtitle: '生成并回看阶段分析',
+        onTap: () => setState(() => _view = 2),
+      ),
+      _QuickActionCard(
+        icon: Icons.account_circle_outlined,
+        title: '学生画像',
+        subtitle: '长期薄弱点与学习节奏',
+        onTap: () => context.go('/profile/portrait'),
+      ),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Text('快捷入口', style: Theme.of(context).textTheme.titleSmall),
+            const Spacer(),
+            Text('常用功能', style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
         const SizedBox(height: 10),
-        Text(
-          '统计范围：${data.daily.first.date.month}/${data.daily.first.date.day} — ${data.now.month}/${data.now.day} · 数据来源：当前错题本',
-          style: const TextStyle(
-            fontSize: 12,
-            color: AppColors.mutedForeground,
+        if (wide)
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var index = 0; index < cards.length; index++) ...[
+                  Expanded(child: cards[index]),
+                  if (index != cards.length - 1) const SizedBox(width: 12),
+                ],
+              ],
+            ),
+          )
+        else
+          Column(
+            children: [
+              for (var index = 0; index < cards.length; index++) ...[
+                cards[index],
+                if (index != cards.length - 1) const SizedBox(height: 8),
+              ],
+            ],
           ),
-        ),
-        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  Widget _dataView(WrongQuestionAnalytics data) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(_periodLabel(data), style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: 12),
         AnalyticsDashboard(
           data: data,
           onShowQuestions: (title, questions) =>
               showAnalyticsQuestions(context, title, questions),
         ),
-        const SizedBox(height: 24),
-        Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 16,
-          runSpacing: 8,
-          children: [
-            const Text(
-              'AI 分析与复习建议',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-            ),
-            FilledButton.icon(
-              onPressed: _loading || data.total == 0 ? null : () => _generate(),
-              icon: const Icon(Icons.auto_awesome),
-              label: Text(_loading ? '正在分析…' : '生成近 $_days 天报告'),
-            ),
-          ],
+      ],
+    );
+  }
+
+  Widget _reportView(WrongQuestionAnalytics data) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 12,
+                runSpacing: 8,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'AI 学习报告',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        '基于近 $_days 天错题本生成',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                  FilledButton.icon(
+                    onPressed: _loading || data.total == 0
+                        ? null
+                        : () => _generate(),
+                    icon: const Icon(Icons.auto_awesome, size: 18),
+                    label: Text(_loading ? '正在分析…' : '生成报告'),
+                  ),
+                ],
+              ),
+              if (_loading) ...[
+                const SizedBox(height: 14),
+                const LinearProgressIndicator(),
+              ],
+              if (_reportError != null) ...[
+                const SizedBox(height: 10),
+                Text(
+                  _reportError!,
+                  style: const TextStyle(color: AppColors.error, fontSize: 12),
+                ),
+              ],
+              if (_notEnoughData) ...[
+                const SizedBox(height: 10),
+                Text(
+                  '所选时间内暂无错题，可扩大时间范围。',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ],
+          ),
         ),
-        if (_loading)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: LinearProgressIndicator(),
-          ),
-        if (_reportError != null)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Text(
-              _reportError!,
-              style: const TextStyle(color: AppColors.error),
-            ),
-          ),
-        if (_notEnoughData)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            child: Text('所选时间内暂无错题，可扩大时间范围。'),
-          ),
+        const SizedBox(height: 16),
         if (_report.isNotEmpty) ...[
-          const SizedBox(height: 12),
           Text(
             _reportDays == null
                 ? '已保存的历史报告 · 统计范围未记录，请重新生成以对齐图表。'
-                : '上次生成：${_reportTime == null ? '时间未记录' : '${_reportTime!.year}/${_reportTime!.month}/${_reportTime!.day}'} · 近 $_reportDays 天；正文为生成时的快照，图表随错题本更新。',
+                : '上次生成：${_reportTime == null ? '时间未记录' : '${_reportTime!.year}/${_reportTime!.month}/${_reportTime!.day}'} · 近 $_reportDays 天',
             style: const TextStyle(
               fontSize: 12,
               color: AppColors.mutedForeground,
@@ -577,19 +765,90 @@ class _LearningReportPageState extends ConsumerState<LearningReportPage> {
           const SizedBox(height: 16),
           _buildReportView(),
         ] else if (!_loading)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 18),
             child: Text(
-              '上方统计无需 AI 即可查看。生成报告后，这里会展示分析和重点练习建议。',
-              style: TextStyle(color: AppColors.mutedForeground),
+              '生成报告后，这里会展示数学分析和重点练习建议。',
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
-        if (data.total == 0)
-          TextButton(
-            onPressed: () => context.go('/wrong-question/chat'),
-            child: const Text('去添加错题'),
-          ),
       ],
+    );
+  }
+
+  String _periodLabel(WrongQuestionAnalytics data) {
+    if (data.daily.isEmpty) return '统计范围：—';
+    final start = data.daily.first.date;
+    final end = data.now;
+    String two(int value) => value.toString().padLeft(2, '0');
+    return '统计范围：${start.year}.${two(start.month)}.${two(start.day)} — '
+        '${end.year}.${two(end.month)}.${two(end.day)} · 当前错题本';
+  }
+}
+
+class _QuickActionCard extends StatelessWidget {
+  const _QuickActionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: AppColors.border),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: .1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, size: 21, color: AppColors.primary),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: Theme.of(context).textTheme.titleSmall),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Icon(
+                Icons.arrow_forward,
+                size: 18,
+                color: AppColors.mutedForeground,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

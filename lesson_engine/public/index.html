@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>老师讲题 HTML 生成器</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">讲</div>
+        <div>
+          <strong>老师讲题 HTML 生成器</strong>
+          <span>图片或文字 → 自动求解 → 自动排课 → 单文件 HTML</span>
+        </div>
+      </div>
+      <div class="health" id="health"><span class="health-dot"></span><span>正在检查模型配置…</span></div>
+    </header>
+    <main class="layout">
+      <aside class="side-column">
+        <section class="panel create-panel">
+          <div class="panel-title">
+            <div><small>NEW LESSON</small><h1>生成一道错题讲解</h1></div>
+            <span class="step-tag">全自动</span>
+          </div>
+          <form id="createForm">
+            <label class="field">
+              <span>题目文字</span>
+              <textarea id="questionText" rows="8" placeholder="可以直接粘贴题干、选项、答案和解析。也可以只上传图片。"></textarea>
+            </label>
+            <label class="upload-box" id="uploadBox">
+              <input id="questionImage" type="file" accept="image/png,image/jpeg,image/webp" />
+              <span class="upload-icon">＋</span>
+              <strong>上传题目图片</strong>
+              <small id="fileName">支持 JPG、PNG、WebP，最大 12 MB</small>
+            </label>
+            <button class="primary-button" id="createButton" type="submit"><span>开始自动生成</span><span>→</span></button>
+          </form>
+          <div class="status-card is-hidden" id="statusCard">
+            <div class="status-heading"><strong id="statusTitle">正在生成</strong><span id="statusPercent">0%</span></div>
+            <div class="status-track"><div class="status-bar" id="statusBar"></div></div>
+            <p id="statusMessage">等待开始…</p>
+            <pre class="status-error is-hidden" id="statusError"></pre>
+            <div class="visual-warning is-hidden" id="visualWarning"></div>
+            <div class="status-actions">
+              <button class="small-button" id="regenerateButton" type="button">重新生成</button>
+              <button class="small-button accent" id="downloadButton" type="button">下载 HTML</button>
+            </div>
+          </div>
+        </section>
+        <section class="panel history-panel">
+          <div class="panel-title compact">
+            <div><small>HISTORY</small><h2>历史项目</h2></div>
+            <button class="icon-button" id="refreshButton" type="button" title="刷新">↻</button>
+          </div>
+          <div class="history-list" id="historyList"><div class="empty-state">还没有生成记录。</div></div>
+        </section>
+      </aside>
+      <section class="preview-panel">
+        <div class="preview-toolbar">
+          <div><small>LIVE PREVIEW</small><h2 id="previewTitle">讲解预览</h2></div>
+          <div class="toolbar-actions">
+            <button class="small-button" id="openButton" type="button" disabled>新窗口打开</button>
+            <button class="small-button accent" id="downloadTopButton" type="button" disabled>下载 HTML</button>
+          </div>
+        </div>
+        <div class="preview-frame-wrap">
+          <iframe id="previewFrame" title="讲解 HTML 预览"></iframe>
+          <div class="preview-placeholder" id="previewPlaceholder">
+            <div class="placeholder-icon">板</div>
+            <h3>生成的讲题页面会出现在这里</h3>
+            <p>输入题目后点击“开始自动生成”。系统会依次完成识别、求解、复核、排课和 HTML 渲染。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

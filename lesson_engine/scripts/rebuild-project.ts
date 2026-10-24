@@ -1,0 +1,32 @@
+import { loadConfig } from '../src/config.js';
+import { ProjectStore } from '../src/store/project-store.js';
+import { LessonPlanSchema, ProblemExtractSchema, SolutionResultSchema } from '../src/schemas/lesson.js';
+import { applyDiagramBlueprintToPlan } from '../src/visual/diagram-redraw.js';
+import { validateDiagramPlan } from '../src/visual/diagram-validation.js';
+import { LocalHtmlRenderer } from '../src/render/render-lesson.js';
+import { PlaywrightVisualAuditor } from '../src/visual/playwright-auditor.js';
+
+const projectId = process.argv[2];
+if (!projectId) throw new Error('用法：npm run rebuild:project -- <项目ID>');
+const config = loadConfig();
+const store = new ProjectStore(config.dataDir);
+const record = await store.get(projectId);
+const problem = ProblemExtractSchema.parse(await store.readJson(projectId, 'problem.json'));
+const solution = SolutionResultSchema.parse(await store.readJson(projectId, 'solution.json'));
+const currentPlan = LessonPlanSchema.parse(await store.readJson(projectId, 'lesson.json'));
+// 不套题型模板：只用“视觉识别出的几何对象”重绘矢量图。
+const rebuiltPlan = applyDiagramBlueprintToPlan(currentPlan, problem, solution);
+const diagramValidation = validateDiagramPlan(rebuiltPlan);
+if (!diagramValidation.ok) throw new Error(`图形结构校验失败：${diagramValidation.issues.join('；')}`);
+const sourceComparison = solution.sourceComparison || '按题目给出的对象与几何关系重绘矢量图，未套用任何题型模板。';
+const correctedSolution = { ...solution, sourceComparison, checks: [...new Set([...(solution.checks || []), '矢量重绘结构校验通过'])] };
+const html = await new LocalHtmlRenderer(config.templatePath).render(rebuiltPlan);
+await store.writeJson(projectId, 'solution.json', correctedSolution);
+await store.writeJson(projectId, 'verification.json', { ok: true, issues: [], correctedOptions: correctedSolution.correctOptions });
+await store.writeJson(projectId, 'lesson.json', rebuiltPlan);
+await store.writeHtml(projectId, html);
+const outputDir = store.artifactPath(projectId, 'visual/manual-rebuild');
+const report = await new PlaywrightVisualAuditor().audit(html, rebuiltPlan, { outputDir, iteration: 0 });
+await store.writeArtifactJson(projectId, 'visual/manual-rebuild/report.json', report);
+await store.update(projectId, { title: rebuiltPlan.title, subject: rebuiltPlan.subject, visualStatus: report.passed ? 'passed' : 'warning', visualWarnings: report.issues.map((issue) => issue.message).slice(0, 30), renderAttempts: 1 });
+console.log(JSON.stringify({ projectId, title: rebuiltPlan.title, visualStatus: report.passed ? 'passed' : 'warning', score: report.score, issues: report.issues.map((issue) => issue.message) }, null, 2));

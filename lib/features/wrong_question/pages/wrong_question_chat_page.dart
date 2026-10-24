@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:web/web.dart' as web;
+import '../../lesson_studio/pages/lesson_new_page.dart';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +20,9 @@ import '../../../data/datasources/remote/dify_response_models.dart';
 import '../providers/wrong_question_providers.dart';
 import '../../home/providers/student_insight_provider.dart';
 import '../services/student_stats_builder.dart';
+import 'wrong_question_session_store.dart';
+
+part 'wrong_question_history.dart';
 
 class WrongQuestionChatPage extends ConsumerStatefulWidget {
   const WrongQuestionChatPage({super.key});
@@ -61,9 +67,33 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
   bool _expertAiUseImage = true; // 专家版是否把图片喂给 AI（OCR 后 false，AI 走纯文本）
   String? _expertQuestionText; // 首轮题目文本（保存时复用）
   final _expertScroll = ScrollController();
+  String _lessonQuestionText = ''; // 学生输入题干，供会话记录与互动讲解复用
+  int? _savedWqId; // 本次解析自动保存的错题 id
+
+  Timer? _historyTimer;
+  String? _sessionId;
+  bool _historyRestoring = false;
+  bool _historyWriteFailed = false;
+  final List<Map<String, dynamic>> _sessions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _readHistory();
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+    if (!_historyRestoring && !(_historyTimer?.isActive ?? false)) {
+      _historyTimer = Timer(const Duration(milliseconds: 400), _saveSession);
+    }
+  }
 
   @override
   void dispose() {
+    _historyTimer?.cancel();
+    _saveSession(notify: false);
     _controller.dispose();
     _expertScroll.dispose();
     _streamScroll.dispose();
@@ -163,16 +193,21 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
       return (false, placeholderText, true);
     }
     // 含图形/曲线：OCR 转写不出图 → 文字+图片双通道
-    final hasFigure = RegExp(r'如图|图像|图象|图甲|图乙|图丙|曲线|图形|示意图|函数图|几何图').hasMatch(t);
+    final hasFigure = RegExp(
+      r'如图|图像|图象|图甲|图乙|图丙|曲线|图形|示意图|函数图|几何图',
+    ).hasMatch(t);
     return (true, t, hasFigure);
   }
 
   Future<void> _submit() async {
+    if (_loading || _expertLoading) return;
     var text = _controller.text.trim();
     if (text.isEmpty && _pickedImage == null) return;
     if (text.isEmpty && _pickedImage != null) {
       text = '请分析这道题';
     }
+    _lessonQuestionText = text;
+    _savedWqId = null;
     setState(() {
       _loading = true;
       _error = null;
@@ -189,7 +224,7 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
 
     try {
       // 压缩图片为 base64，同时用于错题本存储和多模态识别
-      String? imageBase64;
+      String? imageBase64 = _questionImageBase64;
       if (_pickedImage != null) {
         if (mounted) setState(() => _waitPhase = '压缩图片中…');
         imageBase64 = await _compressToBase64(_pickedImage!);
@@ -232,9 +267,11 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
           case ResultGuidanceStep(
             :final result,
             :final questionText,
+            :final savedId,
           ):
             setState(() {
               _guidanceResult = result;
+              _savedWqId = savedId;
               _originalQuestion = questionText.isNotEmpty
                   ? questionText
                   : _originalQuestion;
@@ -281,6 +318,8 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('已自动保存至错题本'),
+          duration: const Duration(seconds: 3),
+          persist: false,
           action: SnackBarAction(
             label: '查看',
             onPressed: () => context.go('/wrong-question/list'),
@@ -336,6 +375,8 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
 
   // ── 快速版：讲解完成后回位（重置为可重新提问的初始状态） ──
   void _resetQuick() {
+    _saveSession();
+    _sessionId = null;
     setState(() {
       _loading = false;
       _error = null;
@@ -349,15 +390,19 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
       _controller.clear();
       _pickedImage = null;
       _questionImageBase64 = null;
+      _lessonQuestionText = '';
+      _savedWqId = null;
     });
   }
 
   // ── 专家版：发起第一轮（提交题目/图片 + 学生画像） ──────
   Future<void> _startExpert() async {
     var text = _controller.text.trim();
+    _lessonQuestionText = text;
+    _savedWqId = null;
     if (text.isEmpty && _pickedImage == null) return;
     if (text.isEmpty) text = '请分析这道题';
-    if (_expertLoading) return;
+    if (_expertLoading || _loading) return;
 
     String? imageBase64;
     if (_pickedImage != null) {
@@ -692,6 +737,7 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
         _expertResultBubbleCount = _expertBubbles.length;
       });
       final savedId = await _saveExpertResult(parsed);
+      if (mounted) setState(() => _savedWqId = savedId);
       // 记录本次讲解的具体错误点 + 学生疑问点 到学习画像（完整可追溯）
       try {
         final doubts = _expertTurns
@@ -719,6 +765,8 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(saved ? '讲解完成，已自动保存至错题本' : '讲解完成（错题本保存失败）'),
+            duration: const Duration(seconds: 3),
+            persist: false,
             action: saved
                 ? SnackBarAction(
                     label: '查看',
@@ -883,14 +931,14 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
             label: '快速版',
             icon: Icons.bolt,
             selected: !_expertMode,
-            onTap: () => setState(() => _expertMode = false),
+            onTap: () => _switchHistoryMode(false),
           ),
           const SizedBox(width: 3),
           _modeOption(
             label: '专家版',
             icon: Icons.workspace_premium,
             selected: _expertMode,
-            onTap: () => setState(() => _expertMode = true),
+            onTap: () => _switchHistoryMode(true),
           ),
         ],
       ),
@@ -938,9 +986,7 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: selected
-                    ? AppColors.primary
-                    : AppColors.mutedForeground,
+                color: selected ? AppColors.primary : AppColors.mutedForeground,
               ),
             ),
           ],
@@ -956,9 +1002,27 @@ class _WrongQuestionChatPageState extends ConsumerState<WrongQuestionChatPage> {
         title: const Text('错题指导'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.history_rounded),
+            tooltip: '会话记录',
+            onPressed: _openHistory,
+          ),
+          IconButton(
             icon: const Icon(Icons.book),
             tooltip: '错题本',
             onPressed: () => context.go('/wrong-question/list'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.ondemand_video),
+            tooltip: '生成数学讲解',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => LessonNewPage(
+                  initialText: _originalQuestion.isNotEmpty
+                      ? _originalQuestion
+                      : (_expertQuestionText ?? ''),
+                ),
+              ),
+            ),
           ),
         ],
       ),

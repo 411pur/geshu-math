@@ -1,3 +1,4 @@
+import 'features/lesson_studio/data/lesson_ai_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -53,6 +54,8 @@ Future<void> _loadConfig() async {
 }
 
 void _applyConfig(Map<String, dynamic> data) {
+  LessonAiConfig.apply(data['lessonStudio']);
+  ApiEndpoints.managedAi = data['managedAi'] == true;
   // config.json 支持把 AI 配置收口在 ai 段，也支持顶层扁平字段。
   // 两种形态都要认 —— 只读一种会让 Key 读不到，回落到占位符，
   // 结果是错题指导 / 考试分析 / 智能问答 / 报告 / 图片识别全部 401。

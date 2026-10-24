@@ -1,0 +1,16 @@
+{
+  "host": "127.0.0.1",
+  "port": 8124,
+  "dataDir": "data/lessons",
+  "model": "deepseek-flash",
+  "visionModel": "deepseek-flash",
+  "reasoningModel": "deepseek-v4-pro",
+  "fastProvider": "deepseek",
+  "reasoningProvider": "deepseek",
+  "visionProvider": "auto",
+  "apiBaseUrl": "https://api.deepseek.com",
+  "buildWeb": true,
+  "requestTimeoutMs": 180000,
+  "maxImageBytes": 12582912,
+  "maxDocumentBytes": 12582912
+}

@@ -1,3 +1,5 @@
+import 'features/lesson_studio/pages/lesson_new_page.dart';
+import 'features/lesson_studio/pages/lesson_library_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +32,8 @@ final appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: '/home',
   routes: [
+    GoRoute(path: '/lesson/new', builder: (_, _) => const LessonNewPage()),
+    GoRoute(path: '/lesson/library', builder: (_, _) => const LessonLibraryPage()),
     GoRoute(
       path: '/',
       redirect: (_, _) => '/home',

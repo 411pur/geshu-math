@@ -1,0 +1,43 @@
+{
+  "name": "edu-agent-lesson-engine",
+  "version": "0.1.0",
+  "description": "Automatic teacher-style lesson HTML generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest run",
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "test:watch": "vitest",
+    "test:live": "vitest run tests/live",
+    "demo": "tsx scripts/render-demo.ts",
+    "smoke:live": "tsx scripts/live-generate.ts",
+    "rebuild:project": "tsx scripts/rebuild-project.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@fastify/multipart": "^10.1.2",
+    "@fastify/static": "^10.1.4",
+    "dotenv": "^18.0.3",
+    "fastify": "^5.12.5",
+    "katex": "^0.16.22",
+    "mammoth": "^1.13.0",
+    "pdfjs-dist": "^4.10.38",
+    "playwright-core": "^1.63.0",
+    "sharp": "^0.35.4",
+    "tsx": "^4.23.15",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "form-data": "^4.0.6",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
