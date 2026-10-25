@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/knowledge_entity.dart';
+import '../providers/knowledge_weakness_provider.dart';
 
 /// 三维坐标点。
 ///
@@ -105,6 +106,15 @@ class KnowledgeGraphPainter extends CustomPainter {
   /// 每帧回填 (id -> 屏幕命中信息)，供页面做命中测试与旋转定位。
   final void Function(Map<String, NodeHit> hits)? positionsCallback;
 
+  /// 是否启用弱点热力着色（白→红→黑），替换科目色。
+  final bool heatMode;
+
+  /// 弱点统计；heatMode 且非空时才生效。
+  final KnowledgeWeakness? weakness;
+
+  /// 显示全部层级（绕过折叠门控）——弱点视图下直接看全局网络。
+  final bool showAllLevels;
+
   // ── 相机 ────────────────────────────────────────────────
   static const double _camDist = 1700.0;
   static const double _focal = 1550.0;
@@ -136,6 +146,9 @@ class KnowledgeGraphPainter extends CustomPainter {
     this.pitch = 0.16,
     this.viewScale = 1,
     this.positionsCallback,
+    this.heatMode = false,
+    this.weakness,
+    this.showAllLevels = false,
   });
 
   /// 当前布局下所有节点的 id -> 节点。
@@ -191,11 +204,15 @@ class KnowledgeGraphPainter extends CustomPainter {
       use3D != oldDelegate.use3D ||
       yaw != oldDelegate.yaw ||
       pitch != oldDelegate.pitch ||
-      viewScale != oldDelegate.viewScale;
+      viewScale != oldDelegate.viewScale ||
+      heatMode != oldDelegate.heatMode ||
+      weakness != oldDelegate.weakness ||
+      showAllLevels != oldDelegate.showAllLevels;
 
   // ── 可见性 ──────────────────────────────────────────────
 
   bool _isVisible(KnowledgeNode node) {
+    if (showAllLevels) return true;
     if (node.level <= 1) return true;
     if (node.level > maxLevel) return false;
     return _isAncestorExpanded(node);
@@ -755,7 +772,26 @@ class KnowledgeGraphPainter extends CustomPainter {
 
 
   /// 按标题关键字推断科目色（保持原有语义）。
-  Color _colorForNode(KnowledgeNode node) => knowledgeNodeColor(node);
+  Color _colorForNode(KnowledgeNode node) {
+    if (heatMode && weakness != null && !weakness!.isEmpty) {
+      return weaknessHeatColor(weakness!.weaknessOf(node.id));
+    }
+    return knowledgeNodeColor(node);
+  }
+}
+
+/// 白→红→黑的弱点热力色（0=无错题，1=自己最弱）。
+///
+/// 两段线性插值：0..0.5 白→红，0.5..1 红→黑，中间段保持红色系主导，
+/// 让"开始有错题"和"漏洞严重"在视觉上一眼可分。
+Color weaknessHeatColor(double t) {
+  const white = Color(0xFFF2F2F7);
+  const red = Color(0xFFE5484D);
+  const black = Color(0xFF1A1A1A);
+  if (t <= 0) return white;
+  if (t >= 1) return black;
+  if (t < 0.5) return Color.lerp(white, red, t * 2)!;
+  return Color.lerp(red, black, (t - 0.5) * 2)!;
 }
 
 /// 按标题关键字推断数学模块色（painter 与详情面板共用，避免两处语义漂移）。

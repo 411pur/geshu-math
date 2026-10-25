@@ -41,7 +41,7 @@ class LessonPipeline {
       status: LessonProjectStatus.running,
       stage: LessonProjectStage.extracting,
       progress: 2,
-      message: '正在提交到数学讲解生成服务',
+      message: '正在提交到原讲解生成服务',
       error: '',
       updatedAt: DateTime.now(),
     );
@@ -54,7 +54,7 @@ class LessonPipeline {
         status: LessonProjectStatus.running,
         stage: LessonProjectStage.extracting,
         progress: 5,
-        message: '数学讲解生成服务已接单',
+        message: '原讲解生成服务已接单',
         updatedAt: DateTime.now(),
       );
       await _save(record, onProgress);
@@ -124,7 +124,7 @@ class LessonPipeline {
         var record = item.copyWith(
           stage: status.stage,
           progress: status.progress,
-          message: status.message.isEmpty ? '正在同步数学讲解任务' : status.message,
+          message: status.message.isEmpty ? '正在同步原讲解任务' : status.message,
           updatedAt: DateTime.now(),
         );
         if (status.isFailed) {
@@ -133,7 +133,7 @@ class LessonPipeline {
             stage: LessonProjectStage.failed,
             progress: 100,
             message: '生成失败',
-            error: status.error.isEmpty ? '数学讲解任务失败' : status.error,
+            error: status.error.isEmpty ? '原讲解任务失败' : status.error,
             updatedAt: DateTime.now(),
           );
           await store.saveRecord(record);

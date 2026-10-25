@@ -8,10 +8,15 @@ class TreeNodeWidget extends StatefulWidget {
   final TreeNode node;
   final int depth;
 
+  /// 节点 id → 弱点热力色；非空时取代科目色的小圆点颜色。
+  /// 传函数而不是传颜色：每个节点要按自己的 id 查各自的弱点色。
+  final Color? Function(String nodeId)? heatColorOf;
+
   const TreeNodeWidget({
     super.key,
     required this.node,
     this.depth = 0,
+    this.heatColorOf,
   });
 
   @override
@@ -89,12 +94,13 @@ class _TreeNodeWidgetState extends State<TreeNodeWidget>
 
                   const SizedBox(width: 4),
 
-                  // Subject colour dot
+                  // Subject colour dot（弱点视图下用热力色）
                   Container(
                     width: 10,
                     height: 10,
                     decoration: BoxDecoration(
-                      color: _subjectColor(widget.node.title),
+                      color: (widget.heatColorOf?.call(widget.node.id)) ??
+                          _subjectColor(widget.node.title),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -120,6 +126,7 @@ class _TreeNodeWidgetState extends State<TreeNodeWidget>
             (child) => TreeNodeWidget(
               node: child,
               depth: widget.depth + 1,
+              heatColorOf: widget.heatColorOf,
             ),
           ),
       ],

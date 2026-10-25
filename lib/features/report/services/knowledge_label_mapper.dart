@@ -41,12 +41,12 @@ class KnowledgeLabelMapper {
     return const [];
   }
 
-  /// 回溯父链，得到完整路径标题
-  List<String> _pathOf(KnowledgeNode node) {
-    final path = <String>[];
+  /// 回溯父链，得到完整节点路径（根 → 末级）。
+  List<KnowledgeNode> _nodePathOf(KnowledgeNode node) {
+    final path = <KnowledgeNode>[];
     KnowledgeNode? cur = node;
     while (cur != null) {
-      path.insert(0, cur.title);
+      path.insert(0, cur);
       final pid = cur.parentId;
       if (pid == null) break;
       cur = _graph.where((n) => n.id == pid).firstOrNull;
@@ -54,19 +54,20 @@ class KnowledgeLabelMapper {
     return path;
   }
 
-  /// 对几个候选标签，生成所有匹配路径
-  /// 返回形如 [['函数与导数','二次函数','二次函数的最值'], ...]
-  List<List<String>> match(WrongQuestion wq) {
+  /// 对几个候选标签，生成所有匹配到的知识路径（节点级，含 id）。
+  ///
+  /// 供弱点统计 / 图谱关联错题使用；[match] 只保留标题版本。
+  List<List<KnowledgeNode>> matchNodes(WrongQuestion wq) {
     final kps = _knowledgePointsOf(wq);
     final tags = _tagsOf(wq);
     final topic = wq.topic ?? '';
 
-    final result = <List<String>>[];
+    final result = <List<KnowledgeNode>>[];
     final seen = <String>{};
 
     void addPath(KnowledgeNode node) {
-      final p = _pathOf(node);
-      final key = p.join('>');
+      final p = _nodePathOf(node);
+      final key = p.map((n) => n.id).join('>');
       if (seen.contains(key)) return;
       seen.add(key);
       result.add(p);
@@ -79,9 +80,15 @@ class KnowledgeLabelMapper {
       // 完全匹配优先
       KnowledgeNode? exact;
       for (final n in _graph) {
-        if (_cleanTitle(n.title) == ckw) { exact = n; break; }
+        if (_cleanTitle(n.title) == ckw) {
+          exact = n;
+          break;
+        }
       }
-      if (exact != null) { if (priority >= 2) addPath(exact); return; }
+      if (exact != null) {
+        if (priority >= 2) addPath(exact);
+        return;
+      }
       // 有实际长度的关键词做子串匹配（≥3字且非"平面几何"这类泛词时）
       if (ckw.length >= 3 && !_isGeneric(ckw)) {
         KnowledgeNode? best;
@@ -105,9 +112,17 @@ class KnowledgeLabelMapper {
     }
     tryMatch(topic, 1);
 
-    // 没有匹配到时，用 topic 本身兜底（保留一级标签）
-    if (result.isEmpty && topic.isNotEmpty) {
-      result.add([topic]);
+    return result;
+  }
+
+  /// 对几个候选标签，生成所有匹配路径
+  /// 返回形如 [['函数与导数','二次函数','二次函数的最值'], ...]
+  List<List<String>> match(WrongQuestion wq) {
+    final result =
+        matchNodes(wq).map((p) => p.map((n) => n.title).toList()).toList();
+    // 没有匹配到图谱节点时，用 topic 本身兜底（保留一级标签，无节点 id）
+    if (result.isEmpty && (wq.topic ?? '').isNotEmpty) {
+      result.add([wq.topic!]);
     }
     return result;
   }

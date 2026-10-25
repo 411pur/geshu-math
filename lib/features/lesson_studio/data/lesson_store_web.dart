@@ -7,7 +7,7 @@ import 'lesson_store.dart';
 LessonStore createPlatformLessonStore() => IndexedDbLessonStore();
 
 class IndexedDbLessonStore implements LessonStore {
-  static const _dbName = 'geshu_math_lesson_studio';
+  static const _dbName = 'edu_agent_lesson_studio';
   static const _records = 'lesson_records';
   static const _htmlStore = 'lesson_html';
   static const _artifactStore = 'lesson_artifacts';

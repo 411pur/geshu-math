@@ -8,8 +8,10 @@ import 'lesson_ai_config.dart';
 class LessonBridgeException implements Exception {
   final String message;
 
-  /// 网络断开、超时这类错误可以短暂重试；模型拒绝、输入错误等业务错误不能重试。
+  /// 是否为可重试的瞬时错误（服务重启、浏览器短时断网等）。
+  /// 为 true 时轮询会在短暂等待后自动重试，而不是把任务误判为失败。
   final bool retryable;
+
   const LessonBridgeException(this.message, {this.retryable = false});
   @override
   String toString() => message;
@@ -58,7 +60,10 @@ class LegacyLessonBridge {
   // 难题（电磁感应双杆）实测一轮 7-10 分钟。上限设低了，学生就会看到"任务超时"
   // 而其实引擎还在正常跑——轮询期间进度条一直有阶段更新，等待是有反馈的。
   static const int maxPollAttempts = 2400;
-  static const int maxTransientFailures = 15;
+
+  /// 轮询遇到「可重试瞬时错误」时的最大连续重试次数。
+  /// 服务重启或浏览器短暂断网时，一次 1 秒的等待即可恢复；超过上限才判定失败。
+  static const int transientRetries = 6;
 
   final Dio? dio;
 
@@ -112,11 +117,11 @@ class LegacyLessonBridge {
       );
       final id = response.data?['id']?.toString() ?? '';
       if (id.isEmpty) {
-        throw const LessonBridgeException('数学讲解服务未返回任务 ID');
+        throw const LessonBridgeException('原讲解服务未返回任务 ID');
       }
       return id;
     } on DioException catch (error) {
-      throw LessonBridgeException('数学讲解服务连接失败：${describeDioError(error)}');
+      throw LessonBridgeException('原讲解服务连接失败：${describeDioError(error)}');
     }
   }
 
@@ -164,9 +169,7 @@ class LegacyLessonBridge {
       return text;
     } on DioException catch (error) {
       final payload = error.response?.data;
-      final engineMessage = payload is Map
-          ? payload['message']?.toString()
-          : null;
+      final engineMessage = payload is Map ? payload['message']?.toString() : null;
       throw LessonBridgeException(
         '文档解析失败：${engineMessage?.isNotEmpty == true ? engineMessage : describeDioError(error)}',
       );
@@ -186,7 +189,7 @@ class LegacyLessonBridge {
       );
       final raw = response.data?['project'];
       if (raw is! Map) {
-        throw const LessonBridgeException('数学讲解服务返回的任务状态无效');
+        throw const LessonBridgeException('原讲解服务返回的任务状态无效');
       }
       final project = raw.map((key, value) => MapEntry(key.toString(), value));
       return LegacyLessonStatus(
@@ -204,17 +207,14 @@ class LegacyLessonBridge {
         visualWarnings: _strings(project['visualWarnings']),
       );
     } on DioException catch (error) {
-      throw LessonBridgeException(
-        '查询数学讲解任务失败：${describeDioError(error)}',
-        retryable: _isTransientDio(error),
-      );
+      throw LessonBridgeException('查询原讲解任务失败：${describeDioError(error)}');
     }
   }
 
   Future<String> html(String externalId) async {
     final baseUrl = _baseUrl;
     if (baseUrl.isEmpty) {
-      throw const LessonBridgeException('未配置数学讲解生成服务地址');
+      throw const LessonBridgeException('未配置原讲解生成服务地址');
     }
     try {
       final response = await _client().get<String>(
@@ -223,14 +223,11 @@ class LegacyLessonBridge {
       );
       final html = response.data?.trim() ?? '';
       if (html.isEmpty) {
-        throw const LessonBridgeException('数学讲解服务未返回 HTML');
+        throw const LessonBridgeException('原讲解服务未返回 HTML');
       }
       return html;
     } on DioException catch (error) {
-      throw LessonBridgeException(
-        '读取数学讲解 HTML 失败：${describeDioError(error)}',
-        retryable: _isTransientDio(error),
-      );
+      throw LessonBridgeException('读取原讲解 HTML 失败：${describeDioError(error)}');
     }
   }
 
@@ -238,62 +235,42 @@ class LegacyLessonBridge {
     String externalId, {
     required Future<void> Function(LessonProgressEvent event) onProgress,
   }) async {
-    LegacyLessonStatus? status;
-    var transientFailures = 0;
-    for (var attempt = 0; attempt < maxPollAttempts; attempt++) {
-      try {
-        status = await this.status(externalId);
-        transientFailures = 0;
-      } on LessonBridgeException catch (error) {
-        if (!error.retryable || ++transientFailures > maxTransientFailures) {
-          rethrow;
-        }
-        await onProgress(
-          LessonProgressEvent(
-            stage: status?.stage ?? LessonProjectStage.extracting,
-            progress: (status?.progress ?? 5).clamp(0, 99),
-            message:
-                '数学讲解服务暂时断开，正在重连（$transientFailures/$maxTransientFailures）',
-          ),
-        );
-        await Future<void>.delayed(pollInterval);
-        continue;
-      }
-      await onProgress(_progressEvent(status));
-      if (status.isDone) break;
+    var status = await _statusWithTransientRetry(externalId);
+    await onProgress(_progressEvent(status));
+    for (var attempt = 0; attempt < maxPollAttempts && !status.isDone; attempt++) {
       if (status.isFailed) {
         throw LessonBridgeException(
-          '数学讲解任务失败：${status.error.isEmpty ? '未知错误' : status.error}',
+          '原讲解任务失败：${status.error.isEmpty ? '未知错误' : status.error}',
         );
       }
       await Future<void>.delayed(pollInterval);
+      status = await _statusWithTransientRetry(externalId);
+      await onProgress(_progressEvent(status));
     }
-    if (status == null || !status.isDone) {
-      throw const LessonBridgeException('数学讲解任务超时，请重新生成');
-    }
-
-    String lessonHtml = '';
-    Object? lastError;
-    for (var attempt = 0; attempt < 3; attempt++) {
-      try {
-        lessonHtml = await html(externalId);
-        break;
-      } on LessonBridgeException catch (error) {
-        lastError = error;
-        if (!error.retryable || attempt == 2) rethrow;
-        await Future<void>.delayed(pollInterval);
-      }
-    }
-    if (lessonHtml.isEmpty) {
-      throw LessonBridgeException('读取数学讲解 HTML 失败：${lastError ?? '服务未返回内容'}');
+    if (!status.isDone) {
+      throw const LessonBridgeException('原讲解任务超时');
     }
     return LegacyLessonResult(
       externalId: externalId,
       title: status.title.isEmpty ? '互动讲解' : status.title,
       subject: status.subject,
-      html: lessonHtml,
+      html: await html(externalId),
       visualWarnings: status.visualWarnings,
     );
+  }
+
+  /// 轮询状态时自动重试可重试的瞬时错误（如服务重启、浏览器断网）。
+  ///
+  /// retryable 标记为 false 的错误（任务本身失败等）直接抛出，不做重试。
+  Future<LegacyLessonStatus> _statusWithTransientRetry(String externalId) async {
+    for (var attempt = 0; ; attempt++) {
+      try {
+        return await status(externalId);
+      } on LessonBridgeException catch (error) {
+        if (!error.retryable || attempt >= transientRetries) rethrow;
+        await Future<void>.delayed(pollInterval);
+      }
+    }
   }
 
   static LessonProgressEvent _progressEvent(LegacyLessonStatus status) =>
