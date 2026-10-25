@@ -560,7 +560,7 @@ node --test tool\run-log.test.mjs
 - `flutter analyze`：无问题；
 - TypeScript 编译：通过；
 - Flutter Web Release：构建通过；
-- Node 启动日志测试：通过。
+- Node 启动日志测试：通过；\n- 从 GitHub 干净克隆后重新安装依赖、执行测试与编译：通过。
 
 实际测试数量会随功能增加而变化，以 CI / 本地最新输出为准。
 
@@ -670,9 +670,9 @@ geshu-math/
 - [x] 关键功能有近期提交记录。
 - [x] 支持 Windows 一键启动。
 - [x] 提供健康检查、持久日志和可操作错误提示。
-- [ ] 推送到 GitHub 公开仓库。
+- [x] 推送到 GitHub 公开仓库。
 - [ ] 在提交表单中填写 GitHub 仓库链接。
-- [ ] 最终演示前在干净环境重新克隆并运行一次。
+- [x] 最终演示前在干净环境重新克隆并运行一次。
 
 常用检查命令：
 
