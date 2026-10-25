@@ -9,6 +9,7 @@ import '../../../core/network/sse_parser.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/chat_message_entity.dart';
 import '../../../shared/widgets/styled_markdown.dart';
+import '../chat_message_upsert.dart';
 
 class SmartQAPage extends ConsumerStatefulWidget {
   const SmartQAPage({super.key});
@@ -53,35 +54,25 @@ class _SmartQAPageState extends ConsumerState<SmartQAPage> {
       await for (final event in client.sendQaMessage(query: text)) {
         if (event is MessageChunk) {
           fullAnswer += event.answer;
-          if (_messages.isNotEmpty &&
-              _messages.last.role == MessageRole.assistant) {
-            setState(
-              () => _messages[_messages.length - 1] = ChatMessage(
+          setState(
+            () => upsertAssistantMessage(
+              _messages,
+              ChatMessage(
                 role: MessageRole.assistant,
                 content: fullAnswer,
                 timestamp: DateTime.now().millisecondsSinceEpoch,
                 isStreaming: true,
               ),
-            );
-          } else {
-            setState(
-              () => _messages.add(
-                ChatMessage(
-                  role: MessageRole.assistant,
-                  content: fullAnswer,
-                  timestamp: DateTime.now().millisecondsSinceEpoch,
-                  isStreaming: true,
-                ),
-              ),
-            );
-          }
+            ),
+          );
           _scrollToBottom();
         } else if (event is MessageEnd) {
           setState(() {
-            _messages.add(
+            upsertAssistantMessage(
+              _messages,
               ChatMessage(
                 role: MessageRole.assistant,
-                content: event.fullAnswer,
+                content: event.fullAnswer.isEmpty ? fullAnswer : event.fullAnswer,
                 timestamp: DateTime.now().millisecondsSinceEpoch,
               ),
             );

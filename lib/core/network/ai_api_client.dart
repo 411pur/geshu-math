@@ -258,6 +258,42 @@ class AiApiClient {
     return null;
   }
 
+  /// 试卷 OCR：保留考试名称、日期、总分、得分与逐题得分信息。
+  Future<String?> ocrExamPaper(String base64) async {
+    final board = settings.exam;
+    final model = _visionModel();
+    try {
+      final r = await _dio.post(
+        '${_url(board)}/chat/completions',
+        data: {
+          'model': model,
+          'messages': [
+            {
+              'role': 'user',
+              'content': [
+                {
+                  'type': 'text',
+                  'text': '请把这张数学试卷图片中的信息完整转写为纯文本。必须保留：考试名称与日期、满分、学生总分、每道题的题号、所属模块或知识点、满分、学生得分、是否错误及可辨认的错因；保留公式、上下标、分式和几何标注。只输出转写文本，不要解释，不要给复习建议。'
+                },
+                {'type': 'image_url', 'image_url': {'url': base64}},
+              ],
+            },
+          ],
+          'temperature': 0.1,
+        },
+        options: Options(headers: {'Authorization': 'Bearer ${_key(board)}'}),
+      );
+      final data = r.data;
+      if (data is Map) {
+        final content = (data['choices'] as List?)?.cast<Map>().firstOrNull?['message']?['content'];
+        if (content is String && content.trim().isNotEmpty) return content.trim();
+      }
+    } catch (e) {
+      debugPrint('[AI] 试卷 OCR 失败: $e');
+    }
+    return null;
+  }
+
   // ── 考试分析（试卷 OCR → 分析） ────────────────────────
   Stream<DifyStreamEvent> submitExamAnalysis({required String ocrText}) async* {
     final board = settings.exam;

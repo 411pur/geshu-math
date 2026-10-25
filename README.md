@@ -554,7 +554,7 @@ node --test tool\run-log.test.mjs
 
 截至 2026-10-25：
 
-- Flutter 测试：47 项通过；
+- Flutter 测试：51 项通过；
 - 讲题引擎测试：170 项通过，2 项按环境跳过；
 - `flutter analyze`：无问题；
 - TypeScript 编译：通过；

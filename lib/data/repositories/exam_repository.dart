@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import '../../../core/network/ai_api_client.dart';
 import '../../../core/network/sse_parser.dart';
 import '../../../domain/entities/exam_entity.dart';
@@ -55,7 +56,8 @@ class ExamRepository {
     final now = DateTime.now().millisecondsSinceEpoch;
 
     // Parse date string to millis (simplified)
-    final examDate = DateTime.tryParse(rec.examDate)?.millisecondsSinceEpoch ?? now;
+    final examDate =
+        DateTime.tryParse(rec.examDate)?.millisecondsSinceEpoch ?? now;
 
     // Insert exam record
     final record = ExamRecord(
@@ -65,24 +67,28 @@ class ExamRepository {
       totalScore: rec.totalScore,
       studentScore: rec.studentScore,
       rawOcrText: ocrText,
-      analysisResultJson: response.analysisResult.toJson().toString(),
+      analysisResultJson: jsonEncode(response.analysisResult.toJson()),
       createdAt: now,
     );
 
     final recordId = _ds.insertRecord(record);
 
     // Insert question details
-    final details = rec.questionDetails.map((d) => ExamQuestionDetail(
-          examRecordId: recordId,
-          questionNumber: d.questionNumber,
-          topic: d.topic,
-          subTopic: d.subTopic,
-          maxScore: d.maxScore,
-          studentScore: d.studentScore,
-          isWrong: d.isWrong,
-          errorType: d.errorType,
-          knowledgeNodeIdsJson: d.knowledgeNodeIds.join(','),
-        )).toList();
+    final details = rec.questionDetails
+        .map(
+          (d) => ExamQuestionDetail(
+            examRecordId: recordId,
+            questionNumber: d.questionNumber,
+            topic: d.topic,
+            subTopic: d.subTopic,
+            maxScore: d.maxScore,
+            studentScore: d.studentScore,
+            isWrong: d.isWrong,
+            errorType: d.errorType,
+            knowledgeNodeIdsJson: d.knowledgeNodeIds.join(','),
+          ),
+        )
+        .toList();
 
     _ds.insertDetails(details);
   }
@@ -92,7 +98,8 @@ class ExamRepository {
   Future<List<ExamRecord>> getHistory({int limit = 20, int offset = 0}) =>
       Future.value(_ds.getAllHistory(limit: limit, offset: offset));
 
-  Future<ExamRecord?> getRecordById(int id) => Future.value(_ds.getRecordById(id));
+  Future<ExamRecord?> getRecordById(int id) =>
+      Future.value(_ds.getRecordById(id));
 
   Future<List<ExamQuestionDetail>> getDetailsForRecord(int recordId) =>
       Future.value(_ds.getDetailsForRecord(recordId));
@@ -100,27 +107,27 @@ class ExamRepository {
 
 sealed class ExamFlowStep {
   const ExamFlowStep();
-  const factory ExamFlowStep.loading() = _ExamLoading;
-  const factory ExamFlowStep.chunk(String text) = _ExamChunk;
-  const factory ExamFlowStep.result(AnalysisResult result) = _ExamResult;
-  const factory ExamFlowStep.error(String message) = _ExamError;
+  const factory ExamFlowStep.loading() = ExamFlowStepLoading;
+  const factory ExamFlowStep.chunk(String text) = ExamFlowStepChunk;
+  const factory ExamFlowStep.result(AnalysisResult result) = ExamFlowStepResult;
+  const factory ExamFlowStep.error(String message) = ExamFlowStepError;
 }
 
-final class _ExamLoading extends ExamFlowStep {
-  const _ExamLoading();
+final class ExamFlowStepLoading extends ExamFlowStep {
+  const ExamFlowStepLoading();
 }
 
-final class _ExamChunk extends ExamFlowStep {
+final class ExamFlowStepChunk extends ExamFlowStep {
   final String text;
-  const _ExamChunk(this.text);
+  const ExamFlowStepChunk(this.text);
 }
 
-final class _ExamResult extends ExamFlowStep {
+final class ExamFlowStepResult extends ExamFlowStep {
   final AnalysisResult result;
-  const _ExamResult(this.result);
+  const ExamFlowStepResult(this.result);
 }
 
-final class _ExamError extends ExamFlowStep {
+final class ExamFlowStepError extends ExamFlowStep {
   final String message;
-  const _ExamError(this.message);
+  const ExamFlowStepError(this.message);
 }
