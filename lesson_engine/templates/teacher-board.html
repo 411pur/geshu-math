@@ -124,7 +124,8 @@
     .option.is-correct .option-key { border-color: var(--green); color: #142219; background: var(--green); }
     .option.is-wrong { border-color: rgba(255, 107, 107, 0.72); background: rgba(255, 107, 107, 0.1); }
     .option.is-wrong .option-key { border-color: var(--danger); color: #ffffff; background: var(--danger); }
-    .student-feedback { min-height: 18px; color: var(--chalk-dim); font-size: 11.5px; line-height: 1.45; }
+    .student-feedback { min-height: 18px; color: var(--chalk-dim); font-size: 11.5px; line-height: 1.45; user-select: none; -webkit-user-select: none; }
+    .student-feedback .katex { color: inherit; font-size: 1.08em; }
     .student-feedback strong { color: var(--yellow); }
 
     .work-area { min-height: 0; flex: 1; display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(286px, 0.78fr); }

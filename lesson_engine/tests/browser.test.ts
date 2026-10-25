@@ -251,6 +251,28 @@ it('数学解答题公布最终答案而不依赖选择题选项', async () => {
     await target.goto(pathToFileURL(file).href);
     await target.waitForFunction(()=>Boolean((window as any).__LESSON_READY__));
     for(let i=0;i<plan.scenes.length-1;i++) await target.locator('#nextButton').click();
-    expect(await target.locator('[data-answer-revealed="true"]').textContent()).toContain('x = 2 或 x = 3');
+    expect(await target.locator('[data-answer-revealed="true"]').textContent()).toContain('x=2');
+  } finally {await target.close();}
+});
+
+it('最终答案用 KaTeX 排版且不允许浏览器蓝色选区', async () => {
+  const finalAnswer='\\frac{1}{2}\\left(\\frac{3}{4}+\\ln 2\\right)^2';
+  const plan=createPlan({problem:{stem:'求目标式的最小值',options:[],correctOptions:[],sourceAnswer:'',sourceExplanation:'',finalAnswer}});
+  const html=await new LocalHtmlRenderer().render(plan);
+  const file=path.join(tempDir,'formatted-final-answer.html');await writeFile(file,html,'utf8');
+  const target=await browser.newPage();
+  try {
+    await target.goto(pathToFileURL(file).href);
+    await target.waitForFunction(()=>Boolean((window as any).__LESSON_READY__));
+    for(let i=0;i<plan.scenes.length-1;i++) await target.locator('#nextButton').click();
+    const feedback=target.locator('#studentFeedback');
+    expect(await feedback.locator('.katex').count()).toBe(1);
+    expect(await feedback.locator('.math-inline').getAttribute('data-tex')).toBe(finalAnswer);
+    expect(await feedback.locator('.katex-html').textContent()).not.toContain('\\frac');
+    const styles=await feedback.evaluate((element)=>{
+      const style=getComputedStyle(element);
+      return {userSelect:style.userSelect,webkitUserSelect:style.webkitUserSelect};
+    });
+    expect(styles).toEqual({userSelect:'none',webkitUserSelect:'none'});
   } finally {await target.close();}
 });

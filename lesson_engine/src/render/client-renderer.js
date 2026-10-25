@@ -169,6 +169,14 @@
     const source = String(text ?? '');
     const parts = splitMathText(source);
     const hasMath = parts.some((part) => part.type === 'math');
+    if (options.inlineFallback && !hasMath) {
+      const prepared = source
+        .replace(/\\([()\[\]])/g, '')
+        .replace(/([\u4e00-\u9fff]+)/g, '\\text{$1}')
+        .trim();
+      renderMathNode(container, prepared, false);
+      return;
+    }
     if (options.displayFallback && parts.length === 1 && parts[0].type === 'math') {
       renderMathNode(container, parts[0].value, true);
       return;
@@ -218,8 +226,16 @@
 
   function updateOptions(revealAnswer) {
     if (!lesson.problem.options.length) {
-      elements.studentFeedback.textContent = revealAnswer ? ('结论：' + (lesson.problem.finalAnswer || lesson.scenes[state.sceneIndex]?.narration || '请看本步板书')) : '先独立思考，再跟随板书推导。';
-      elements.studentFeedback.dataset.answerRevealed = String(revealAnswer && Boolean(lesson.problem.finalAnswer));
+      elements.studentFeedback.replaceChildren();
+      if (!revealAnswer) {
+        elements.studentFeedback.textContent = '先独立思考，再跟随板书推导。';
+        elements.studentFeedback.dataset.answerRevealed = 'false';
+        return;
+      }
+      const answer = lesson.problem.finalAnswer || lesson.scenes[state.sceneIndex]?.narration || '请看本步板书';
+      elements.studentFeedback.appendChild(make('strong', '', '结论：'));
+      renderRichText(elements.studentFeedback, answer, { inlineFallback: true });
+      elements.studentFeedback.dataset.answerRevealed = String(Boolean(lesson.problem.finalAnswer));
       return;
     }
     elements.optionsGrid.querySelectorAll('.option').forEach((button) => {
