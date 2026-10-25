@@ -267,7 +267,7 @@ Set-Location ..
 最小可用配置：
 
 ```dotenv
-DEEPSEEK_API_KEY=sk-...
+DEEPSEEK_API_KEY=<your-deepseek-key>
 ```
 
 `local.config.json` 示例：
