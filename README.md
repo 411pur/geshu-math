@@ -38,7 +38,7 @@ Flutter 单页应用，同时支持 Web 与 Windows 桌面；模型侧只要求�
 
 ## 数学互动讲解与统一启动
 
-推荐从仓库根目录双击 `启动项目.bat`，或运行 `node tool/start.mjs`。需要 Node.js ≥20、Flutter / Dart 和 Chrome 或 Edge。首次启动自动准备依赖、构建 Web 并生成本地配置；同一服务提供前端、讲解引擎和 AI 转发。默认打开地址为 http://127.0.0.1:8124，脚本会在终端输出实际地址。
+推荐从仓库根目录双击 `启动项目.bat`，或运行 `node tool/start.mjs`。需要 Node.js ≥20、Flutter / Dart 和 Chrome 或 Edge。首次启动自动准备依赖、构建 Web 并生成本地配置；同一服务提供前端、讲解引擎和 AI 转发。默认打开地址为 http://127.0.0.1:8124，脚本会在终端输出实际地址。每次启动的完整终端输出会追加到 `build/local-stack-logs/lesson-engine.<时间>.log`；引擎未捕获异常也会同步写入该日志后再退出。
 
 1. 首次运行后，在根目录 `.env.local` 填写 `DEEPSEEK_API_KEY`（也可先复制 `.env.example`）。
 2. 修改 `local.config.json` 选择接口、快速/推理/视觉模型、每类模型的服务商（`fastProvider` / `reasoningProvider` / `visionProvider`）、端口、数据路径、超时及上传限制。模板是 `local.config.example.json`。当前 DeepSeek 接口可用模型名为 `deepseek-flash` 与 `deepseek-v4-pro`。
@@ -50,7 +50,7 @@ Flutter 单页应用，同时支持 Web 与 Windows 桌面；模型侧只要求�
 
 密钥只由服务端读取。统一启动会覆盖 `build/web/config.json` 为无真实密钥的公开配置；请不要手工把密钥复制到构建目录。旧的 `web/config.json` 仅用于下面的独立 Flutter 开发方式，统一启动以根目录配置为准。浏览器个性化设置按字段覆盖默认值，留空跟随默认；托管模式不接受浏览器的旧地址与密钥覆盖。
 
-启动器使用同源服务，模型请求经 `/v1/chat/completions` 转发，讲解 API 使用 `/api/projects`。互动讲解是异步任务，前端轮询任务状态；短时断网会自动重连，服务重启后未完成任务会明确标记为可重新生成，而不是永久卡在“排课中”。原有可选 Cloudflare Worker 保持独立，不是本地启动必需项。数据默认在 `data/lessons`，浏览器讲解索引和 HTML 缓存在 IndexedDB，均不入库。
+启动器使用同源服务，模型请求经 `/v1/chat/completions` 转发，讲解 API 使用 `/api/projects`。互动讲解是异步任务，前端轮询任务状态；短时断网会自动重连，服务重启后未完成任务会明确标记为可重新生成，而不是永久卡在“排课中”。连接层失败时页面会直接提示“讲题引擎未运行”，并指向 `启动项目.bat` 与日志目录。原有可选 Cloudflare Worker 保持独立，不是本地启动必需项。数据默认在 `data/lessons`，浏览器讲解索引和 HTML 缓存在 IndexedDB，均不入库。
 
 ```powershell
 node --test tool/*.test.mjs

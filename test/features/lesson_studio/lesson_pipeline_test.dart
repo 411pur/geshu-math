@@ -3,6 +3,7 @@ import 'package:geshu_math/features/lesson_studio/data/lesson_pipeline.dart';
 import 'package:geshu_math/features/lesson_studio/data/lesson_store.dart';
 import 'package:geshu_math/features/lesson_studio/models/lesson_contracts.dart';
 import 'package:geshu_math/features/lesson_studio/models/lesson_project.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _FakeBridge extends LegacyLessonBridge {
@@ -185,6 +186,19 @@ void main() {
     final budget =
         LegacyLessonBridge.pollInterval * LegacyLessonBridge.maxPollAttempts;
     expect(budget.inMinutes, greaterThanOrEqualTo(40));
+  });
+
+  test('连接层失败提示用户启动讲题引擎并指向日志目录', () {
+    final error = DioException(
+      requestOptions: RequestOptions(path: 'http://127.0.0.1:8124/api/projects'),
+      type: DioExceptionType.connectionError,
+      error: 'XMLHttpRequest onError',
+    );
+    final message = LegacyLessonBridge.describeDioError(error);
+    expect(message, contains('讲题引擎未运行'));
+    expect(message, contains('启动项目.bat'));
+    expect(message, contains('build/local-stack-logs'));
+    expect(message, isNot(contains('XMLHttpRequest')));
   });
 
   test('没有题目图片时在提交前拒绝', () async {

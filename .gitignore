@@ -50,11 +50,11 @@ tool/shots/
 !启动项目.bat
 
 # Local stack settings and generated lessons
-local.config.json
-data/
-lesson_engine/data/
-lesson_engine/generated/
-lesson_engine/.env.local
+/local.config.json
+/data/
+/lesson_engine/data/
+/lesson_engine/generated/
+/lesson_engine/.env.local
 
 !.env.example
 !lesson_engine/.env.example

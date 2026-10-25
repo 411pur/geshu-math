@@ -15,6 +15,7 @@ import { ProjectStore } from './store/project-store.js';
 import { JobManager } from './jobs/job-manager.js';
 import { extractDocumentText } from './pipeline/document-text.js';
 import { AppError } from './lib/errors.js';
+import { appendFatalError, defaultFatalErrorLogPath, installFatalErrorHandlers } from './runtime-errors.js';
 
 export interface BuildServerOptions { config?: AppConfig; store?: ProjectStore; pipeline?: LessonPipeline; logger?: boolean; }
 
@@ -258,4 +259,12 @@ export async function startServer(): Promise<void> {
 }
 
 const isDirectRun = process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url;
-if (isDirectRun) startServer().catch((error) => { console.error(error); process.exitCode = 1; });
+if (isDirectRun) {
+  installFatalErrorHandlers();
+  startServer().catch((error) => {
+    const logFile = defaultFatalErrorLogPath();
+    const text = appendFatalError(logFile, 'startupFailure', error);
+    console.error(text.trimEnd());
+    process.exitCode = 1;
+  });
+}

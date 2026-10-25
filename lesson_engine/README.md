@@ -205,13 +205,13 @@ Invoke-RestMethod http://127.0.0.1:8124/api/health
 
 | 现象 | 原因 | 处理 |
 | --- | --- | --- |
-| `providers` 都是 `false` | 没配 Key：`web/config.json` 不存在或缺 `lessonStudio` 段 | 复制 `web/config.example.json` 为 `web/config.json`，填 DeepSeek 与阿里云 Key，重跑 `启动项目.bat` |
-| 前端提示「未配置互动讲解服务地址」 | 前端 `build/web` 是旧构建，或 `config.json` 没同步进 `build/web` | 重新运行 `启动项目.bat`（新版会把 `web/config.json` 同步到 `build/web`），并在浏览器里 Ctrl+Shift+R 强刷 |
-| 改了 Key 仍失败 | 前端/引擎是重启前启动的旧进程 | 关掉 3210 上的 node 进程后重跑启动器；前端需强制刷新（Service Worker 会缓存旧应用） |
-| 任务报 `DeepSeek API Key 未配置` | 引擎进程是改配置之前启动的旧进程 | 关掉旧引擎（占用 3210 的 node 进程）再重跑启动器；新版启动器会自动检测并重启 |
+| `providers` 都是 `false` | 根目录 `.env.local` 没配 Key，或启动了改配置前的旧进程 | 在根目录 `.env.local` 填写 Key，关闭原启动窗口后重跑 `启动项目.bat` |
+| 前端提示「未配置互动讲解服务地址」 | 前端 `build/web` 是旧构建，或 `config.json` 没同步进 `build/web` | 重新运行 `启动项目.bat`，并按提示强刷浏览器 |
+| 改了 Key 仍失败 | 统一启动器中的旧引擎进程仍在使用旧环境变量 | 在原启动窗口按 Ctrl+C 后重新运行 `启动项目.bat`；不要单独查找 3210 端口 |
+| 任务报 `DeepSeek API Key 未配置` | 引擎进程是改配置之前启动的旧进程 | 关闭原启动窗口并重跑启动器；新版会重新加载根目录配置 |
 | 任务报 401 / InvalidApiKey | Key 与地址不匹配（例如业务空间专属 Key 配了公共地址） | 见下面「业务空间专属 Key」一节 |
 
-统一启动器读取根目录 `.env.local`；如果你改完 Key 仍然失败，多半是旧引擎还在跑——先把 3210 端口上的进程关掉再重启。
+统一启动器读取根目录 `.env.local`；如果改完 Key 仍然失败，请关闭原启动窗口并重跑 `启动项目.bat`。统一服务默认在 8124 端口，3210 只是旧版独立引擎的默认值。启动日志位于根目录 `build/local-stack-logs/lesson-engine.*.log`，崩溃信息也会写入其中。
 
 > 说明：这个功能产出的是**单文件互动 HTML**（老师语音朗读 + 自动翻页 + 模拟鼠标指点），不是 MP4。当前版本不生成视频文件。
 
