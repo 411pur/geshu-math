@@ -1,200 +1,701 @@
-# 格数至理（geshu-math）
+# 格数至理 · geshu-math
 
-面向初高中学生的 AI 数学答疑与学习分析应用。拍照或粘贴一道数学题，得到「错因 → 正解 → 分步解析 → 知识点回顾 → 变式训练」的结构化讲解，讲解结果自动沉淀到错题本、学习报告与知识图谱。
+> 把“看答案”变成“真正学会”的 AI 数学学习工作台。
 
-Flutter 单页应用，同时支持 Web 与 Windows 桌面；模型侧只要求兼容 OpenAI 的 `chat/completions` 协议，服务商、地址与模型名全部由配置决定，不绑定任何厂商。可选用 Cloudflare Worker 做 AI 网关。
+格数至理是一个面向初高中学生的 AI 数学答疑与学习分析应用。学生可以拍照、粘贴文字或上传文档提交数学题，获得结构化错因分析、完整解答、分步讲解、知识点回顾和变式训练；学习结果会自动沉淀到错题本、学习报告、学生画像和知识图谱中。
 
-> 本项目定位为演示 / 自用：默认由浏览器直连模型厂商，API Key 会暴露在前端。公网部署请使用 [`ai_proxy`](ai_proxy/README.md)。
+前端使用 Flutter，同时支持 Web 与 Windows 桌面；本地 Node.js 服务负责讲题引擎、模型转发和互动讲解生成；模型侧兼容 OpenAI `chat/completions` 协议，可通过配置切换服务商与模型。
 
-## 功能
+![Flutter](https://img.shields.io/badge/Flutter-Web%20%7C%20Windows-02569B?logo=flutter)
+![Dart](https://img.shields.io/badge/Dart-3.8%2B-0175C2?logo=dart)
+![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js)
+![KaTeX](https://img.shields.io/badge/Math-KaTeX-00A6A6)
+![Hackathon](https://img.shields.io/badge/CCNU-第一届黑客松-FF6B35)
 
-| 模块 | 能力 |
+> 🏆 **CCNU 第一届黑客松参赛项目**<br>
+> 参赛目标：在 2026-10-23 至 2026-10-25 的开发窗口内，完成一个可运行、可演示、可持续迭代的 AI 数学学习产品。
+
+---
+
+## 目录
+
+- [产品亮点](#产品亮点)
+- [功能总览](#功能总览)
+- [使用流程与示例](#使用流程与示例)
+- [系统架构](#系统架构)
+- [技术栈](#技术栈)
+- [快速开始](#快速开始)
+- [完整运行教程](#完整运行教程)
+- [配置说明](#配置说明)
+- [API 与自动化示例](#api-与自动化示例)
+- [数学讲解引擎](#数学讲解引擎)
+- [数据存储与安全](#数据存储与安全)
+- [测试与质量验证](#测试与质量验证)
+- [常见问题](#常见问题)
+- [目录结构](#目录结构)
+- [已知限制](#已知限制)
+- [黑客松提交检查](#黑客松提交检查)
+- [许可证](#许可证)
+
+---
+
+## 产品亮点
+
+### 1. 不是只给答案，而是定位错因
+
+错题指导采用「错因 → 正解 → 分步解析 → 思路来源 → 易错警示 → 知识点回顾 → 变式训练」的学习闭环。支持快速版和专家版：
+
+- **快速版**：一问一答，流式输出，适合日常快速订正。
+- **专家版**：通过决策树多轮追问，先定位学生卡点，再逐步讲解。
+- 完成后自动保存到错题本，并记录错因与学习轨迹。
+
+### 2. 从“看懂”到“会做”
+
+错题本不只是题目列表，还支持掌握度、收藏、标签、难度和模块筛选；可回看完整解析、生成互动讲解、导出 PDF，并用变式训练继续巩固。
+
+### 3. 老师式互动黑板
+
+讲题引擎会把解答加工成包含读题、关键变形、推导、检验和结论的互动讲解：
+
+- 逐场景推进，支持播放、暂停、重讲、跳转和全屏。
+- 浏览器中文语音朗读，跟随系统语音包。
+- 公式使用内嵌 KaTeX 离线排版。
+- 支持图形与矢量板书，并进行视觉布局审计。
+- 生成单文件 HTML，可离线播放和下载。
+
+> 当前“讲解视频”指可交互的 HTML 讲解播放器，**不输出 MP4**。
+
+### 4. 学习数据自动汇总结论
+
+- 学习报告：近 7 / 30 / 90 天统计、AI 复习建议、重点练习推荐。
+- 学生画像：掌握度、薄弱知识点、错因分布、连续学习天数和反复错误。
+- 知识图谱：333 个知识点节点，三层结构，可旋转浏览，也可切换知识树。
+
+### 5. 本地优先、可替换模型
+
+- 统一启动器同时托管前端、讲题引擎和 AI 转发：默认 `http://127.0.0.1:8124`。
+- 真实 Key 只放服务端 `.env.local`，统一启动时不会写入前端静态配置。
+- 支持 DeepSeek、阿里云百炼或任意 OpenAI 兼容接口。
+- 可选 Cloudflare Worker 网关，用于公网部署时隐藏 Key。
+
+---
+
+## 功能总览
+
+| 模块 | 主要能力 |
 |---|---|
-| 首页概览 | 8 个功能入口、错题统计环（未掌握 / 复习中 / 已掌握）、最近错题 |
-| 错题指导 | 快速版一问一答、专家版决策树多轮追问、本地会话记录与恢复、文本 / 图片 / 拍照提交、流式输出、7 段错题订正模板、讲完自动入库 |
-| 错题本 | 掌握度切换、收藏、标签、难度、模块筛选、排序、生成/播放数学讲解、删除、导出 PDF、详情回看解析 |
-| 拍照识题 | 图片 OCR + 多模态直发双通道，OCR 质量不足时自动改为「图 + 题」一起送模型 |
-| 考试分析 | 试卷拍照识别、按模块统计得分、AI 分析报告、考情历史与单次详情 |
-| 智能问答 | 多轮数学问答、流式回答、常用问题快捷入口 |
-| 学习报告 | 学习概览卡、下一步练习、快捷入口、近 7 / 30 / 90 天统计、AI 复习建议、重点练习推荐、定时报告 |
-| 学生画像 | 全量错题 KPI、掌握度环、薄弱知识点、错因分布、近 8 周节奏、反复错误、自述薄弱点、AI 画像解读 |
-| 知识图谱 | 333 节点三层图谱（10 模块 / 55 章 / 268 知识点）、旋转与层级缩放、知识树浏览 |
+| 首页概览 | 学习工具宫格、掌握度统计环、最近错题、继续学习入口 |
+| 错题指导 | 快速版 / 专家版、多轮追问、流式回答、图片与文字题目、会话恢复 |
+| 错题本 | 掌握度、收藏、标签、难度、模块筛选、排序、解析详情、删除、PDF 导出 |
+| 拍照识题 | 本地图片选择、OCR 与多模态双通道、低质量 OCR 自动回退 |
+| 考试分析 | 试卷图片识别、模块得分统计、AI 考情报告、历史记录 |
+| 智能问答 | 多轮数学问答、流式输出、推荐问题 |
+| 学习报告 | 7 / 30 / 90 天统计、复习建议、练习推荐、报告缓存 |
+| 学生画像 | KPI、能力与错因统计、薄弱点自述、AI 画像解读 |
+| 数学讲解 | 文字 / 图片 / 文档生成互动 HTML，播放、历史、下载 |
+| 知识图谱 | 333 节点三层图谱、旋转、缩放、知识树浏览 |
+| 模型设置 | 快速 / 推理 / 视觉三类角色独立配置与真实连通性检测 |
+| 运行诊断 | 持久启动日志、引擎崩溃日志、可操作的服务断开提示 |
+
+---
+
+## 使用流程与示例
+
+### 示例 A：错题指导
+
+1. 打开首页，进入「错题指导」。
+2. 粘贴题目，或上传题目图片。
+3. 选择「快速版」或「专家版」并提交。
+4. 阅读七段式订正结果。
+5. 在底部继续追问、点击「完成，问下一题」，或从讲解入口生成互动讲解。
+6. 结果自动进入错题本，并计入学习报告与学生画像。
+
+示例题干：
+
+```text
+已知函数 f(x)=x^3-3x+1，求 f(x) 在区间 [-2,2] 上的最大值和最小值。
+```
+
+### 示例 B：直接生成数学讲解
+
+1. 首页进入「数学讲解」。
+2. 输入题干：
+
+```text
+实数 $a,b$ 满足 $\frac{1}{a^3}e^{a^2-b}+2a^2=6\ln a+2b+1$，
+$c\in\mathbb{R}$，求 $(a-c)^2+(b+c)^2$ 的最小值。
+```
+
+3. 也可以同时上传题图或 PDF / DOCX / TXT 文档。
+4. 页面会先显示数学预览，可切换「编辑题干」查看原始文本。
+5. 点击「生成数学讲解」，等待读题、求解、排课、复核和视觉检查。
+6. 生成完成后可播放、暂停、逐步回看或下载单文件 HTML。
+
+### 示例 C：考试与学习报告
+
+1. 上传试卷图片进行识别。
+2. 查看按模块统计的得分与 AI 分析。
+3. 打开「学习报告」，查看近 7 / 30 / 90 天学习趋势。
+4. 进入「学生画像」，查看薄弱知识点与错因分布。
+
+---
+
+## 系统架构
+
+```mermaid
+flowchart LR
+    U[学生] --> F[Flutter Web / Windows]
+    F -->|本地数据| LS[(localStorage)]
+    F -->|讲解记录与 HTML| IDB[(IndexedDB)]
+    F -->|/v1/chat/completions| P[同源 AI 转发]
+    P --> DS[DeepSeek]
+    P --> AL[阿里云百炼 / 可选]
+    F -->|/api/projects| E[Node 讲题引擎]
+    E --> PL[读题 → 求解 → 图形规划 → 排课 → 复核]
+    PL --> R[KaTeX 互动 HTML 渲染]
+    R --> VA[Playwright 视觉审计]
+    R --> HTML[(单文件 HTML)]
+    E --> DATA[(data/lessons)]
+    F -->|iframe 播放| HTML
+    F -. 可选 .-> CF[Cloudflare Worker ai_proxy]
+```
+
+关键设计：
+
+- **同源优先**：默认统一启动，前端和后端共享 `127.0.0.1:8124`，减少 CORS 与端口错配。
+- **角色化模型**：快速、推理、视觉模型可分别选择服务商。
+- **内容复核**：求解与讲稿复核分离，发现争议时只重排讲稿，必要时才重新求解。
+- **视觉守卫**：生成后由 Playwright 检查布局、越界和元素重叠，并支持自动修复。
+- **离线公式**：KaTeX CSS、JS 与字体全部内嵌，下载后的 HTML 不依赖外部 CDN。
+- **可恢复任务**：任务状态持久化；页面刷新或短时断网后可继续查询。
+
+---
 
 ## 技术栈
 
-- **Flutter**（Web / Windows）+ **Riverpod** 状态管理 + **go_router** 路由
-- **Dio** 负责 HTTP 与 SSE 流式解析
-- **flutter_markdown / markdown** 渲染讲解正文，**fl_chart** 画统计图，**pdf / printing** 导出错题 PDF
-- 模型：任意 OpenAI 兼容服务；`baseUrl` / `apiKey` / 快速模型 / 推理模型 / 视觉模型均可替换，默认留空由配置注入
-- 可选网关：Cloudflare Workers（`ai_proxy/`）
+| 层 | 技术 |
+|---|---|
+| 前端 | Flutter、Riverpod、go_router |
+| 网络 | Dio、SSE 流式解析、OpenAI 兼容协议 |
+| 富文本 | flutter_markdown、markdown、KaTeX |
+| 图表 | fl_chart |
+| 文档 | PDF / printing、file_picker、image_picker |
+| 后端 | Node.js 20+、Fastify、TypeScript、tsx |
+| 视觉检查 | Playwright Core + Microsoft Edge |
+| AI | DeepSeek；可选阿里云百炼；任意 OpenAI 兼容服务 |
+| 测试 | Flutter Test、Vitest、Node Test、Playwright |
 
-## 响应式学习工作台
+---
 
-- 宽屏使用左侧分组侧栏、顶部工作区栏和环形学习工具轮播。
-- 手机宽度下改为底部五入口导航与双列工具宫格。
-- 错题列表每条记录提供「生成/播放数学讲解」和「删除」按钮，详情页同样保留讲解入口与删除操作。
-- 错题指导的「会话记录」保存在当前浏览器，可恢复快速版/专家版状态，并支持置顶与归档。
-- 学习报告首屏只保留核心指标、下一步练习和快捷入口，详细统计与 AI 报告按需进入。
+## 快速开始
 
-## 数学互动讲解与统一启动
+### Windows 一键启动（推荐）
 
-推荐从仓库根目录双击 `启动项目.bat`，或运行 `node tool/start.mjs`。需要 Node.js ≥20、Flutter / Dart 和 Chrome 或 Edge。首次启动自动准备依赖、构建 Web 并生成本地配置；同一服务提供前端、讲解引擎和 AI 转发。默认打开地址为 http://127.0.0.1:8124，脚本会在终端输出实际地址。每次启动的完整终端输出会追加到 `build/local-stack-logs/lesson-engine.<时间>.log`；引擎未捕获异常也会同步写入该日志后再退出。
-
-1. 首次运行后，在根目录 `.env.local` 填写 `DEEPSEEK_API_KEY`（也可先复制 `.env.example`）。
-2. 修改 `local.config.json` 选择接口、快速/推理/视觉模型、每类模型的服务商（`fastProvider` / `reasoningProvider` / `visionProvider`）、端口、数据路径、超时及上传限制。模板是 `local.config.example.json`。当前 DeepSeek 接口可用模型名为 `deepseek-flash` 与 `deepseek-v4-pro`。
-3. 重启统一启动脚本。已有实例运行时不会重复启动或杀掉其他进程；修改配置后请先在原窗口 Ctrl+C，再启动。
-4. 首页进入「数学讲解」，粘贴文字、上传题图或文档；生成后可播放、暂停、逐步回看和下载互动 HTML。「讲解历史」可找回生成结果。
-5. 「错题指导」顶部的讲解按钮可带入已识别题干。模型设置页显示快速、推理、视觉三类模型及服务来源，并提供「检测全部模型」。检测会分别发出一次很短的真实 API 请求。
-
-讲解会明确说明思路来源、具体计算难点、易错原因和检查方法；同时检查定义域、增根漏根、分类讨论与证明依据，几何辅助线按步骤出现。生成 HTML 的公式推导区位于左侧主视图，使用内嵌 KaTeX 排版 `$...$` 行内公式和 `$$...$$` 独立公式，分式、根号、指数、对数和上下标不会再显示成原始 TeX 字符串；纯代数步骤会收起空白图形画布。输出是带浏览器语音和板书的互动 HTML，**不是 MP4**。数学答案仍应由教师抽查，模型复核不能保证绝对正确。
-
-密钥只由服务端读取。统一启动会覆盖 `build/web/config.json` 为无真实密钥的公开配置；请不要手工把密钥复制到构建目录。旧的 `web/config.json` 仅用于下面的独立 Flutter 开发方式，统一启动以根目录配置为准。浏览器个性化设置按字段覆盖默认值，留空跟随默认；托管模式不接受浏览器的旧地址与密钥覆盖。
-
-启动器使用同源服务，模型请求经 `/v1/chat/completions` 转发，讲解 API 使用 `/api/projects`。互动讲解是异步任务，前端轮询任务状态；短时断网会自动重连，服务重启后未完成任务会明确标记为可重新生成，而不是永久卡在“排课中”。连接层失败时页面会直接提示“讲题引擎未运行”，并指向 `启动项目.bat` 与日志目录。原有可选 Cloudflare Worker 保持独立，不是本地启动必需项。数据默认在 `data/lessons`，浏览器讲解索引和 HTML 缓存在 IndexedDB，均不入库。
+1. 安装 **Node.js ≥ 20** 和 **Flutter ≥ 3.29**。
+2. 确保 Chrome 或 Microsoft Edge 可用。
+3. 克隆仓库并进入目录：
 
 ```powershell
-node --test tool/*.test.mjs
+git clone https://github.com/411pur/geshu-math.git
+cd geshu-math
+```
+
+4. 复制配置模板：
+
+```powershell
+Copy-Item .env.example .env.local
+Copy-Item local.config.example.json local.config.json
+```
+
+5. 编辑 `.env.local`：
+
+```dotenv
+DEEPSEEK_API_KEY=你的_key
+ALIYUN_API_KEY=
+```
+
+6. 双击根目录的 `启动项目.bat`，或运行：
+
+```powershell
+node tool/start.mjs
+```
+
+7. 打开终端输出中的地址，默认是：
+
+```text
+http://127.0.0.1:8124
+```
+
+首次启动会自动：
+
+- 安装 `lesson_engine` 依赖；
+- 检查或构建 `build/web`；
+- 生成无密钥的 `build/web/config.json`；
+- 启动讲题引擎、AI 转发和静态前端；
+- 将日志写入 `build/local-stack-logs/lesson-engine.<时间>.log`。
+
+修改配置后，先在启动窗口按 `Ctrl+C`，再重新启动。已有实例运行时，启动器不会重复启动或杀掉其他项目。
+
+---
+
+## 完整运行教程
+
+### 1. 环境要求
+
+| 软件 | 最低版本 | 检查命令 |
+|---|---:|---|
+| Node.js | 20 | `node --version` |
+| npm | 10+ | `npm --version` |
+| Flutter | 3.29 | `flutter --version` |
+| Dart | 3.8 | `dart --version` |
+| Chrome / Edge | 最新稳定版 | 浏览器可正常启动即可 |
+
+### 2. 安装依赖
+
+```powershell
+flutter pub get
+
+Set-Location lesson_engine
+npm ci --no-audit --no-fund
+Set-Location ..
+```
+
+### 3. 配置模型
+
+最小可用配置：
+
+```dotenv
+DEEPSEEK_API_KEY=sk-...
+```
+
+`local.config.json` 示例：
+
+```json
+{
+  "host": "127.0.0.1",
+  "port": 8124,
+  "dataDir": "data/lessons",
+  "model": "deepseek-flash",
+  "visionModel": "deepseek-flash",
+  "reasoningModel": "deepseek-v4-pro",
+  "fastProvider": "deepseek",
+  "reasoningProvider": "deepseek",
+  "visionProvider": "auto",
+  "apiBaseUrl": "https://api.deepseek.com",
+  "buildWeb": true,
+  "requestTimeoutMs": 180000,
+  "maxImageBytes": 12582912,
+  "maxDocumentBytes": 12582912
+}
+```
+
+### 4. 构建前端
+
+```powershell
+flutter build web --release --no-web-resources-cdn --no-pub
+```
+
+`--no-web-resources-cdn` 会把 Web 运行时资源一起打包，避免国内网络拉取 CDN 导致白屏。
+
+如果已构建过且只修改了服务端配置，可把 `buildWeb` 改为 `false`，启动更快。
+
+### 5. 启动服务
+
+```powershell
+node tool/start.mjs
+```
+
+健康检查：
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8124/api/health
+```
+
+预期返回：
+
+```json
+{
+  "ok": true,
+  "service": "geshu-math",
+  "providers": {
+    "deepseek": true,
+    "aliyun": false,
+    "fast": "deepseek",
+    "reasoning": "deepseek",
+    "vision": "deepseek"
+  }
+}
+```
+
+### 6. 构建 Windows 桌面版（可选）
+
+```powershell
+flutter build windows
+```
+
+桌面版主要复用 Flutter UI；数学互动讲解仍建议在浏览器中播放。
+
+### 7. 停止服务
+
+- 「启动项目.bat」窗口：按 `Ctrl+C`。
+- PowerShell 前台运行：按 `Ctrl+C`。
+- 不要直接结束其他项目的 Node 进程。
+
+---
+
+## 配置说明
+
+### `.env.local`
+
+| 变量 | 必填 | 说明 |
+|---|---|---|
+| `DEEPSEEK_API_KEY` | 使用 DeepSeek 时必填 | 服务端读取，不进入前端静态配置 |
+| `ALIYUN_API_KEY` | 可选 | 阿里云百炼 Key；留空时视觉角色会回退 DeepSeek |
+
+`.env.local`、`local.config.json` 和 `web/config.json` 都已加入 `.gitignore`。
+
+### `local.config.json`
+
+| 字段 | 说明 |
+|---|---|
+| `host` / `port` | 本地服务监听地址，默认 `127.0.0.1:8124` |
+| `dataDir` | 讲解任务和生成产物目录 |
+| `model` | 快速模型 |
+| `reasoningModel` | 推理模型 |
+| `visionModel` | 视觉模型 |
+| `fastProvider` / `reasoningProvider` / `visionProvider` | `deepseek`、`aliyun` 或 `auto` |
+| `apiBaseUrl` | 上游 OpenAI 兼容接口地址 |
+| `buildWeb` | 启动前是否自动构建 Flutter Web |
+| `requestTimeoutMs` | 模型请求超时 |
+| `maxImageBytes` / `maxDocumentBytes` | 上传大小上限 |
+
+### 模型角色
+
+- **快速模型**：读题、排课、内容复核、布局修复。
+- **推理模型**：独立求解、答案核对和高难推导。
+- **视觉模型**：题图识别、图形重建和视觉复核。
+
+三类模型可以来自不同服务商。页面「我的 → 设置 → 模型设置」可查看实际服务来源并执行连接测试。
+
+---
+
+## API 与自动化示例
+
+所有接口默认位于 `http://127.0.0.1:8124`。
+
+### 健康检查
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8124/api/health
+```
+
+### 创建讲解任务
+
+```powershell
+$response = Invoke-RestMethod `
+  -Method Post `
+  -Uri http://127.0.0.1:8124/api/projects `
+  -Form @{
+    text = '已知函数 f(x)=x^2-4x+3，求它的最小值。'
+  }
+
+$response.id
+```
+
+### 查询任务
+
+```powershell
+Invoke-RestMethod "http://127.0.0.1:8124/api/projects/$($response.id)"
+```
+
+### 订阅进度事件
+
+```powershell
+curl.exe -N "http://127.0.0.1:8124/api/projects/$($response.id)/events"
+```
+
+### 打开或下载 HTML
+
+```text
+http://127.0.0.1:8124/api/projects/<项目ID>/html
+http://127.0.0.1:8124/api/projects/<项目ID>/download
+```
+
+### 主要接口
+
+| 方法 | 路径 | 用途 |
+|---|---|---|
+| `GET` | `/api/health` | 服务、模型与服务商状态 |
+| `POST` | `/api/projects` | 创建讲解任务 |
+| `GET` | `/api/projects` | 任务列表 |
+| `GET` | `/api/projects/:id` | 任务详情与进度 |
+| `GET` | `/api/projects/:id/events` | SSE 进度事件 |
+| `POST` | `/api/projects/:id/regenerate` | 重新生成 |
+| `GET` | `/api/projects/:id/html` | 预览互动讲解 |
+| `GET` | `/api/projects/:id/download` | 下载单文件 HTML |
+| `POST` | `/api/extract-text` | 从 PDF / DOCX / TXT 提取题目文字 |
+| `POST` | `/v1/chat/completions` | 同源 AI 转发 |
+
+---
+
+## 数学讲解引擎
+
+讲解引擎位于 [`lesson_engine/`](lesson_engine/README.md)，采用异步任务：
+
+```text
+读题
+  → 独立求解
+  → 图形规划
+  → 讲解排课
+  → 内容复核
+  → 互动 HTML 渲染
+  → Playwright 视觉检查
+  → 必要时自动修复
+```
+
+生成产物：
+
+```text
+data/lessons/<项目ID>/
+├── meta.json
+├── problem.json
+├── solution.json
+├── lesson.json
+├── verification.json
+├── index.html
+└── visual/
+```
+
+生成后的 HTML：
+
+- 内嵌 KaTeX 与字体，可离线显示公式；
+- 使用浏览器语音朗读；
+- 自动翻页，也可手动控制；
+- 支持全屏、重讲和场景跳转；
+- 通过 iframe 嵌入 Flutter 播放器。
+
+常用命令：
+
+```powershell
+Set-Location lesson_engine
+npm test
+npm run build
+npm start
+```
+
+### 可选 AI 网关
+
+`ai_proxy/` 是 Cloudflare Worker，适合公网部署：
+
+- 隐藏真实 API Key；
+- 按 `X-Board` 注入服务端提示词；
+- 限制模型白名单；
+- 透传 SSE。
+
+详见 [`ai_proxy/README.md`](ai_proxy/README.md)。
+
+---
+
+## 数据存储与安全
+
+### 浏览器数据
+
+| 数据 | 存储 |
+|---|---|
+| 错题、考试记录、单题详情 | `localStorage` |
+| 学习报告缓存、画像缓存、会话记录 | `localStorage` |
+| 互动讲解记录与 HTML | `IndexedDB` |
+| 模型界面偏好 | `localStorage` |
+
+清除浏览器站点数据会清空本地学习记录。
+
+### 服务端数据
+
+- 讲解任务与产物保存在 `data/lessons/`；
+- 日志保存在 `build/local-stack-logs/`；
+- 这些目录均不入 Git。
+
+### 密钥安全
+
+- 统一启动时，真实 Key 只在 Node 服务端读取；
+- 前端收到的是同源转发地址和占位 Key；
+- 不要把真实 Key 写进 `web/config.json`、源码、截图或 README；
+- 公网部署请使用 `ai_proxy` 或等价的反向代理。
+
+---
+
+## 测试与质量验证
+
+### Flutter
+
+```powershell
 flutter test
 flutter analyze
-cd lesson_engine
-npm ci
+flutter build web --release --no-web-resources-cdn --no-pub
+```
+
+### 讲题引擎
+
+```powershell
+Set-Location lesson_engine
+npm test
+npm run build
+Set-Location ..
+```
+
+### 启动日志
+
+```powershell
+node --test tool\run-log.test.mjs
+```
+
+### 当前验证基线
+
+截至 2026-10-25：
+
+- Flutter 测试：47 项通过；
+- 讲题引擎测试：170 项通过，2 项按环境跳过；
+- `flutter analyze`：无问题；
+- TypeScript 编译：通过；
+- Flutter Web Release：构建通过；
+- Node 启动日志测试：通过。
+
+实际测试数量会随功能增加而变化，以 CI / 本地最新输出为准。
+
+---
+
+## 常见问题
+
+### 页面提示“讲题引擎未运行”或 `Failed to fetch`
+
+说明前端在，但本地引擎不可达。双击项目根目录的 `启动项目.bat`，等待终端出现：
+
+```text
+格数至理已启动：http://127.0.0.1:8124
+```
+
+然后刷新页面。日志位于：
+
+```text
+build/local-stack-logs/lesson-engine.<时间>.log
+```
+
+### `/api/health` 中 `providers.deepseek` 为 `false`
+
+检查根目录 `.env.local` 是否填写 `DEEPSEEK_API_KEY`，然后关闭原启动窗口并重新运行。
+
+### 改了配置但没有生效
+
+统一启动器只在启动时加载配置。按 `Ctrl+C` 停止原实例，再运行 `启动项目.bat`。
+
+### 浏览器仍显示旧界面
+
+Flutter Service Worker 可能缓存旧构建。使用 `Ctrl+Shift+R` 强制刷新，或关闭并重新打开页面。
+
+### 上传 PDF 后没有文字
+
+扫描件或纯图片 PDF 没有文本层，请改用「上传图片」。
+
+### 没有语音
+
+互动讲解使用浏览器 / 操作系统语音包。请在系统中安装中文语音，并确认浏览器未静音。
+
+### 生成为什么不是 MP4？
+
+当前版本输出的是可交互单文件 HTML，支持语音、自动翻页和板书。MP4 导出与 TTS 音频合成不在当前范围内。
+
+---
+
+## 目录结构
+
+```text
+geshu-math/
+├── lib/                         # Flutter 应用
+│   ├── core/                    # 主题、网络、SSE、JSON 容错、Settings
+│   ├── data/                    # localStorage 数据源与仓库
+│   ├── domain/                  # 错题、考试、知识节点实体
+│   ├── features/
+│   │   ├── home/                # 首页、导航、设置
+│   │   ├── wrong_question/      # 错题指导与错题本
+│   │   ├── lesson_studio/       # 数学讲解生成、播放与历史
+│   │   ├── exam/                # 考试分析
+│   │   ├── qa/                  # 智能问答
+│   │   ├── report/              # 学习报告与学生画像
+│   │   ├── knowledge/           # 知识图谱与知识树
+│   │   └── scan/                # 拍照识题
+│   └── shared/                  # Markdown、通用组件、工具
+├── lesson_engine/               # Node.js 讲题引擎
+│   ├── src/
+│   │   ├── ai/                  # DeepSeek / 阿里云客户端与提示词
+│   │   ├── pipeline/            # 读题、求解、排课、复核
+│   │   ├── render/              # 互动 HTML 与 KaTeX 渲染
+│   │   ├── visual/              # 图形审计与修复
+│   │   ├── store/               # 项目与产物存储
+│   │   └── server.ts            # Fastify API
+│   └── tests/                   # Vitest / Playwright 测试
+├── ai_proxy/                    # 可选 Cloudflare Worker 网关
+├── assets/knowledge/            # 333 节点知识图谱数据
+├── test/                        # Flutter 测试
+├── tool/                        # 统一启动器与运行日志
+├── web/                         # Flutter Web 入口与配置样例
+├── windows/                     # Windows runner
+├── docs/                        # 迁移与补充文档
+├── 启动项目.bat                 # Windows 一键启动
+└── README.md
+```
+
+---
+
+## 已知限制
+
+- 以本地单机演示为主，没有账号体系、云端同步和多端协同。
+- 本地数据依赖浏览器存储，清理站点数据后不可恢复。
+- AI 生成内容仍可能出错，答案应由教师或学生二次核验。
+- Flutter 页面内的公式使用轻量 TeX→Unicode 转换；完整排版以互动讲解 HTML 为准。
+- 浏览器语音依赖操作系统语音包。
+- 当前不导出 MP4，不提供云端视频转码队列。
+- 项目尚未声明开源许可证，默认保留所有权利。
+
+---
+
+## 黑客松提交检查
+
+提交前建议逐项确认：
+
+- [x] 仓库包含完整 README、运行教程和示例。
+- [x] 前端、讲题引擎和启动器都有自动化测试。
+- [x] 密钥与本地运行数据不进入 Git。
+- [x] 关键功能有近期提交记录。
+- [x] 支持 Windows 一键启动。
+- [x] 提供健康检查、持久日志和可操作错误提示。
+- [ ] 推送到 GitHub 公开仓库。
+- [ ] 在提交表单中填写 GitHub 仓库链接。
+- [ ] 最终演示前在干净环境重新克隆并运行一次。
+
+常用检查命令：
+
+```powershell
+git status
+git log --oneline
+flutter test
+flutter analyze
+Set-Location lesson_engine
 npm test
 npm run build
 ```
 
-引擎离线测试包含真实 Edge 的 HTML 播放回归；`tests/live` 默认跳过，真实模型验收需要有效 Key。完整迁移说明见 [docs/math-lesson-migration.md](docs/math-lesson-migration.md)。
-
-## 独立 Flutter 开发（兼容旧配置）
-
-
-环境要求：Flutter ≥ 3.29、Dart ≥ 3.8。
-
-```bash
-flutter pub get
-
-# 填入你的模型 Key（config.json 不入库）
-cp web/config.example.json web/config.json
-
-flutter run -d chrome
-```
-
-构建并本地预览 Web：
-
-```bash
-flutter build web --release --no-web-resources-cdn
-python3 -m http.server 8123 --directory build/web
-# 打开 http://127.0.0.1:8123
-```
-
-`--no-web-resources-cdn` 会把 CanvasKit 一起打进 `build/web`。不加这个参数时 Flutter 默认从公网 CDN 拉取 CanvasKit，国内网络或离线环境容易出现白屏。
-
-Windows 桌面：
-
-```bash
-flutter run -d windows     # 需要 Visual Studio 的 C++ 桌面开发组件
-```
-
-## 配置
-
-运行时读取站点根目录的 `/config.json`（即 `web/config.json`，构建时拷进 `build/web`），并在 URL 上带时间戳参数，避免浏览器或 Service Worker 缓存旧配置。
-
-| 字段 | 说明 |
-|---|---|
-| `apiBaseUrl` | OpenAI 兼容接口地址，形如 `https://your-host/v1`，默认空 |
-| `apiKey` | 接口 Key（`YOUR_API_KEY` 等占位串视为未配置） |
-| `model` | 文本模型名，必填 |
-| `visionModel` | 多模态模型名，图片识别与拍照识题必填 |
-| `reasoningModel` | 高难推理模型；高中数学求值与检查优先使用它 |
-| `fastProvider` / `reasoningProvider` / `visionProvider` | 统一启动时的角色级服务商；可选 `deepseek`、`aliyun`，视觉还支持 `auto` |
-| `useServerPrompts` | 为 `true` 时不再发送内置提示词，由网关按板块注入 |
-
-- 配置既可以写在顶层，也可以收在 `ai` 段，两种写法都支持。
-- 换服务商 / 换模型只需改 `apiBaseUrl`、`apiKey`、`model`（模型名由服务商定义），代码无需改动、无需重新编译。
-- 默认值全部为空：未配置时页面会提示「尚未配置 AI 服务」，而不是抛出 401。
-- `web/config.json` 已被 `.gitignore` 忽略；仓库里只有 `config.example.json` 与 `config.proxy.sample.json` 两个占位样例。
-
-## 高中数学讲解优化
-
-- 求解阶段独立推导，再核对原答案；不允许直接照抄答案或只给结论。
-- 函数与导数、解析几何、数列、三角、概率统计分别检查定义域、参数范围、判别式、斜率不存在、奇偶项、取等条件与分类讨论。
-- 讲稿要求说明方法选择和关键变形理由，并在最后一步验证取等条件或代入检验。
-- 快速模型负责读题、排课、复核和布局修复；推理模型负责求解与关键检查；视觉模型负责题图识别。三类模型可分别选择服务商。
-
-## 提示词
-
-6 条系统提示词内置在 `lib/core/network/ai_api_client.dart`（错题指导、专家版、追问、考试分析、智能问答、学习报告），另有拍照识题的内联 OCR 指令：
-
-- 全部使用 `r'''` 原始字符串，避免 Dart 转义与 LaTeX 反斜杠冲突；
-- 统一要求模型输出严格 JSON，数学公式使用 `$...$` / `$$...$$`。
-
-启用 `ai_proxy` 后，服务端提示词由脚本从 Dart 源码生成，保持单一事实来源：
-
-```bash
-cd ai_proxy
-npm run extract-prompts   # 读取 Dart 常量 → src/prompts.gen.js
-npm test                  # 网关单测（10 例）
-```
-
-## AI 网关（可选）
-
-`ai_proxy/` 是一个 Cloudflare Worker：隐藏真实 Key、按 `X-Board` 注入服务端提示词、限制模型白名单、透传 SSE。前端把 `config.json` 的 `apiBaseUrl` 指向 Worker，并设置 `useServerPrompts: true` 即可。
-
-部署与环境变量说明见 [`ai_proxy/README.md`](ai_proxy/README.md)。
-
-## 知识图谱数据
-
-知识结构完全由 `assets/knowledge/initial_knowledge_structure.json` 驱动，启动时载入内存：
-
-```json
-{
-  "id": "plane-geometry",
-  "parentId": null,
-  "title": "平面几何",
-  "level": 1,
-  "description": "……"
-}
-```
-
-- 三层：`level` 1 模块 / 2 章 / 3 知识点，共 333 个节点；
-- 节点颜色按标题关键字映射到五个模块色（数与代数、函数、几何、概率统计、导数）；
-- 增删节点只改 JSON，无需改动代码。
-
-## 目录结构
-
-```
-lib/
-├── core/            # 主题、网络（OpenAI 兼容客户端 / SSE / JSON 容错）、PDF、平台配置
-├── data/            # DataStore（localStorage）、数据源与仓库
-├── domain/          # 错题、考试、知识节点等实体
-├── features/        # 首页、错题、考试、问答、识题、报告、知识图谱
-└── shared/          # 通用组件（Markdown 渲染等）与工具
-assets/knowledge/    # 知识图谱种子数据
-ai_proxy/            # 可选的 AI 网关（Cloudflare Worker）
-web/                 # index.html、manifest、config 样例
-windows/             # Windows 桌面 runner
-```
-
-## 数据存储
-
-- 错题、考试记录、单题详情保存在浏览器 `localStorage`（`wrong_questions` / `exam_records` / `exam_details`）；
-- 知识节点来自打包资源，不做持久化；
-- 没有账号体系与云端同步，清除站点数据即清空全部记录。
-
-## 公式渲染
-
-互动讲解 HTML 使用 KaTeX 0.16.22（MIT）真实排版 LaTeX，CSS、JavaScript 与 WOFF2 字体全部内嵌为 Data URL，下载后离线也能显示。支持行内 `$...$` 和独立居中 `$$...$$`，题干、选项、讲稿、提示、比较表和左侧板书使用同一套解析。KaTeX 启用 `trust: false`，不会执行公式中的任意 HTML 或脚本。
-
-Flutter 应用内的问答 / 错题对话 Markdown 仍使用 `lib/shared/widgets/styled_markdown.dart` 的轻量 TeX 转换：`\frac{a}{b}` → `(a)/(b)`、`\sqrt{x}` → `√x`、希腊字母、上下标等，不依赖 MathJax / KaTeX。
-
-模型有时会在 JSON 字符串里直接输出单个反斜杠（`\frac` 被解析成换页符），所以 `lib/core/network/ai_json.dart` 会在 `jsonDecode` **之前**修复非法转义，SSE 流式结果与最终结果都走这一层。
-
-## 已知限制
-
-- 仅本地单机使用，无后端、无账号、无多端同步；
-- 前端直连模型厂商时 Key 会被抓包 / F12 看到，只适合本地演示；
-- Flutter 应用内的问答 / 错题对话仍是轻量公式转换；完整 LaTeX 排版以互动讲解 HTML 播放器或下载文件为准；
-- 自动化测试目前只覆盖 `ai_proxy` 的网关逻辑，前端以 `flutter analyze` + 构建 + 手工冒烟为主。
+---
 
 ## 许可证
 
-本仓库暂未指定开源许可证，默认保留所有权利。
+当前仓库未声明开源许可证，默认保留所有权利。
+
+项目内使用的第三方组件遵循各自许可证，包括但不限于 Flutter、Fastify、KaTeX、Dio、Playwright 和 Cloudflare Workers 工具链。若计划将本项目作为开源模板长期维护，建议在公开发布前增加合适的 `LICENSE` 文件。
+
+---
+
+## 致谢
+
+感谢 CCNU 第一届黑客松提供的开发与展示机会，也感谢所有开源工具与模型的作者。
+
+**让想法落地，让创意发生。**
