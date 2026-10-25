@@ -69,7 +69,8 @@ String texToUnicode(String input) {
 
   // 常用「单花括号参数」命令 → 直接取内部内容（去命令留内容）
   const unwrapCmds = ['text', 'textrm', 'mathrm', 'textnormal', 'mathbf', 'mathit',
-      'textsf', 'operatorname', 'mbox', 'hbox', 'number', 'unit', 'mathrm'];
+      'mathsf', 'mathtt', 'mathbb', 'mathcal', 'textsf', 'operatorname', 'mbox',
+      'hbox', 'number', 'unit', 'mathrm'];
   for (final cmd in unwrapCmds) {
     var guard = 0;
     while (guard++ < 10) {
@@ -115,7 +116,17 @@ String texToUnicode(String input) {
       .replaceAll(r'\perp', '⊥').replaceAll(r'\parallel', '∥')
       .replaceAll(r'\angle', '∠').replaceAll(r'\cdots', '…')
       .replaceAll(r'\ldots', '…').replaceAll(r'\dots', '…')
-      .replaceAll(r'\ast', '*').replaceAll(r'\prime', '′');
+      .replaceAll(r'\ast', '*').replaceAll(r'\prime', '′')
+      .replaceAll(r'\notin', '∉').replaceAll(r'\in', '∈')
+      .replaceAll(r'\subset', '⊂').replaceAll(r'\subseteq', '⊆')
+      .replaceAll(r'\supset', '⊃').replaceAll(r'\supseteq', '⊇')
+      .replaceAll(r'\cup', '∪').replaceAll(r'\cap', '∩')
+      .replaceAll(r'\mid', '|').replaceAll(r'\because', '∵')
+      .replaceAll(r'\therefore', '∴');
+  s = s.replaceAllMapped(
+    RegExp(r'\\(ln|log|sin|cos|tan|cot|sec|csc|arcsin|arccos|arctan|sinh|cosh|tanh|max|min|lim|det|gcd|exp)\b'),
+    (match) => match.group(1)!,
+  );
   // \bar{X} → X̄、\hat{X} → X̂
   s = s.replaceAllMapped(RegExp(r'\\bar\{([^{}]*)\}'), (m) => '${m.group(1)}\u0304');
   s = s.replaceAllMapped(RegExp(r'\\hat\{([^{}]*)\}'), (m) => '${m.group(1)}\u0302');
@@ -195,10 +206,27 @@ String texToUnicode(String input) {
     if (allGlyph && g.isNotEmpty) return g.split('').map((c) => sub[c]!).join();
     return '~$g~';
   }
-  s = s.replaceAllMapped(RegExp(r'\^\{([^{}]*)\}'), (m) {
-    final g = m.group(1)!;
-    return g.isEmpty ? '' : supGlyph(g);
-  });
+  // 嵌套指数（如 e^{a^2-b}）用平衡花括号提取，避免只处理一层后留下 `^`。
+  guard = 0;
+  while (guard++ < 12) {
+    final idx = s.indexOf('^{');
+    if (idx < 0) break;
+    final b = brace(s, idx + 1);
+    if (b == null) break;
+    final inner = b.$2.trim();
+    if (inner.isEmpty) {
+      s = s.replaceRange(idx, b.$1 + 1, '');
+      continue;
+    }
+    final expanded = inner.contains(RegExp(r'[\\^{}]'))
+        ? texToUnicode(inner)
+        : inner;
+    final allGlyph = expanded.split('').every((c) => sup.containsKey(c));
+    final rep = allGlyph
+        ? expanded.split('').map((c) => sup[c]!).join()
+        : '^($expanded)';
+    s = s.replaceRange(idx, b.$1 + 1, rep);
+  }
   s = s.replaceAllMapped(RegExp(r'\_\{([^{}]*)\}'), (m) {
     final g = m.group(1)!;
     return g.isEmpty ? '' : subMultiGlyph(g);

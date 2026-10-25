@@ -9,6 +9,7 @@ import '../data/legacy_lesson_bridge.dart';
 import '../data/lesson_document.dart';
 import '../data/lesson_providers.dart';
 import '../models/lesson_contracts.dart';
+import '../widgets/lesson_text_input_card.dart';
 import 'lesson_generate_page.dart';
 
 /// 「不扫错题也能生成讲解」的入口页：文本 / 图片 / 文档三种素材任意组合。
@@ -32,6 +33,7 @@ class _LessonNewPageState extends ConsumerState<LessonNewPage> {
   String _imageName = '题目图片';
   LessonDocumentDraft? _document;
   bool _readingDocument = false;
+  late bool _editingText;
   String? _notice;
 
   String? get _imageDataUrl => _imageBytes == null
@@ -44,7 +46,11 @@ class _LessonNewPageState extends ConsumerState<LessonNewPage> {
       (_document?.chars ?? 0) > 0;
 
   @override
-  void initState() { super.initState(); _textController.text = widget.initialText; }
+  void initState() {
+    super.initState();
+    _textController.text = widget.initialText;
+    _editingText = widget.initialText.trim().isEmpty;
+  }
 
   @override
   void dispose() {
@@ -146,19 +152,12 @@ class _LessonNewPageState extends ConsumerState<LessonNewPage> {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-              child: TextField(
-                controller: _textController,
-                minLines: 4,
-                maxLines: 10,
-                onChanged: (_) => setState(() {}),
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
+          LessonTextInputCard(
+            controller: _textController,
+            previewing: !_editingText,
+            onEdit: () => setState(() => _editingText = true),
+            onDone: () => setState(() => _editingText = false),
+            onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 12),
           Row(
